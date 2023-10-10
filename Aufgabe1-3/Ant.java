@@ -14,6 +14,12 @@ public class Ant implements Entity {
         return null;
     }
 
+    public Position getLookDirection(){
+        int x = position.getX()+ lastPosition.getX();
+        int y = position.getY()+ lastPosition.getY();
+        return new Position(x,y);
+    }
+
     public void setAvailableNeighbours(Cell[] availableNeighbours) {
         this.availableNeighbours = availableNeighbours;
     }

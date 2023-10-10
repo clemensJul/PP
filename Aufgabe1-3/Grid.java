@@ -13,7 +13,7 @@ public class Grid {
         this.numberOfAnts = numberOfAnts;
         this.cells = new Cell[sizeX][sizeY];
 
-        entities = new ArrayList<>(numberOfAnts +sizeX*sizeY);
+        entities = new ArrayList<>(numberOfAnts + sizeX*sizeY);
 
         int nest = 1;
         int food = 3 + (int)(Math.random()*6);

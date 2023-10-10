@@ -4,11 +4,11 @@ public class Position {
     int x;
     int y;
 
-    ArrayList<Ant> ants;
+    //ich würd die Ants in der Cell speichern - wir verwenden Position ja auch für Ants und die brauchen diese INfo nicht.
+    //ArrayList<Ant> ants;
 
-    public Position(int x, int y, ArrayList<Ant> ants) {
+    public Position(int x, int y) {
         this.x = x;
         this.y = y;
-        this.ants = ants;
     }
 }

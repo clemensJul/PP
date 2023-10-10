@@ -1,11 +1,21 @@
 import java.util.Arrays;
 
-public class Ant {
+public class Ant implements Entity {
     Position position;
     Position lastPosition;
+    Cell[] availableNeighbours;
 
-    public Ant() {
+    public Ant(Position position) {
+    this.position = position;
+    }
 
+    @Override
+    public Position getPosition() {
+        return null;
+    }
+
+    public void setAvailableNeighbours(Cell[] availableNeighbours) {
+        this.availableNeighbours = availableNeighbours;
     }
 
     private void setPosition(Cell[] cells) {
@@ -33,7 +43,9 @@ public class Ant {
     }
 
     //
-    private Cell[] possibleCells() {
+
+    @Override
+    public void update() {
 
     }
 }

@@ -1,9 +1,9 @@
 import java.util.LinkedList;
 
 public class FoodSource implements Cell{
-    private Position position;
-    public FoodSource(Position position) {
-        this.position = position;
+    private Vector vector;
+    public FoodSource(Vector vector) {
+        this.vector = vector;
     }
 
     @Override
@@ -17,7 +17,7 @@ public class FoodSource implements Cell{
     }
 
     @Override
-    public Position getPosition() {
+    public Vector getPosition() {
         return null;
     }
 

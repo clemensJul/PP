@@ -11,12 +11,13 @@ public class Simulation {
         int maxY = 200;
         int numberOfAnts = 100;
 
-
+        /*
         CodeDraw cd = new CodeDraw(maxX*cellSize,maxY*cellSize);
         Grid grid = new Grid(maxX,maxY,100);
 
         while (!cd.isClosed()){
 
-        }
+        }*/
+        System.out.println(-1%5);
     }
 }

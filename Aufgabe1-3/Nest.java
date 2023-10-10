@@ -1,15 +1,15 @@
 import java.util.LinkedList;
 
 public class Nest implements Cell{
-    private Position position;
+    private Vector vector;
 
     @Override
-    public Position getPosition() {
+    public Vector getPosition() {
         return null;
     }
 
-    public Nest(Position position) {
-        this.position = position;
+    public Nest(Vector vector) {
+        this.vector = vector;
     }
 
     @Override

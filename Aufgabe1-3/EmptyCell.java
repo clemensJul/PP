@@ -1,15 +1,15 @@
 import java.util.LinkedList;
 
 public class EmptyCell implements Cell{
-    private Position position;
+    private Vector vector;
     private double currentStink;
     private double stinkDeletionRate = 0.95d;
-    public EmptyCell(Position position) {
-        this.position = position;
+    public EmptyCell(Vector vector) {
+        this.vector = vector;
     }
 
     @Override
-    public Position getPosition() {
+    public Vector getPosition() {
         return null;
     }
 

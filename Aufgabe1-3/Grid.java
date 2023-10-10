@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class Grid {
     private int sizeX, sizeY, numberOfAnts;
@@ -15,21 +13,20 @@ public class Grid {
 
         entities = new ArrayList<>(numberOfAnts + sizeX*sizeY);
 
-        int nest = 1;
-        int food = 3 + (int)(Math.random()*6);
-
+        long nest = 1;
+        long food = 3 + Math.round((Math.random()*6));
 
         while (nest > 0 && food > 0){
             for (int x = 0; x < sizeX; x++) {
                 for (int y = 0; y < sizeY; y++) {
                     if (Math.random()>0.98f && nest > 0){
-                        cells[x][y] = new Nest(new Position(x,y));
+                        cells[x][y] = new Nest(new Vector(x,y));
                         nest--;
                     } else if ( food > 0) {
-                        cells[x][y] = new FoodSource(new Position(x,y));
+                        cells[x][y] = new FoodSource(new Vector(x,y));
                         food--;
                     }else {
-                        cells[x][y] = new EmptyCell(new Position(x,y));
+                        cells[x][y] = new EmptyCell(new Vector(x,y));
                     }
                 }
             }
@@ -45,24 +42,35 @@ public class Grid {
     }
     //get all neighbours
     public ArrayList<Cell> availableNeighbours(Ant ant){
-        Position direction = ant.getDirection();
-        Position position = ant.getPosition();
+        Vector direction = ant.getDirection();
+        Vector vector = ant.getPosition();
         ArrayList<Cell> neighbours = new ArrayList<>();
-        for (int x = -1; x < 2; x++) {
-            for (int y = -1; y < 2; y++) {
-                int dif = (x+y) + direction.getX()+ direction.getY();
-                if (Math.abs(dif)>2 && (x!= 0 && y != 0)){
+
+        int dirX = direction.getX();
+        int dirY = direction.getY();
+
+        // ant is facing direction is diagonally
+        if(Math.abs(dirX) == Math.abs(dirY)){
+            for (int x = -1; x < 2; x++) {
+                for (int y = -1; y < 2; y++) {
+                    int dX = dirX - x;
+                }
+            }
+        }else {
+            for (int x = -1; x < 2; x++) {
+                for (int y = -1; y < 2; y++) {
 
                 }
             }
         }
         return neighbours;
     }
+    private Cell getCell(Vector vector){
+        return cells[vector.getX()][vector.getY()];
+    }
     /*
     * -1,1  0,1  1,1
     * -1,0  0,0  1,0
     * -1-1  0-1  1-1
-    *
-    *
     * */
 }

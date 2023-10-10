@@ -1,30 +1,29 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Ant implements Entity {
-    private Position position;
+    private Vector vector;
     private final Grid grid;
 
-    private Position direction;
+    private Vector direction;
 
-    public Ant(Position position, Grid grid) {
-        this.position = position;
-        this.direction = Position.RandomDirection();
+    public Ant(Vector vector, Grid grid) {
+        this.vector = vector;
+        this.direction = Vector.RandomDirection();
         this.grid = grid;
     }
 
     @Override
-    public Position getPosition() {
-        return position;
+    public Vector getPosition() {
+        return vector;
     }
 
-    public Position getDirection() {
+    public Vector getDirection() {
         return direction;
     }
 
     @Override
     public void update() {
-        // set position based on scent and random variable
+        // set vector based on scent and random variable
         double scentSum = 0;
         ArrayList<Cell> availableNeighbors = grid.availableNeighbours(this);
 
@@ -40,11 +39,11 @@ public class Ant implements Entity {
             index += cell.scent;
 
             if (index > randomFactor) {
-                int deltaX = this.position.getX() - cell.getPosition().getX();
-                int deltaY = this.position.getY() - cell.getPosition().getY();
+                int deltaX = this.vector.getX() - cell.getPosition().getX();
+                int deltaY = this.vector.getY() - cell.getPosition().getY();
 
-                this.direction = new Position(deltaX, deltaY);
-                this.position = cell.position;
+                this.direction = new Vector(deltaX, deltaY);
+                this.vector = cell.VECTOR;
                 break;
             }
         }

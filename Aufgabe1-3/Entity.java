@@ -1,8 +1,8 @@
 public interface Entity {
 
-    Position position = null;
+    Vector VECTOR = null;
 
     //updates values needed for next
     void update();
-    Position getPosition();
+    Vector getPosition();
 }

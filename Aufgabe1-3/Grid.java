@@ -23,13 +23,13 @@ public class Grid {
             for (int x = 0; x < sizeX; x++) {
                 for (int y = 0; y < sizeY; y++) {
                     if (Math.random()>0.98f && nest > 0){
-                        entities.add(new Nest(new Position(x,y))) ;
+                        cells[x][y] = new Nest(new Position(x,y));
                         nest--;
                     } else if ( food > 0) {
-                        entities.add( new FoodSource(new Position(x,y)));
+                        cells[x][y] = new FoodSource(new Position(x,y));
                         food--;
                     }else {
-                        entities.add(new EmptyCell(new Position(x,y)));
+                        cells[x][y] = new EmptyCell(new Position(x,y));
                     }
                 }
             }
@@ -37,12 +37,32 @@ public class Grid {
 
     }
     public void update(){
-        for (Entity e :
-                entities) {
-            e.update();
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                cells[x][y].update();
+            }
         }
     }
-    private Cell[] availableNeighbours(Ant ant){
-        return null;
+    //get all neighbours
+    public ArrayList<Cell> availableNeighbours(Ant ant){
+        Position direction = ant.getDirection();
+        Position position = ant.getPosition();
+        ArrayList<Cell> neighbours = new ArrayList<>();
+        for (int x = -1; x < 2; x++) {
+            for (int y = -1; y < 2; y++) {
+                int dif = (x+y) + direction.getX()+ direction.getY();
+                if (Math.abs(dif)>2 && (x!= 0 && y != 0)){
+
+                }
+            }
+        }
+        return neighbours;
     }
+    /*
+    * -1,1  0,1  1,1
+    * -1,0  0,0  1,0
+    * -1-1  0-1  1-1
+    *
+    *
+    * */
 }

@@ -11,6 +11,15 @@ public class Position {
         this.x = x;
         this.y = y;
     }
+    public static Position RandomDirection(){
+        int x = 0;
+        int y = 0;
+        while (x == 0 && y == 0){
+            x = (int)Math.round(Math.random()*2-1);
+            y = (int)Math.round(Math.random()*2-1);
+        }
+        return new Position(x,y);
+    }
     public int getX() {
         return x;
     }

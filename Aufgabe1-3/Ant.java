@@ -2,28 +2,32 @@ import java.util.Arrays;
 
 public class Ant implements Entity {
     Position position;
-    Position lastPosition;
+
+    Position direction;
     Cell[] availableNeighbours;
 
     public Ant(Position position) {
     this.position = position;
+    this.direction = Position.RandomDirection();
     }
 
     @Override
     public Position getPosition() {
-        return null;
+        return position;
     }
 
-    public Position getLookDirection(){
-        int x = position.getX()+ lastPosition.getX();
-        int y = position.getY()+ lastPosition.getY();
-        return new Position(x,y);
+    public Position getDirection(){
+        return direction;
     }
 
     public void setAvailableNeighbours(Cell[] availableNeighbours) {
         this.availableNeighbours = availableNeighbours;
     }
 
+
+    // wenn du dir die nächste position ausrechnest wärs nice wenn du die direction ausrechnest und speicherst
+    // das hilft mir beim grid enorm, direction sollt einfach ne position sein, die zb x = 1 und y = 0 hat, wenn die ameise zuvor
+    // nach recht gegangen ist
     private void setPosition(Cell[] cells) {
         // set position based on scent and random variable
         double scentSum = 0;

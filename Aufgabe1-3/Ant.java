@@ -1,14 +1,16 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Ant implements Entity {
-    Position position;
+    private Position position;
+    private final Grid grid;
 
-    Position direction;
-    Cell[] availableNeighbours;
+    private Position direction;
 
-    public Ant(Position position) {
-    this.position = position;
-    this.direction = Position.RandomDirection();
+    public Ant(Position position, Grid grid) {
+        this.position = position;
+        this.direction = Position.RandomDirection();
+        this.grid = grid;
     }
 
     @Override
@@ -16,46 +18,35 @@ public class Ant implements Entity {
         return position;
     }
 
-    public Position getDirection(){
+    public Position getDirection() {
         return direction;
     }
 
-    public void setAvailableNeighbours(Cell[] availableNeighbours) {
-        this.availableNeighbours = availableNeighbours;
-    }
-
-
-    // wenn du dir die nächste position ausrechnest wärs nice wenn du die direction ausrechnest und speicherst
-    // das hilft mir beim grid enorm, direction sollt einfach ne position sein, die zb x = 1 und y = 0 hat, wenn die ameise zuvor
-    // nach recht gegangen ist
-    private void setPosition(Cell[] cells) {
+    @Override
+    public void update() {
         // set position based on scent and random variable
         double scentSum = 0;
+        ArrayList<Cell> availableNeighbors = grid.availableNeighbours(this);
 
-        for (int i = 0; i < cells.length; i++) {
-            scentSum += cells[i].scent;
+        for (Cell availableNeighbour : availableNeighbors) {
+            scentSum += availableNeighbour.scent;
         }
 
         double randomFactor = Math.floor(Math.random() * scentSum);
 
         // get scent from cells
         double index = 0;
-
-        for (Cell cell : cells) {
+        for (Cell cell : availableNeighbors) {
             index += cell.scent;
 
             if (index > randomFactor) {
+                int deltaX = this.position.getX() - cell.getPosition().getX();
+                int deltaY = this.position.getY() - cell.getPosition().getY();
+
+                this.direction = new Position(deltaX, deltaY);
                 this.position = cell.position;
-                return;
+                break;
             }
         }
-
-    }
-
-    //
-
-    @Override
-    public void update() {
-
     }
 }

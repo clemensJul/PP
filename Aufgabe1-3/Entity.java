@@ -1,6 +1,6 @@
 public interface Entity {
 
-    Vector VECTOR = null;
+    Vector vector = null;
 
     //updates values needed for next
     void update();

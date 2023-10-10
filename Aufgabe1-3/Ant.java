@@ -43,7 +43,7 @@ public class Ant implements Entity {
                 int deltaY = this.vector.getY() - cell.getPosition().getY();
 
                 this.direction = new Vector(deltaX, deltaY);
-                this.vector = cell.VECTOR;
+                this.vector = cell.vector;
                 break;
             }
         }

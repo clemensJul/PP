@@ -12,6 +12,8 @@ public class Tile implements Entity {
 
     private float maxStink = 1f;
 
+    private Color tileColor = Color.gray;
+
     public Tile(Vector position) {
         this.position = position;
     }
@@ -22,17 +24,21 @@ public class Tile implements Entity {
     }
 
     @Override
-    public void update() {
-        currentStink*= stinkDeletionRate;
-    }
-    public Color tileColor(){
-        if (antsPresent > 0) return Color.black;
-        if (currentStink > 0.05d){
-            return new Color(1f,0f,1f, currentStink);
+    public boolean update() {
+        currentStink *= stinkDeletionRate;
+        if (antsPresent > 0){
+            tileColor = Color.black;
+            return true;
         }
-        return null;
+        else if (currentStink > 0.05d){
+            tileColor = new Color(1f,0f,1f, currentStink);
+            return true;
+        }
+        else {
+            tileColor = Color.gray;
+            return false;
+        }
     }
-
     public boolean isFoodPresent(){
         if (foodPresent > 0 ) return true;
         return false;
@@ -61,5 +67,8 @@ public class Tile implements Entity {
     }
     public double getCurrentStink() {
         return currentStink;
+    }
+    public Color getTileColor(){
+        return tileColor;
     }
 }

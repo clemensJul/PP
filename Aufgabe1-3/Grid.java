@@ -1,10 +1,14 @@
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Grid {
     private int sizeX, sizeY, numberOfAnts;
     private Tile[][] tiles;
     private ArrayList<Ant> ants;
+    private Queue<Tile> updateQueue;
 
     public Grid(int sizeX, int sizeY, int numberOfAnts) {
         this.sizeX = sizeX;
@@ -12,7 +16,7 @@ public class Grid {
         this.numberOfAnts = numberOfAnts;
         this.tiles = new Tile[sizeX][sizeY];
         ants = new ArrayList<>();
-
+        updateQueue = new LinkedList<>();
         int foodCount = (int) (3 + Math.round((Math.random() * 6)));
 
         for (int x = 0; x < sizeX; x++) {
@@ -69,7 +73,9 @@ public class Grid {
         }
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                tiles[x][y].update();
+                if (tiles[x][y].update()){
+                    updateQueue.add(tiles[x][y]);
+                }
             }
         }
     }
@@ -112,6 +118,9 @@ public class Grid {
     }
     public Tile getTile(int x, int y) {
         return tiles[modulo(x,sizeX)][modulo(y,sizeY)];
+    }
+    public Queue<Tile> getUpdateQueue() {
+        return updateQueue;
     }
 
     private static int modulo(int number, int divisor){

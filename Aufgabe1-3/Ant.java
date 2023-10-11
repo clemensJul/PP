@@ -30,7 +30,7 @@ public class Ant implements Entity {
     }
 
     @Override
-    public void update() {
+    public boolean update() {
         Tile[] neighbours = grid.availableNeighbours(this);
 
         Tile newTile = null;
@@ -142,6 +142,7 @@ public class Ant implements Entity {
         if (state == State.COLLECT) {
             grid.getTile(position).increaseFoodPresent();
         }
+        return false;
     }
 
     private static Tile checkNeighborsForFoodSource(ArrayList<Tile> tiles) {
@@ -166,25 +167,25 @@ public class Ant implements Entity {
         // set vector based on scent and random variable
         double scentSum = 0;
 
-        return tiles.get((int)Math.floor(Math.random() * tiles.size()));
-//
-//        for (Tile tile : tiles) {
-//            scentSum += tile.getCurrentStink() + 1;
-//        }
-//
-//        double randomFactor = Math.random() * scentSum;
-//
-//        // get scent from cells
-//        double index = 0;
-//        for (Tile tile : tiles) {
-//            index += tile.getCurrentStink();
-//
-//            if (index > randomFactor) {
-//                return tile;
-//            }
-//        }
-//
-//        return tiles.get(tiles.size() - 1);
+        //return tiles.get((int)Math.floor(Math.random() * tiles.size()));
+
+        for (Tile tile : tiles) {
+            scentSum += tile.getCurrentStink() + 1;
+        }
+
+        double randomFactor = Math.random() * scentSum;
+
+        // get scent from cells
+        double index = 0;
+        for (Tile tile : tiles) {
+            index += tile.getCurrentStink();
+
+            if (index > randomFactor) {
+                return tile;
+            }
+        }
+
+        return tiles.get(tiles.size() - 1);
     }
 
     private void move() {

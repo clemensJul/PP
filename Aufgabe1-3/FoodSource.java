@@ -7,7 +7,7 @@ public class FoodSource extends Tile {
     public FoodSource(Vector position) {
         super(position);
     }
-    public Color tileColor(){
+    public Color getTileColor(){
         return Color.green;
     }
 }

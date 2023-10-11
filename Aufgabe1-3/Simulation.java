@@ -1,6 +1,7 @@
 import codedraw.CodeDraw;
 
 import java.awt.*;
+import java.util.Queue;
 
 public class Simulation {
 
@@ -16,21 +17,23 @@ public class Simulation {
 
         CodeDraw cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
         Grid grid = new Grid(maxX, maxY, 100);
+        Queue<Tile> priorityQueue = grid.getUpdateQueue();
 
         while (!cd.isClosed()) {
-            grid.update();
             cd.setColor(Color.gray);
             cd.fillRectangle(0,0,maxX*cellSize,maxY*cellSize);
-
-            for (int x = 0; x < maxX; x++) {
-                for (int y = 0; y < maxY; y++) {
-                    Color drawColor = grid.getTile(x,y).tileColor();
-                    if (drawColor != null){
-                        cd.setColor(drawColor);
-                        cd.fillRectangle(x*cellSize,y*cellSize,cellSize,cellSize);
-                    }
-                }
+            grid.update();
+            while (!priorityQueue.isEmpty()){
+                Tile tile = priorityQueue.poll();
+                Color tileColor = tile.getTileColor();
+                cd.setColor(tileColor);
+                Vector position = tile.getPosition();
+                cd.fillRectangle(position.getX()*cellSize, position.getY()*cellSize, cellSize,cellSize);
             }
+
+
+
+
             cd.show();
         }
     }

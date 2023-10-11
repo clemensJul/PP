@@ -7,7 +7,7 @@ public class Nest extends Tile {
     public Nest(Vector position) {
         super(position);
     }
-    public Color tileColor(){
+    public Color getTileColor(){
         return Color.YELLOW;
     }
 

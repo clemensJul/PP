@@ -10,4 +10,8 @@ public class FoodSource extends Tile {
     public Color getTileColor(){
         return Color.green;
     }
+    @Override
+    public boolean update() {
+        return true;
+    }
 }

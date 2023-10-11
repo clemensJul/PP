@@ -11,4 +11,8 @@ public class Nest extends Tile {
         return Color.YELLOW;
     }
 
+    @Override
+    public boolean update() {
+        return true;
+    }
 }

@@ -1,29 +1,48 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class Nest implements Cell{
-    private Vector vector;
+public class Nest implements Cell {
+    private Position position;
+    private ArrayList<Ant> ants;
 
-    @Override
-    public Vector getPosition() {
-        return null;
-    }
-
-    public Nest(Vector vector) {
-        this.vector = vector;
+    public Nest(Position position) {
+        this.position = position;
+        this.ants = new ArrayList<>();
     }
 
     @Override
-    public int numberOfAntsPresent() {
-        return 0;
+    public ArrayList<Ant> getAnts() {
+        return ants;
     }
 
     @Override
-    public LinkedList<Ant> getAnts() {
-        return null;
+    public void update(Grid grid) {
+
     }
 
     @Override
-    public void update() {
+    public void beforeUpdate() {
 
+    }
+
+    @Override
+    public void afterUpdate() {
+
+    }
+
+    @Override
+    public void addAnt(Ant ant) {
+
+    }
+
+    @Override
+    public void removeAnt(Ant ant) {
+
+    }
+
+
+    @Override
+    public Position getPosition() {
+        return position;
     }
 }

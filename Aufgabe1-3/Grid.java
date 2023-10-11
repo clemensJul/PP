@@ -3,7 +3,6 @@ import java.util.ArrayList;
 public class Grid {
     private int sizeX, sizeY, numberOfAnts;
     private Cell[][] cells;
-    private ArrayList<Entity> entities;
 
     public Grid(int sizeX, int sizeY, int numberOfAnts) {
         this.sizeX = sizeX;
@@ -11,52 +10,117 @@ public class Grid {
         this.numberOfAnts = numberOfAnts;
         this.cells = new Cell[sizeX][sizeY];
 
-        entities = new ArrayList<>(numberOfAnts + sizeX*sizeY);
+        int foodCount = (int) (3 + Math.round((Math.random() * 6)));
 
-        long nest = 1;
-        long food = 3 + Math.round((Math.random()*6));
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                cells[x][y] = new EmptyCell(new Position(x, y));
+            }
+        }
 
-        while (nest > 0 && food > 0){
-            for (int x = 0; x < sizeX; x++) {
-                for (int y = 0; y < sizeY; y++) {
-                    if (Math.random()>0.98f && nest > 0){
-                        cells[x][y] = new Nest(new Vector(x,y));
-                        nest--;
-                    } else if ( food > 0) {
-                        cells[x][y] = new FoodSource(new Vector(x,y));
-                        food--;
-                    }else {
-                        cells[x][y] = new EmptyCell(new Vector(x,y));
-                    }
+        for (int i = 0; i < foodCount; i++) {
+            int randomX = (int)(Math.random() * sizeX);
+            int randomY = (int)(Math.random() * sizeY);
+
+            if(!(cells[randomX][randomY] instanceof EmptyCell)) {
+                i--;
+                continue;
+            }
+
+            cells[randomX][randomY] = new FoodSource(new Position(randomX, randomY));
+        }
+
+        Nest nest = null;
+        for (int i = 0; i < 1; i++) {
+            int randomX = (int)(Math.random() * sizeX);
+            int randomY = (int)(Math.random() * sizeY);
+
+            if(!(cells[randomX][randomY] instanceof EmptyCell)) {
+                i--;
+                continue;
+            }
+
+            nest = new Nest(new Position(randomX, randomY));
+            cells[randomX][randomY] = nest;
+        }
+
+        // we need to define a radius in which ants can be spawned around the nest
+        int maxSpawnDistance = 2;
+        // spawn ants
+        for (int i = 0; i < numberOfAnts; i++) {
+            int x = Math.abs((nest.getPosition().getX() + (int)(Math.random() * maxSpawnDistance*2)-maxSpawnDistance) % sizeX);
+            int y = Math.abs((nest.getPosition().getY() + (int)(Math.random() * maxSpawnDistance*2)-maxSpawnDistance) % sizeY);
+
+            Ant ant = new Ant(new Position(x, y));
+            cells[x][y].getAnts().add(ant);
+        }
+
+        // only for testing if all ants are spawned
+        int sum = 0;
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                if(!cells[x][y].getAnts().isEmpty()) {
+                    sum += cells[x][y].getAnts().size();
                 }
             }
         }
 
+        System.out.println("created everything");
     }
-    public void update(){
+
+    public void run() {
+        beforeUpdate();
+        update();
+        afterUpdate();
+    }
+
+    public void beforeUpdate() {
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                cells[x][y].update();
+                cells[x][y].setAntsToUpdate();
+            }
+        }
+
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                cells[x][y].beforeUpdate();
             }
         }
     }
+
+    public void update() {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                cells[x][y].update(this);
+            }
+        }
+    }
+
+    public void afterUpdate() {
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                cells[x][y].afterUpdate();
+            }
+        }
+    }
+
     //get all neighbours
-    public ArrayList<Cell> availableNeighbours(Ant ant){
-        Vector direction = ant.getDirection();
-        Vector vector = ant.getPosition();
+    public ArrayList<Cell> availableNeighbours(Ant ant) {
+        Direction direction = ant.getDirection();
+        Position position = ant.getPosition();
         ArrayList<Cell> neighbours = new ArrayList<>();
 
         int dirX = direction.getX();
         int dirY = direction.getY();
 
         // ant is facing direction is diagonally
-        if(Math.abs(dirX) == Math.abs(dirY)){
+        if (Math.abs(dirX) == Math.abs(dirY)) {
             for (int x = -1; x < 2; x++) {
                 for (int y = -1; y < 2; y++) {
                     int dX = dirX - x;
                 }
             }
-        }else {
+        } else {
             for (int x = -1; x < 2; x++) {
                 for (int y = -1; y < 2; y++) {
 
@@ -65,12 +129,25 @@ public class Grid {
         }
         return neighbours;
     }
-    private Cell getCell(Vector vector){
-        return cells[vector.getX()][vector.getY()];
+
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    public int getSizeY() {
+        return sizeY;
+    }
+
+    public Cell[][] getCells() {
+        return cells;
+    }
+
+    private Cell getCell(Position position) {
+        return cells[position.getX()][position.getY()];
     }
     /*
-    * -1,1  0,1  1,1
-    * -1,0  0,0  1,0
-    * -1-1  0-1  1-1
-    * */
+     * -1,1  0,1  1,1
+     * -1,0  0,0  1,0
+     * -1-1  0-1  1-1
+     * */
 }

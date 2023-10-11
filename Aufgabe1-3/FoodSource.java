@@ -1,28 +1,49 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class FoodSource implements Cell{
-    private Vector vector;
-    public FoodSource(Vector vector) {
-        this.vector = vector;
+public class FoodSource implements Cell {
+    private ArrayList<Ant> ants;
+    private Position position;
+
+    public FoodSource(Position position) {
+        this.position = position;
+        this.ants = new ArrayList<>();
+    }
+
+
+    @Override
+    public ArrayList<Ant> getAnts() {
+        return ants;
     }
 
     @Override
-    public int numberOfAntsPresent() {
-        return 0;
+    public void update(Grid grid) {
+
     }
 
     @Override
-    public LinkedList<Ant> getAnts() {
-        return null;
+    public void beforeUpdate() {
+
     }
 
     @Override
-    public Vector getPosition() {
-        return null;
+    public void afterUpdate() {
+
     }
 
     @Override
-    public void update() {
+    public void addAnt(Ant ant) {
 
+    }
+
+    @Override
+    public void removeAnt(Ant ant) {
+
+    }
+
+
+    @Override
+    public Position getPosition() {
+        return position;
     }
 }

@@ -2,11 +2,15 @@ import java.awt.*;
 
 public class Tile implements Entity {
     private Vector position;
-    private double currentStink = 0;
+    private float currentStink = 0f;
 
-    private double stinkDeletionRate = 0.95;
+    private float stinkDeletionRate = 0.95f;
+
+    private float antStink = 0.2f;
     private int foodPresent = 0;
     private int antsPresent = 0;
+
+    private float maxStink = 1f;
 
     public Tile(Vector position) {
         this.position = position;
@@ -23,7 +27,10 @@ public class Tile implements Entity {
     }
     public Color tileColor(){
         if (antsPresent > 0) return Color.black;
-        return Color.GRAY;
+        if (currentStink > 0.05d){
+            return new Color(1f,0f,1f, currentStink);
+        }
+        return null;
     }
 
     public boolean isFoodPresent(){
@@ -38,15 +45,21 @@ public class Tile implements Entity {
     }
     public void increaseAntsPresent(){
         antsPresent++;
+        currentStink = clamp(currentStink+antStink);
+    }
+    private static float clamp(float value) {
+        if (value < 0.0f) {
+            return 0.0f;
+        }
+        if (value > 1.0f) {
+            return 1.0f;
+        }
+        return value;
     }
     public void decreaseAntsPresent(){
         antsPresent--;
     }
     public double getCurrentStink() {
         return currentStink;
-    }
-
-    public void addStink(double stink ) {
-        currentStink += stink;
     }
 }

@@ -19,10 +19,16 @@ public class Simulation {
 
         while (!cd.isClosed()) {
             grid.update();
+            cd.setColor(Color.gray);
+            cd.fillRectangle(0,0,maxX*cellSize,maxY*cellSize);
+
             for (int x = 0; x < maxX; x++) {
                 for (int y = 0; y < maxY; y++) {
-                    cd.setColor(grid.getTile(x,y).tileColor());
-                    cd.fillRectangle(x*cellSize,y*cellSize,cellSize,cellSize);
+                    Color drawColor = grid.getTile(x,y).tileColor();
+                    if (drawColor != null){
+                        cd.setColor(drawColor);
+                        cd.fillRectangle(x*cellSize,y*cellSize,cellSize,cellSize);
+                    }
                 }
             }
             cd.show();

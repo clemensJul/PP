@@ -1,20 +1,23 @@
+import java.nio.file.attribute.PosixFileAttributes;
 import java.util.ArrayList;
 
 public class Grid {
     private int sizeX, sizeY, numberOfAnts;
-    private Cell[][] cells;
+    private Tile[][] tiles;
+    private ArrayList<Ant> ants;
 
     public Grid(int sizeX, int sizeY, int numberOfAnts) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.numberOfAnts = numberOfAnts;
-        this.cells = new Cell[sizeX][sizeY];
+        this.tiles = new Tile[sizeX][sizeY];
+        ants = new ArrayList<>();
 
         int foodCount = (int) (3 + Math.round((Math.random() * 6)));
 
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                cells[x][y] = new EmptyCell(new Position(x, y));
+                tiles[x][y] = new Tile(new Vector(x, y));
             }
         }
 
@@ -22,12 +25,12 @@ public class Grid {
             int randomX = (int)(Math.random() * sizeX);
             int randomY = (int)(Math.random() * sizeY);
 
-            if(!(cells[randomX][randomY] instanceof EmptyCell)) {
+            if(!(tiles[randomX][randomY] instanceof Tile)) {
                 i--;
                 continue;
             }
 
-            cells[randomX][randomY] = new FoodSource(new Position(randomX, randomY));
+            tiles[randomX][randomY] = new FoodSource(new Vector(randomX, randomY));
         }
 
         Nest nest = null;
@@ -35,13 +38,13 @@ public class Grid {
             int randomX = (int)(Math.random() * sizeX);
             int randomY = (int)(Math.random() * sizeY);
 
-            if(!(cells[randomX][randomY] instanceof EmptyCell)) {
+            if(!(tiles[randomX][randomY] instanceof Tile)) {
                 i--;
                 continue;
             }
 
-            nest = new Nest(new Position(randomX, randomY));
-            cells[randomX][randomY] = nest;
+            nest = new Nest(new Vector(randomX, randomY));
+            tiles[randomX][randomY] = nest;
         }
 
         // we need to define a radius in which ants can be spawned around the nest
@@ -51,82 +54,44 @@ public class Grid {
             int x = Math.abs((nest.getPosition().getX() + (int)(Math.random() * maxSpawnDistance*2)-maxSpawnDistance) % sizeX);
             int y = Math.abs((nest.getPosition().getY() + (int)(Math.random() * maxSpawnDistance*2)-maxSpawnDistance) % sizeY);
 
-            Ant ant = new Ant(new Position(x, y));
-            cells[x][y].getAnts().add(ant);
-        }
-
-        // only for testing if all ants are spawned
-        int sum = 0;
-        for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
-                if(!cells[x][y].getAnts().isEmpty()) {
-                    sum += cells[x][y].getAnts().size();
-                }
-            }
+            Vector spawnPos = new Vector(x, y);
+            tiles[x][y].increaseAntsPresent();
+            ants.add(new Ant(spawnPos,this));
         }
 
         System.out.println("created everything");
     }
 
-    public void run() {
-        beforeUpdate();
-        update();
-        afterUpdate();
-    }
-
-    public void beforeUpdate() {
-        for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
-                cells[x][y].setAntsToUpdate();
-            }
-        }
-
-        for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
-                cells[x][y].beforeUpdate();
-            }
-        }
-    }
-
     public void update() {
+        for (Ant ant :
+                ants) {
+            ant.update();
+        }
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                cells[x][y].update(this);
+                tiles[x][y].update();
             }
         }
     }
-
-    public void afterUpdate() {
-        for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
-                cells[x][y].afterUpdate();
-            }
-        }
-    }
-
     //get all neighbours
-    public ArrayList<Cell> availableNeighbours(Ant ant) {
-        Direction direction = ant.getDirection();
-        Position position = ant.getPosition();
-        ArrayList<Cell> neighbours = new ArrayList<>();
+    public Tile[] availableNeighbours(Ant ant) {
+        Vector direction = ant.getDirection();
+        Vector position = ant.getPosition();
+        Tile[] neighbours = new Tile[5];
 
-        int dirX = direction.getX();
-        int dirY = direction.getY();
+        //generate vectors
+        Vector left = Vector.orthogonalVector(direction,true);
+        Vector leftFront = direction.add(left);
 
-        // ant is facing direction is diagonally
-        if (Math.abs(dirX) == Math.abs(dirY)) {
-            for (int x = -1; x < 2; x++) {
-                for (int y = -1; y < 2; y++) {
-                    int dX = dirX - x;
-                }
-            }
-        } else {
-            for (int x = -1; x < 2; x++) {
-                for (int y = -1; y < 2; y++) {
+        Vector right = Vector.orthogonalVector(direction,false);
+        Vector rightFront = direction.add(right);
 
-                }
-            }
-        }
+        neighbours[0] = getTile(position.add(left));
+        neighbours[1] = getTile(position.add(leftFront));
+        neighbours[2] = getTile(position.add(direction));
+        neighbours[3] = getTile(position.add(rightFront));
+        neighbours[4] = getTile(position.add(right));
+
         return neighbours;
     }
 
@@ -138,12 +103,19 @@ public class Grid {
         return sizeY;
     }
 
-    public Cell[][] getCells() {
-        return cells;
+    public Tile[][] getTiles() {
+        return tiles;
     }
 
-    private Cell getCell(Position position) {
-        return cells[position.getX()][position.getY()];
+    public Tile getTile(Vector position) {
+        return tiles[modulo(position.getX(),sizeX)][modulo(position.getY(),sizeY)];
+    }
+    public Tile getTile(int x, int y) {
+        return tiles[modulo(x,sizeX)][modulo(y,sizeY)];
+    }
+
+    private static int modulo(int number, int divisor){
+        return (number+divisor)%divisor;
     }
     /*
      * -1,1  0,1  1,1

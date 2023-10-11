@@ -1,56 +1,14 @@
-import java.util.ArrayList;
+import java.awt.*;
 import java.util.LinkedList;
 
-public class Nest implements Cell {
-    private Position position;
-    private ArrayList<Ant> ants;
 
-    public Nest(Position position) {
-        this.position = position;
-        this.ants = new ArrayList<>();
+public class Nest extends Tile {
+
+    public Nest(Vector position) {
+        super(position);
+    }
+    public Color tileColor(){
+        return Color.YELLOW;
     }
 
-    @Override
-    public ArrayList<Ant> getAnts() {
-        return ants;
-    }
-
-    @Override
-    public void update(Grid grid) {
-        // move ants to another position
-        for (Ant ant : ants) {
-            // skip ants which are moved into this cell in this step to prevent multiple moves
-            if(ant.alreadyUpdated) {
-                continue;
-            }
-
-            ant.alreadyUpdated = true;
-            // todo: we need to set ant mode to explore and set it to the direction it came from
-        }
-    }
-
-    @Override
-    public void beforeUpdate() {
-
-    }
-
-    @Override
-    public void afterUpdate() {
-
-    }
-
-    @Override
-    public void addAnt(Ant ant) {
-        getAnts().add(ant);
-    }
-
-    public void removeAnt(Ant ant) {
-        getAnts().remove(ant);
-    }
-
-
-    @Override
-    public Position getPosition() {
-        return position;
-    }
 }

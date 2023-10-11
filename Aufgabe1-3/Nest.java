@@ -17,7 +17,16 @@ public class Nest implements Cell {
 
     @Override
     public void update(Grid grid) {
+        // move ants to another position
+        for (Ant ant : ants) {
+            // skip ants which are moved into this cell in this step to prevent multiple moves
+            if(ant.alreadyUpdated) {
+                continue;
+            }
 
+            ant.alreadyUpdated = true;
+            // todo: we need to set ant mode to explore and set it to the direction it came from
+        }
     }
 
     @Override
@@ -32,12 +41,11 @@ public class Nest implements Cell {
 
     @Override
     public void addAnt(Ant ant) {
-
+        getAnts().add(ant);
     }
 
-    @Override
     public void removeAnt(Ant ant) {
-
+        getAnts().remove(ant);
     }
 
 

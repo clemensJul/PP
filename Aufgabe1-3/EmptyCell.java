@@ -61,12 +61,13 @@ public class EmptyCell implements Cell {
 
     @Override
     public void addAnt(Ant ant) {
-
+        // maybe switch from erkundung to futtersuche
+        getAnts().add(ant);
     }
 
     @Override
     public void removeAnt(Ant ant) {
-
+        getAnts().remove(ant);
     }
 
 

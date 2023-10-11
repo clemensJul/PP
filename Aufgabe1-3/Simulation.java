@@ -18,7 +18,7 @@ public class Simulation {
         Grid grid = new Grid(maxX, maxY, 100);
 
         while (!cd.isClosed()) {
-            grid.update();
+
             cd.setColor(Color.gray);
             cd.fillRectangle(0,0,maxX*cellSize,maxY*cellSize);
 

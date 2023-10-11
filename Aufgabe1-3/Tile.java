@@ -4,7 +4,7 @@ public class Tile implements Entity {
     private Vector position;
     private float currentStink = 0f;
 
-    private float stinkDeletionRate = 0.95f;
+    private float stinkDeletionRate = 0.98f;
 
     private float antStink = 0.2f;
     private int foodPresent = 0;

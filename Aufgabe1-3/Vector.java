@@ -10,8 +10,8 @@ public class Vector {
         if (isLeft) return new Vector(vector.y, vector.x);
         return new Vector(vector.y, -vector.x);
     }
-    public static Vector sharpVector(Vector vector,boolean isLeft ){
-        return vector.add(orthogonalVector(vector,isLeft));
+    public static Vector invert(Vector vector){
+        return new Vector(-vector.x, -vector.y);
     }
     public static Vector RandomDirection(){
         int x = 0;

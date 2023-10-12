@@ -9,7 +9,7 @@ public class FoodSource extends Tile {
     }
     public Color getTileColor(){
 
-        return new Color(0,150,0);
+        return new Color(150,200,0);
     }
     @Override
     public boolean update() {

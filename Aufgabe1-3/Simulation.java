@@ -14,18 +14,21 @@ public class Simulation {
         int maxX = 250;
         int maxY = 200;
         int numberOfAnts = 100;
+        float[] bias =  new float[]{0.01f,0.1f,1f,0.1f,0.01f};
+        // should not be more than 1
+        float exploreBiasChange = 1f;
+
+        // can be more than 1 - currently testing - always takes maximum
+        float scavengeBiasChange= 10f;
+        float collectBiasChange = 10f;
 
 
         CodeDraw cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
-        Grid grid = new Grid(maxX, maxY, 100);
+        Grid grid = new Grid(maxX, maxY, numberOfAnts,bias, new float[]{exploreBiasChange,scavengeBiasChange,collectBiasChange});
         Queue<Tile> priorityQueue = grid.getUpdateQueue();
 
-        Ant test = new Ant(new Vector(100,100),grid);
-        System.out.println(test.getDirection());
-        System.out.println(Arrays.toString(grid.availableNeighbours(test)));
-
         while (!cd.isClosed()) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 1; i++) {
                 grid.update();
             }
             cd.setColor(Color.gray);

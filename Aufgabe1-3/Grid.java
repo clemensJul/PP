@@ -1,20 +1,20 @@
 import java.nio.file.attribute.PosixFileAttributes;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class Grid {
     private int sizeX, sizeY, numberOfAnts;
     private Tile[][] tiles;
     private ArrayList<Ant> ants;
     private Queue<Tile> updateQueue;
-
-    public Grid(int sizeX, int sizeY, int numberOfAnts) {
+    private float[] bias;
+    private float[] stateBias;
+    public Grid(int sizeX, int sizeY, int numberOfAnts, float[] bias, float[] stateBias) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.numberOfAnts = numberOfAnts;
         this.tiles = new Tile[sizeX][sizeY];
+        this.bias = bias;
+        this.stateBias = stateBias;
         ants = new ArrayList<>();
         updateQueue = new LinkedList<>();
         int foodCount = (int) (3 + Math.round((Math.random() * 6)));
@@ -87,10 +87,10 @@ public class Grid {
 
         //generate vectors
         Vector left = Vector.orthogonalVector(direction,true);
-        Vector leftFront = direction.add(left);
+        Vector leftFront = direction.sharpVector(left);
 
         Vector right = Vector.orthogonalVector(direction,false);
-        Vector rightFront = direction.add(right);
+        Vector rightFront = direction.sharpVector(left);
 
         neighbours[0] = getTile(position.add(left));
         neighbours[1] = getTile(position.add(leftFront));
@@ -125,6 +125,14 @@ public class Grid {
 
     private static int modulo(int number, int divisor){
         return (number+divisor)%divisor;
+    }
+
+    public float[] getBias(){
+        return Arrays.copyOf(bias,bias.length);
+    }
+
+    public float[] getStateBias() {
+        return stateBias;
     }
     /*
      * -1,1  0,1  1,1

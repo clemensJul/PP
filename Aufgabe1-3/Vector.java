@@ -10,6 +10,18 @@ public class Vector {
         if (isLeft) return new Vector(-vector.y, vector.x);
         return new Vector(vector.y, -vector.x);
     }
+
+    public Vector sharpVector(Vector orthogonal){
+        int x = this.x + orthogonal.x;
+        int y = this.y + orthogonal.y;
+
+        if (x>1) x=1;
+        else if(x<-1) x=-1;
+        if (y>1) y=1;
+        else if (y<-1) y=-1;
+        return new Vector(x,y);
+
+    }
     public Vector invert(){
         return new Vector( -this.x,-this.y);
     }

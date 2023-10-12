@@ -4,13 +4,13 @@ public class Tile implements Entity {
     private Vector position;
     private float currentStink = 0f;
 
-    private float stinkDeletionRate = 0.98f;
+    private static float stinkDeletionRate = 0.97f;
 
-    private float antStink = 0.2f;
+    private float antStink = 1f;
     private int foodPresent = 0;
     private int antsPresent = 0;
 
-    private float maxStink = 1f;
+    private static float maxStink = 1f;
 
     private Color tileColor = Color.gray;
 
@@ -34,7 +34,7 @@ public class Tile implements Entity {
             tileColor = Color.black;
             return true;
         }
-        else if (currentStink > 0.05d){
+        else if (currentStink > 0.005f){
             tileColor = new Color(1f,0f,1f, currentStink);
             return true;
         }
@@ -57,14 +57,14 @@ public class Tile implements Entity {
         antsPresent++;
         currentStink = clamp(currentStink+antStink);
     }
-    private static float clamp(float value) {
-        if (value < 0.0f) {
+    private static float clamp(float stink) {
+        if (stink < 0.0f) {
             return 0.0f;
         }
-        if (value > 1.0f) {
+        if (stink > maxStink) {
             return 1.0f;
         }
-        return value;
+        return stink;
     }
     public void decreaseAntsPresent(){
         antsPresent--;

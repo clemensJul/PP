@@ -7,11 +7,22 @@ public class Vector {
     }
 
     public static Vector orthogonalVector(Vector vector,boolean isLeft ){
-        if (isLeft) return new Vector(vector.y, vector.x);
+        if (isLeft) return new Vector(-vector.y, vector.x);
         return new Vector(vector.y, -vector.x);
     }
-    public static Vector invert(Vector vector){
-        return new Vector(-vector.x, -vector.y);
+    public Vector invert(){
+        return new Vector( -this.x,-this.y);
+    }
+    public Vector calculateDirection(Vector secondPos) {
+        int dx = secondPos.x - this.x;
+        int dy = secondPos.y - this.y;
+
+        if (dx > 1) dx =  -1;
+        if (dx < -1) dx = 1;
+        if (dy > 1) dy =  -1;
+        if (dy < -1) dy = 1;
+
+        return new Vector(dx, dy);
     }
     public static Vector RandomDirection(){
         int x = 0;
@@ -35,4 +46,11 @@ public class Vector {
         return y;
     }
 
+    @Override
+    public String toString() {
+        return "Vector{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

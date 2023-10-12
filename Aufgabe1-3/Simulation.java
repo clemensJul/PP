@@ -1,6 +1,7 @@
 import codedraw.CodeDraw;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Queue;
 
 public class Simulation {
@@ -19,10 +20,17 @@ public class Simulation {
         Grid grid = new Grid(maxX, maxY, 100);
         Queue<Tile> priorityQueue = grid.getUpdateQueue();
 
+        Ant test = new Ant(new Vector(100,100),grid);
+        System.out.println(test.getDirection());
+        System.out.println(Arrays.toString(grid.availableNeighbours(test)));
+
         while (!cd.isClosed()) {
+            for (int i = 0; i < 10; i++) {
+                grid.update();
+            }
             cd.setColor(Color.gray);
             cd.fillRectangle(0,0,maxX*cellSize,maxY*cellSize);
-            grid.update();
+
             while (!priorityQueue.isEmpty()){
                 Tile tile = priorityQueue.poll();
                 Color tileColor = tile.getTileColor();

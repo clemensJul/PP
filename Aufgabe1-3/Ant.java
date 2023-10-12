@@ -1,11 +1,9 @@
-import javax.swing.text.Position;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class Ant implements Entity {
     private Vector position;
     private Vector direction;
     private Grid grid;
+
+    private float[] bias;
 
     private enum State {
         EXPLORE,
@@ -32,165 +30,95 @@ public class Ant implements Entity {
     @Override
     public boolean update() {
         Tile[] neighbours = grid.availableNeighbours(this);
+        bias = new float[]{0.0f,0.25f,1.5f,0.25f,0.0f};
 
-        Tile newTile = null;
-        switch (state) {
+        switch (state){
             case EXPLORE -> {
-                // check for food source
-                Tile foodSource = checkNeighborsForFoodSource(new ArrayList<>(Arrays.asList(neighbours)));
-                if (foodSource != null) {
-                    newTile = foodSource;
-                    this.state = State.COLLECT;
-                    break;
-                }
-
-                // prefers tiles with low scents
-
-                // if a tile has a good scent we switch to scavenge
-                // check for good scents
-                ArrayList<Tile> goodScents = new ArrayList<>();
-                for (Tile neighbour : neighbours) {
-                    if (neighbour.getCurrentStink() > stinkUpperBorder) {
-                        goodScents.add(neighbour);
+                for (int i = 0; i < neighbours.length; i++) {
+                    bias[i] = bias[i] - bias[i]*neighbours[i].getCurrentStink();
+                    if (neighbours[i].isFoodPresent()){
+                        state = State.SCAVENGE;
+                        moveTile(neighbours[i]);
+                        direction = direction.invert();
+                        return true;
+                    }else if (neighbours[i] instanceof FoodSource){
+                        state = State.COLLECT;
+                        moveTile(neighbours[i]);
+                        direction = direction.invert();
+                        return true;
                     }
                 }
-
-                if (!goodScents.isEmpty()) {
-                    state = State.SCAVENGE;
-                    newTile = selectRandomTile(goodScents);
-                    break;
-                }
-
-                // check for bad scents
-                ArrayList<Tile> badScents = new ArrayList<>();
-                for (Tile neighbour : neighbours) {
-                    if (neighbour.getCurrentStink() < stinkLowerBorder) {
-                        badScents.add(neighbour);
-                    }
-                }
-
-                if (!badScents.isEmpty()) {
-                    newTile = selectRandomTile(badScents);
-                    break;
-                }
-
-                // no good and no bad scents found --> selection out of all neighbors
-                newTile = selectRandomTile(new ArrayList<>(Arrays.asList(neighbours)));
             }
             case SCAVENGE -> {
-                // check for food source
-                Tile foodSource = checkNeighborsForFoodSource(new ArrayList<>(Arrays.asList(neighbours)));
-                if (foodSource != null) {
-                    newTile = foodSource;
-                    this.state = State.COLLECT;
-                    break;
-                }
+                float totalStink = 0f;
+                for (int i = 0; i < neighbours.length; i++) {
+                    float stink = neighbours[i].getCurrentStink();
+                    bias[i] = bias[i]/2 + bias[i]*stink/2;
+                    totalStink += stink;
 
-                // if a tile has a good scent we switch to scavenge
-                // check for good scents
-                ArrayList<Tile> goodScents = new ArrayList<>();
-                for (Tile neighbour : neighbours) {
-                    if (neighbour.getCurrentStink() > stinkUpperBorder) {
-                        goodScents.add(neighbour);
+                    if (totalStink > 0.75f) badScentsCounter++;
+                    else badScentsCounter = 0;
+                    if (badScentsCounter>switchToExploreAfter){
+                        state = State.EXPLORE;
+                    }
+
+                    if (neighbours[i].isFoodPresent()){
+                        state = State.COLLECT;
+                        moveTile(neighbours[i]);
+                        return true;
                     }
                 }
-
-                // select neihgbor with good scent
-                if (!goodScents.isEmpty()) {
-                    newTile = selectRandomTile(goodScents);
-                    // reset counter because there was a good scent in neighborhood
-                    badScentsCounter = switchToExploreAfter;
-                    break;
-                }
-
-                // increase counter because there is no good scent
-                badScentsCounter++;
-                if (badScentsCounter > switchToExploreAfter) {
-                    this.state = State.EXPLORE;
-                }
-
-                // select random tile from neighbors
-                newTile = selectRandomTile(new ArrayList<>(Arrays.asList(neighbours)));
             }
             case COLLECT -> {
-                // we need to check if it just came on the food source field
-                if (grid.getTile(position) instanceof FoodSource) {
-                    // do 180 degree
-                    Vector invertedDirection = Vector.invert(direction);
-                    newTile = grid.getTile(position.getX() + invertedDirection.getX(), position.getY() + invertedDirection.getY());
-                    break;
-                }
+                for (int i = 0; i < neighbours.length; i++) {
+                    bias[i] = bias[i] * bias[i]*neighbours[i].getCurrentStink()/2;
+                    if ( neighbours[i] instanceof Nest){
+                        moveTile(neighbours[i]);
 
-                Tile nest = checkNeighborsForNest(new ArrayList<>(Arrays.asList(neighbours)));
-                if (nest != null) {
-                    newTile = nest;
-                    this.state = State.EXPLORE;
-                    direction = Vector.invert(direction);
-                    break;
+                        state = State.SCAVENGE;
+                        grid.getTile(position).decreaseFoodPresent();
+                        direction = direction.invert();
+                        return true;
+                    }
                 }
-
-                // select random tile from neighbors
-                newTile = selectRandomTile(new ArrayList<>(Arrays.asList(neighbours)));
             }
+
         }
-        grid.getTile(position).decreaseAntsPresent();
-        if (state == State.COLLECT) {
-            grid.getTile(position).decreaseFoodPresent();
+        float totalWeight = 0f;
+        for (int i = 0; i < bias.length; i++) {
+            totalWeight += bias[i];
         }
-        position = newTile.getPosition();
-        grid.getTile(position).increaseAntsPresent();
-        if (state == State.COLLECT) {
-            grid.getTile(position).increaseFoodPresent();
-        }
+        Tile chosenTile = selectTile(totalWeight, neighbours);
+        moveTile(chosenTile);
         return false;
     }
+    private Tile selectTile(float totalWeight, Tile[] neighbours) {
+        double r = Math.random() * totalWeight;
+        double cumulativeWeight = 0.0;
 
-    private static Tile checkNeighborsForFoodSource(ArrayList<Tile> tiles) {
-        for (Tile tile : tiles) {
-            if (tile instanceof FoodSource) {
-                return tile;
+        for (int i = 0; i < bias.length; i++) {
+            cumulativeWeight += bias[i];
+            if (cumulativeWeight >= r) {
+                return neighbours[i];
             }
         }
         return null;
     }
+    private void moveTile(Tile newTile){
+        Tile currentTile = grid.getTile(position);
+        Vector newPos = newTile.getPosition();
 
-    private static Tile checkNeighborsForNest(ArrayList<Tile> tiles) {
-        for (Tile tile : tiles) {
-            if (tile instanceof Nest) {
-                return tile;
-            }
-        }
-        return null;
-    }
-
-    private static Tile selectRandomTile(ArrayList<Tile> tiles) {
-        // set vector based on scent and random variable
-        double scentSum = 0;
-
-        //return tiles.get((int)Math.floor(Math.random() * tiles.size()));
-
-        for (Tile tile : tiles) {
-            scentSum += tile.getCurrentStink() + 1;
+        currentTile.decreaseAntsPresent();
+        newTile.increaseAntsPresent();
+        if (state == State.COLLECT){
+            currentTile.decreaseFoodPresent();
+            newTile.increaseFoodPresent();
         }
 
-        double randomFactor = Math.random() * scentSum;
-
-        // get scent from cells
-        double index = 0;
-        for (Tile tile : tiles) {
-            index += tile.getCurrentStink();
-
-            if (index > randomFactor) {
-                return tile;
-            }
-        }
-
-        return tiles.get(tiles.size() - 1);
+        direction = position.calculateDirection(newPos);
+        position = newPos;
     }
 
-    private void move() {
-
-    }
 
     @Override
     public Vector getPosition() {

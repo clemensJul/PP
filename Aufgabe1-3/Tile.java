@@ -26,6 +26,10 @@ public class Tile implements Entity {
     @Override
     public boolean update() {
         currentStink *= stinkDeletionRate;
+        if (foodPresent > 0){
+            tileColor = Color.green;
+            return true;
+        }
         if (antsPresent > 0){
             tileColor = Color.black;
             return true;
@@ -65,10 +69,17 @@ public class Tile implements Entity {
     public void decreaseAntsPresent(){
         antsPresent--;
     }
-    public double getCurrentStink() {
+    public float getCurrentStink() {
         return currentStink;
     }
     public Color getTileColor(){
         return tileColor;
+    }
+
+    @Override
+    public String toString() {
+        return "Tile{" +
+                "position=" + position +
+                '}';
     }
 }

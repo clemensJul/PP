@@ -6,24 +6,43 @@ import java.util.Queue;
 
 public class Simulation {
 
+    private int cellSize;
+    private int maxX;
+    private int maxY;
+    private int numberOfAnts;
+    private float[] bias ;
 
-    public static void main(String[] args) {
+    private int updatesPerCircle;
+
+
+    private CodeDraw cd;
+    private Grid grid;
+    private  Queue<Tile> priorityQueue;
+    public Simulation(int cellSize, int maxX, int maxY, int numberOfAnts, float[] bias, int updatesPerCircle) {
+        this.cellSize = cellSize;
+        this.maxX = maxX;
+        this.maxY = maxY;
+        this.numberOfAnts = numberOfAnts;
+        this.bias = bias;
+        this.updatesPerCircle = updatesPerCircle;
 
         //simulation parameters
-        int cellSize = 5;
-        int maxX = 250;
-        int maxY = 200;
-        int numberOfAnts = 100;
-        float[] bias =  new float[]{0.01f,0.1f,2f,0.1f,0.01f};
+        cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
+        grid = new Grid(maxX, maxY, numberOfAnts,bias);
+
+    }
+
+    public boolean isClosed(){
+        return cd.isClosed();
+    }
+
+    public void run() {
+
+        if (!cd.isClosed()){
+            priorityQueue = grid.getUpdateQueue();
 
 
-
-        CodeDraw cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
-        Grid grid = new Grid(maxX, maxY, numberOfAnts,bias);
-        Queue<Tile> priorityQueue = grid.getUpdateQueue();
-
-        while (!cd.isClosed()) {
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < updatesPerCircle; i++) {
                 grid.update();
             }
             cd.setColor(Color.gray);
@@ -36,10 +55,6 @@ public class Simulation {
                 Vector position = tile.getPosition();
                 cd.fillRectangle(position.getX()*cellSize, position.getY()*cellSize, cellSize,cellSize);
             }
-
-
-
-
             cd.show();
         }
     }

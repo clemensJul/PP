@@ -7,7 +7,7 @@ public class Tile implements Entity {
 
     private float currentStink = 0f;
     private static final float maxStink = 1f;
-    private static final float stinkDeletionRate = 0.97f;
+    private static final float stinkDeletionRate = 0.98f;
     private final float antStink = 1f;
 
 

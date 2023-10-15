@@ -11,6 +11,7 @@ public class Ant implements Entity {
     private final Grid grid;
 
     private float[] bias;
+    private float[] modifiedBias;
 
     private enum State {
         EXPLORE,
@@ -36,6 +37,8 @@ public class Ant implements Entity {
         this.direction = Vector.RandomDirection();
         this.grid = grid;
         state = state.EXPLORE;
+        bias = grid.getBias();
+        modifiedBias = Arrays.copyOf(bias,bias.length);
     }
 
     // TODO
@@ -52,27 +55,20 @@ public class Ant implements Entity {
     public boolean update() {
         //get every possible neighbour and calculate standard bias
         Tile[] neighbours = grid.availableNeighbours(this);
-        bias = grid.getBias();
 
         switch (state) {
             case EXPLORE -> {
-                if (explore(neighbours)) return true;
+                explore(neighbours);
             }
             case SCAVENGE -> {
-                if (scavenge(neighbours)) return true;
+                scavenge(neighbours);
             }
             case COLLECT -> {
-                if (collect(neighbours)) return true;
+                collect(neighbours);
             }
 
         }
-        float totalWeight = 0f;
-        for (float bia : bias) {
-            totalWeight += bia;
-        }
-        Tile chosenTile = selectTile(totalWeight, neighbours);
-        moveTile(chosenTile);
-        return false;
+        return true;
     }
 
     /**
@@ -81,19 +77,16 @@ public class Ant implements Entity {
      * @param  neighbours Represents all neighbors from which we can choose
      * @return successful switch to new tile
      */
-    private boolean collect(Tile[] neighbours) {
+    private void collect(Tile[] neighbours) {
         for (int i = 0; i < neighbours.length; i++) {
             if (neighbours[i] instanceof Nest) {
                 moveTile(neighbours[i]);
                 state = State.SCAVENGE;
                 grid.getTile(position).decreaseFoodPresent();
                 direction = direction.invert();
-                return true;
             }
-            float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] + stink * grid.getStateBias()[2];
         }
-        return false;
+        moveTile(selectMaxTile(neighbours));
     }
 
     /**
@@ -103,22 +96,19 @@ public class Ant implements Entity {
      * @param  neighbours Represents all neighbors from which we can choose
      * @return successful switch to new tile
      */
-    private boolean scavenge(Tile[] neighbours) {
+    private void scavenge(Tile[] neighbours) {
         boolean foundNeighborWithGoodScent = false;
         for (int i = 0; i < neighbours.length; i++) {
             if (neighbours[i] instanceof FoodSource) {
                 state = State.COLLECT;
                 moveTile(neighbours[i]);
                 direction = direction.invert();
-                return true;
             }
 
             float stink = neighbours[i].getCurrentStink();
-
             if (stink > badScent) {
                 foundNeighborWithGoodScent = true;
             }
-            bias[i] = bias[i] + stink * grid.getStateBias()[1];
         }
 
         if(foundNeighborWithGoodScent) {
@@ -131,8 +121,7 @@ public class Ant implements Entity {
         if (badScentsCounter > switchToExploreAfter) {
             state = State.EXPLORE;
         }
-
-        return false;
+        moveTile(selectMaxTile(neighbours));
     }
 
     /**
@@ -142,54 +131,63 @@ public class Ant implements Entity {
      * @param  neighbours Represents all neighbors from which we can choose
      * @return tile
      */
-    private boolean explore(Tile[] neighbours) {
+    private void explore(Tile[] neighbours) {
+
+
         for (int i = 0; i < neighbours.length; i++) {
+
+            modifiedBias[i] = bias[i] - bias[i]*neighbours[i].getCurrentStink();
+
             if (neighbours[i] instanceof FoodSource) {
                 state = State.COLLECT;
                 moveTile(neighbours[i]);
                 direction = direction.invert();
-                return true;
-            }
-
-            // TODO: sollt ma nit zuerst alle neighbors anschauen und dann zufällig aus denen auswählen?
-            // jetzt wird immer der erste genommen
-            if (neighbours[i].isFoodPresent()) {
+                return;
+            }else if (neighbours[i].isFoodPresent()) {
                 state = State.SCAVENGE;
                 moveTile(neighbours[i]);
                 direction = direction.invert();
-                return true;
+                return;
             }
-
-            float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] * (1 - stink * grid.getStateBias()[0]);
         }
-        return false;
+
+        moveTile(selectRandomTile(neighbours));
     }
 
 
     /**
      * Select a random tile.
      *
-     * @param  totalWeight ??
      * @param  neighbours Represents all neighbors from which we can choose
      * @return random tile
      */
-    private Tile selectTile(float totalWeight, Tile[] neighbours) {
+    private Tile selectRandomTile( Tile[] neighbours) {
+        float totalWeight = 0f;
+        for (int i = 0; i < modifiedBias.length; i++) {
+            totalWeight += modifiedBias[i];
+        }
         double r = Math.random() * totalWeight;
         double cumulativeWeight = 0.0;
-        double maxWeight = 0;
-        int maxWeightIndex = 0;
-        for (int i = 0; i < bias.length; i++) {
-            cumulativeWeight += bias[i];
-            if (maxWeight <= bias[i]) {
-                maxWeight = bias[i];
-                maxWeightIndex = i;
-            }
-            if (cumulativeWeight >= r && state == State.EXPLORE) {
+        for (int i = 0; i < modifiedBias.length; i++) {
+            cumulativeWeight += modifiedBias[i];
+            if (cumulativeWeight >= r) {
                 return neighbours[i];
             }
         }
-        return neighbours[maxWeightIndex];
+        //Should never be reached
+        return null;
+    }
+    private Tile selectMaxTile( Tile[] neighbours){
+        int indexMaxWeight = 0;
+        float maxWeight = 0;
+        for (int i = 0; i < neighbours.length; i++) {
+            if (neighbours[i].getCurrentStink() > maxWeight){
+                maxWeight = neighbours[i].getCurrentStink();
+                indexMaxWeight = i;
+            }
+        }
+        if (maxWeight == 0 )return selectRandomTile(neighbours);
+        return neighbours[indexMaxWeight];
     }
 
     /**

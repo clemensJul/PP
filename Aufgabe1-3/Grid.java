@@ -7,14 +7,12 @@ public class Grid {
     private ArrayList<Ant> ants;
     private Queue<Tile> updateQueue;
     private float[] bias;
-    private float[] stateBias;
 
-    public Grid(int sizeX, int sizeY, int numberOfAnts, float[] bias, float[] stateBias) {
+    public Grid(int sizeX, int sizeY, int numberOfAnts, float[] bias) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.tiles = new Tile[sizeX][sizeY];
         this.bias = bias;
-        this.stateBias = stateBias;
         ants = new ArrayList<>();
         updateQueue = new LinkedList<>();
         int foodCount = (int) (3 + Math.round((Math.random() * 6)));
@@ -117,9 +115,5 @@ public class Grid {
 
     public float[] getBias() {
         return Arrays.copyOf(bias, bias.length);
-    }
-
-    public float[] getStateBias() {
-        return stateBias;
     }
 }

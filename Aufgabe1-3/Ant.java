@@ -80,10 +80,9 @@ public class Ant implements Entity {
     private void collect(Tile[] neighbours) {
         for (int i = 0; i < neighbours.length; i++) {
             if (neighbours[i] instanceof Nest) {
+                changeState(State.SCAVENGE);
                 moveTile(neighbours[i]);
-                state = State.SCAVENGE;
-                grid.getTile(position).decreaseFoodPresent();
-                direction = direction.invert();
+                return;
             }
         }
         moveTile(selectMaxTile(neighbours));
@@ -100,9 +99,8 @@ public class Ant implements Entity {
         boolean foundNeighborWithGoodScent = false;
         for (int i = 0; i < neighbours.length; i++) {
             if (neighbours[i] instanceof FoodSource) {
-                state = State.COLLECT;
+                changeState(State.COLLECT);
                 moveTile(neighbours[i]);
-                direction = direction.invert();
             }
 
             float stink = neighbours[i].getCurrentStink();
@@ -119,7 +117,7 @@ public class Ant implements Entity {
         }
 
         if (badScentsCounter > switchToExploreAfter) {
-            state = State.EXPLORE;
+            changeState(State.EXPLORE);
         }
         moveTile(selectMaxTile(neighbours));
     }
@@ -139,14 +137,12 @@ public class Ant implements Entity {
             modifiedBias[i] = bias[i] - bias[i]*neighbours[i].getCurrentStink();
 
             if (neighbours[i] instanceof FoodSource) {
-                state = State.COLLECT;
+                changeState(State.COLLECT);
                 moveTile(neighbours[i]);
-                direction = direction.invert();
                 return;
             }else if (neighbours[i].isFoodPresent()) {
-                state = State.SCAVENGE;
+                changeState(State.SCAVENGE);
                 moveTile(neighbours[i]);
-                direction = direction.invert();
                 return;
             }
         }
@@ -177,6 +173,8 @@ public class Ant implements Entity {
         //Should never be reached
         return null;
     }
+
+
     private Tile selectMaxTile( Tile[] neighbours){
         int indexMaxWeight = 0;
         float maxWeight = 0;
@@ -190,6 +188,35 @@ public class Ant implements Entity {
         return neighbours[indexMaxWeight];
     }
 
+
+    private void changeState(State state){
+        Tile currentTile = grid.getTile(position);
+        switch (this.state){
+            case EXPLORE -> {
+                currentTile.decreaseAntsPresent();
+            }
+            case SCAVENGE -> {
+                currentTile.decreaseAntsScavenge();
+            }
+            case COLLECT -> {
+                currentTile.decreaseFoodPresent();
+            }
+        }
+        switch (state){
+            case EXPLORE -> {
+                currentTile.increaseAntsPresent();
+            }
+            case SCAVENGE -> {
+                currentTile.increaseAntsScavenge();
+                if (this.state == State.COLLECT) direction = direction.invert();
+            }
+            case COLLECT -> {
+                currentTile.increaseFoodPresent();
+                direction = direction.invert();
+            }
+        }
+        this.state = state;
+    }
     /**
      * Moves the ant to the specified tile.
      *

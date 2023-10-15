@@ -2,7 +2,7 @@ import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
 
 public class Grid {
-    private int sizeX, sizeY, numberOfAnts;
+    private final int sizeX, sizeY;
     private Tile[][] tiles;
     private ArrayList<Ant> ants;
     private Queue<Tile> updateQueue;
@@ -12,7 +12,6 @@ public class Grid {
     public Grid(int sizeX, int sizeY, int numberOfAnts, float[] bias, float[] stateBias) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-        this.numberOfAnts = numberOfAnts;
         this.tiles = new Tile[sizeX][sizeY];
         this.bias = bias;
         this.stateBias = stateBias;
@@ -30,7 +29,7 @@ public class Grid {
             int randomX = (int) (Math.random() * sizeX);
             int randomY = (int) (Math.random() * sizeY);
 
-            if (!(tiles[randomX][randomY] instanceof Tile)) {
+            if (tiles[randomX][randomY] instanceof FoodSource) {
                 i--;
                 continue;
             }
@@ -39,11 +38,13 @@ public class Grid {
         }
 
         Nest nest = null;
+        int paddingInline = sizeX / 5;
+        int paddingBlock = sizeX / 5;
         for (int i = 0; i < 1; i++) {
-            int randomX = (int) (Math.random() * sizeX);
-            int randomY = (int) (Math.random() * sizeY);
+            int randomX = paddingInline + (int) (Math.random() * (sizeX - paddingInline));
+            int randomY = paddingBlock + (int) (Math.random() * (sizeY - paddingBlock));
 
-            if (!(tiles[randomX][randomY] instanceof Tile)) {
+            if (tiles[randomX][randomY] instanceof FoodSource) {
                 i--;
                 continue;
             }
@@ -68,8 +69,7 @@ public class Grid {
     }
 
     public void update() {
-        for (Ant ant :
-                ants) {
+        for (Ant ant : ants) {
             ant.update();
         }
         for (int x = 0; x < sizeX; x++) {
@@ -103,24 +103,8 @@ public class Grid {
         return neighbours;
     }
 
-    public int getSizeX() {
-        return sizeX;
-    }
-
-    public int getSizeY() {
-        return sizeY;
-    }
-
-    public Tile[][] getTiles() {
-        return tiles;
-    }
-
     public Tile getTile(Vector position) {
         return tiles[modulo(position.getX(), sizeX)][modulo(position.getY(), sizeY)];
-    }
-
-    public Tile getTile(int x, int y) {
-        return tiles[modulo(x, sizeX)][modulo(y, sizeY)];
     }
 
     public Queue<Tile> getUpdateQueue() {
@@ -138,9 +122,4 @@ public class Grid {
     public float[] getStateBias() {
         return stateBias;
     }
-    /*
-     * -1,1  0,1  1,1
-     * -1,0  0,0  1,0
-     * -1-1  0-1  1-1
-     * */
 }

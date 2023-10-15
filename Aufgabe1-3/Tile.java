@@ -49,6 +49,7 @@ public class Tile implements Entity {
     }
     public void increaseFoodPresent(){
         foodPresent++;
+        currentStink = clamp(currentStink+antStink);
     }
     public void decreaseFoodPresent(){
         foodPresent--;

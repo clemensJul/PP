@@ -6,7 +6,6 @@ public class Ant implements Entity {
     private Grid grid;
 
     private float[] bias;
-    private float[] stateBias;
     private enum State {
         EXPLORE,
         SCAVENGE,
@@ -14,9 +13,6 @@ public class Ant implements Entity {
     }
 
     private State state;
-
-    private final double stinkLowerBorder = 0.3;
-    private final double stinkUpperBorder = 0.7;
 
     private final int switchToExploreAfter = 7;
 
@@ -26,7 +22,6 @@ public class Ant implements Entity {
         this.position = position;
         this.direction = Vector.RandomDirection();
         this.grid = grid;
-        this.stateBias = grid.getStateBias();
         state = state.EXPLORE;
     }
 
@@ -40,29 +35,21 @@ public class Ant implements Entity {
 //        System.out.println(Arrays.toString(neighbours));
 
         bias = grid.getBias();
-
         switch (state){
             case EXPLORE -> {
-                if (explore(neighbours)) return true;
+                explore(neighbours);
             }
             case SCAVENGE -> {
-                if (scavenge(neighbours)) return true;
+                scavenge(neighbours);
             }
             case COLLECT -> {
-                if (collect(neighbours)) return true;
+                collect(neighbours);
             }
-
         }
-        float totalWeight = 0f;
-        for (int i = 0; i < bias.length; i++) {
-            totalWeight += bias[i];
-        }
-        Tile chosenTile = selectTile(totalWeight, neighbours);
-        moveTile(chosenTile);
         return false;
     }
 
-    private boolean collect(Tile[] neighbours) {
+    private void collect(Tile[] neighbours) {
         for (int i = 0; i < neighbours.length; i++) {
 
             if ( neighbours[i] instanceof Nest){
@@ -70,74 +57,84 @@ public class Ant implements Entity {
                 state = State.SCAVENGE;
                 grid.getTile(position).decreaseFoodPresent();
                 direction = direction.invert();
-                return true;
+                return;
             }
-            float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] +  stink*stateBias[2];
         }
-        return false;
+        moveTile(selectStrongestSmell(neighbours));
     }
 
-    private boolean scavenge(Tile[] neighbours) {
+    private void  scavenge(Tile[] neighbours) {
         float totalStink = 0f;
         for (int i = 0; i < neighbours.length; i++) {
             if (neighbours[i] instanceof FoodSource) {
                 state = State.COLLECT;
                 moveTile(neighbours[i]);
                 //direction = direction.invert();
-                return true;
+                return;
             }
             float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] + stink*stateBias[1];
             totalStink += stink;
 
-            if (totalStink > 0.75f) badScentsCounter++;
-            else badScentsCounter = 0;
-            if (badScentsCounter>switchToExploreAfter){
-                state = State.EXPLORE;
-            }
         }
-        return false;
+        if (totalStink > 0.75f) badScentsCounter++;
+        else badScentsCounter = 0;
+        if (badScentsCounter>switchToExploreAfter){
+            state = State.EXPLORE;
+        }
+        moveTile(selectStrongestSmell(neighbours));
     }
 
-    private boolean explore(Tile[] neighbours) {
+    private void explore(Tile[] neighbours) {
         for (int i = 0; i < neighbours.length; i++) {
 
+            bias[i] = bias[i] - bias[i]*neighbours[i].getCurrentStink();
             if (neighbours[i].isFoodPresent()){
                 state = State.SCAVENGE;
                 moveTile(neighbours[i]);
                 direction = direction.invert();
-                return true;
+                return;
+
             }else if (neighbours[i] instanceof FoodSource){
                 state = State.COLLECT;
                 moveTile(neighbours[i]);
                 direction = direction.invert();
-                return true;
+                return;
             }
 
-            float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] * (1 - stink*stateBias[0]);
         }
-        return false;
+        moveTile(selectRandomTile(neighbours));
     }
 
-    private Tile selectTile(float totalWeight, Tile[] neighbours) {
+    //selects tile with strongest smell - call selectRandomTile
+    private Tile selectStrongestSmell(Tile[] neighbours){
+        int indexMaxWeight = 0;
+        float maxWeight = 0;
+        for (int i = 0; i < neighbours.length; i++) {
+            if (neighbours[i].getCurrentStink() > maxWeight){
+                maxWeight = neighbours[i].getCurrentStink();
+                indexMaxWeight = i;
+            }
+        }
+        if (maxWeight == 0) return selectRandomTile(neighbours);
+        return neighbours[indexMaxWeight];
+    }
+
+    private Tile selectRandomTile(Tile[] neighbours) {
+        float totalWeight = 0f;
+        for (int i = 0; i < bias.length; i++) {
+            totalWeight += bias[i];
+        }
         double r = Math.random() * totalWeight;
         double cumulativeWeight = 0.0;
-        double maxWeight = 0;
-        int maxWeightIndex = 0;
-        int randomWeightIndex = 0;
+
         for (int i = 0; i < bias.length; i++) {
             cumulativeWeight += bias[i];
-            if (maxWeight<=bias[i]){
-                maxWeight = bias[i];
-                maxWeightIndex = i;
-            }
-            if (cumulativeWeight >= r && state == State.EXPLORE) {
+
+            if (cumulativeWeight >= r) {
                 return neighbours[i];
             }
         }
-        return neighbours[maxWeightIndex];
+        return null;
     }
     private void moveTile(Tile newTile){
         Tile currentTile = grid.getTile(position);

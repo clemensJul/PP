@@ -1,6 +1,6 @@
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
-
+// handles the entire logic that depends on grid operations
 public class Grid {
     private final int sizeX, sizeY;
     private Tile[][] tiles;
@@ -22,7 +22,7 @@ public class Grid {
                 tiles[x][y] = new Tile(new Vector(x, y));
             }
         }
-
+        //place food tiles randomly
         for (int i = 0; i < foodCount; i++) {
             int randomX = (int) (Math.random() * sizeX);
             int randomY = (int) (Math.random() * sizeY);
@@ -35,6 +35,7 @@ public class Grid {
             tiles[randomX][randomY] = new FoodSource(new Vector(randomX, randomY));
         }
 
+        //place nest semi randomly
         Nest nest = null;
         int paddingInline = sizeX / 5;
         int paddingBlock = sizeX / 5;
@@ -65,7 +66,7 @@ public class Grid {
 
         System.out.println("created everything");
     }
-
+    //updates every entity - if the tile needed an update it gets added to the priority queue that determines which tiles need a visual update in Codedraw
     public void update() {
         for (Ant ant : ants) {
             ant.update();
@@ -79,7 +80,7 @@ public class Grid {
         }
     }
 
-    //get all neighbours
+    //get all neighbour tiles that an ant can see
     public Tile[] availableNeighbours(Ant ant) {
         Vector direction = ant.getDirection();
         Vector position = ant.getPosition();
@@ -100,19 +101,21 @@ public class Grid {
 
         return neighbours;
     }
-
+    //returns tile to a position
     public Tile getTile(Vector position) {
         return tiles[modulo(position.getX(), sizeX)][modulo(position.getY(), sizeY)];
     }
-
+    //returns queue of updated tiles
     public Queue<Tile> getUpdateQueue() {
         return updateQueue;
     }
 
+    //returns an always positive int after a modulo operation
     private static int modulo(int number, int divisor) {
         return (number + divisor) % divisor;
     }
 
+    //returns current biases as set by the simulation parameters
     public float[] getBias() {
         return Arrays.copyOf(bias, bias.length);
     }

@@ -1,4 +1,5 @@
-public class main {
+//starts the simulation
+public class Test {
 
     public static void main(String[] args) {
 
@@ -7,9 +8,9 @@ public class main {
         int cellSize = 3;
         int maxX = 250;
         int maxY = 200;
-        int numberOfAnts = 100;
+        int numberOfAnts = 1000;
         float[] bias =  new float[]{0.01f,0.05f,1f,0.05f,0.01f};
-        int updatesPerCircle = 1;
+        int updatesPerCircle = 5;
 
         boolean areNotClosed = true;
 
@@ -28,4 +29,8 @@ public class main {
             areNotClosed = !isClosed;
         }
     }
+
+    // Jessica was working on the entire simulation set up
+    // Clemens worked on vectors and the grid
+    // Raphael did the ant logic
 }

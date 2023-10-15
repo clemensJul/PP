@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.util.LinkedList;
 
-
+//extends Tiles with custom methodes
 public class Nest extends Tile {
     /**
      * Initializes the Nest at the given position
@@ -28,6 +28,6 @@ public class Nest extends Tile {
      */
     @Override
     public boolean update() {
-        return true;
+        return false;
     }
 }

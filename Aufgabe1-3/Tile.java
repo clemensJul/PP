@@ -1,10 +1,10 @@
 import java.awt.*;
-
+// basic tile  - handles coloring logic
 public class Tile implements Entity {
     private final Vector position;
     private float currentStink = 0f;
 
-    private static final float stinkDeletionRate = 0.97f;
+    private static final float stinkDeletionRate = 0.99f;
 
     private final float antStink = .2f;
     private int foodPresent = 0;
@@ -28,6 +28,7 @@ public class Tile implements Entity {
         return position;
     }
 
+    //updates color according to simple rules
     @Override
     public boolean update() {
         currentStink *= stinkDeletionRate;
@@ -37,14 +38,14 @@ public class Tile implements Entity {
             tileColor = Color.green;
             return true;
         }
-
-
-
+        if (antsScavenge > 0) {
+            tileColor = Color.red;
+            return true;
+        }
         if (antsPresent > 0) {
             tileColor = Color.black;
             return true;
         }
-
         if (currentStinkOfFood > 0.005f) {
             tileColor = new Color(1f, 1f, 1f, currentStinkOfFood);
             return true;
@@ -59,23 +60,28 @@ public class Tile implements Entity {
         return false;
     }
 
+    // checks if ant with food is present
     public boolean isFoodPresent() {
         return foodPresent > 0;
     }
 
+    // increases stink of food and food present
     public void increaseFoodPresent() {
         foodPresent++;
         currentStinkOfFood = clamp(currentStinkOfFood + antStink);
     }
 
+    // decreases food present
     public void decreaseFoodPresent() {
         foodPresent--;
     }
 
+    // increases ants scavenging on tile
     public void increaseAntsScavenge() {
         antsScavenge++;
     }
 
+    // decreases ants scavenging on tile
     public void decreaseAntsScavenge() {
         if(antsScavenge <= 0) {
             antsScavenge = 0;
@@ -84,11 +90,13 @@ public class Tile implements Entity {
         antsScavenge--;
     }
 
+    // increases ants presents
     public void increaseAntsPresent() {
         antsPresent++;
         currentStink = clamp(currentStink + antStink);
     }
 
+    // created math clamp in java
     private static float clamp(float stink) {
         if (stink < 0.0f) {
             return 0.0f;
@@ -97,21 +105,25 @@ public class Tile implements Entity {
         return Math.min(stink, maxStink);
     }
 
+    // decreases ants present
     public void decreaseAntsPresent() {
         antsPresent--;
     }
 
+    // get current smell of ants
     public float getCurrentStink() {
         return currentStink;
     }
+    // get current stink of food
     public float getCurrentStinkOfFood() {
         return currentStinkOfFood;
     }
-
+    // returns color of the tile
     public Color getTileColor() {
         return tileColor;
     }
 
+    //returns a String representation of the tile
     @Override
     public String toString() {
         return "Tile{" +

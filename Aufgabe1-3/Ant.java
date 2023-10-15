@@ -23,7 +23,7 @@ public class Ant implements Entity {
     private State state;
 
     // Defines the maximal successive steps of bad fields before switchting to Explore state
-    private final int switchToExploreAfter = 7;
+    private final int switchToExploreAfter = 100;
 
 
     // Counts the successive steps of bad fields

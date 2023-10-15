@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.LinkedList;
 
+//extends Tile with custom methodes
 public class FoodSource extends Tile {
 
 

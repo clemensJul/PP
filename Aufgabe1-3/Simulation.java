@@ -1,9 +1,9 @@
 import codedraw.CodeDraw;
 
 import java.awt.*;
-import java.util.Arrays;
 import java.util.Queue;
 
+// combines visuals from CodeDraw with the logic found in Grid
 public class Simulation {
 
     private int cellSize;
@@ -36,6 +36,7 @@ public class Simulation {
         return cd.isClosed();
     }
 
+    //runs one circle of the simulation - multiple updates can happen in each circle
     public void run() {
 
         if (!cd.isClosed()){

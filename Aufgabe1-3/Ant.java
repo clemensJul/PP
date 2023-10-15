@@ -175,12 +175,15 @@ public class Ant implements Entity {
     }
 
 
-    private Tile selectMaxTile( Tile[] neighbours){
+    private Tile selectMaxTile( Tile[] neighbours ){
         int indexMaxWeight = 0;
         float maxWeight = 0;
         for (int i = 0; i < neighbours.length; i++) {
-            if (neighbours[i].getCurrentStink() > maxWeight){
-                maxWeight = neighbours[i].getCurrentStink();
+            float stink;
+            if (state == State.COLLECT) stink = neighbours[i].getCurrentStink();
+            else stink = neighbours[i].getCurrentStinkOfFood();
+            if (stink > maxWeight){
+                maxWeight = stink;
                 indexMaxWeight = i;
             }
         }

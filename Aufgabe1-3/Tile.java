@@ -1,18 +1,18 @@
 import java.awt.*;
 
 public class Tile implements Entity {
-    private Vector position;
+    private final Vector position;
+    private Color tileColor = Color.gray;
+
+
     private float currentStink = 0f;
+    private static final float maxStink = 1f;
+    private static final float stinkDeletionRate = 0.97f;
+    private final float antStink = 1f;
 
-    private static float stinkDeletionRate = 0.97f;
 
-    private float antStink = 1f;
     private int foodPresent = 0;
     private int antsPresent = 0;
-
-    private static float maxStink = 1f;
-
-    private Color tileColor = Color.gray;
 
     public Tile(Vector position) {
         this.position = position;
@@ -43,8 +43,7 @@ public class Tile implements Entity {
     }
 
     public boolean isFoodPresent() {
-        if (foodPresent > 0) return true;
-        return false;
+        return foodPresent > 0;
     }
 
     public void increaseFoodPresent() {
@@ -52,7 +51,11 @@ public class Tile implements Entity {
     }
 
     public void decreaseFoodPresent() {
-        foodPresent--;
+        if (foodPresent <= 0) {
+            foodPresent = 0;
+        } else {
+            foodPresent--;
+        }
     }
 
     public void increaseAntsPresent() {
@@ -60,18 +63,12 @@ public class Tile implements Entity {
         currentStink = clamp(currentStink + antStink);
     }
 
-    private static float clamp(float stink) {
-        if (stink < 0.0f) {
-            return 0.0f;
-        }
-        if (stink > maxStink) {
-            return 1.0f;
-        }
-        return stink;
-    }
-
     public void decreaseAntsPresent() {
-        antsPresent--;
+        if (antsPresent <= 0) {
+            antsPresent = 0;
+        } else {
+            antsPresent--;
+        }
     }
 
     public float getCurrentStink() {
@@ -82,10 +79,14 @@ public class Tile implements Entity {
         return tileColor;
     }
 
-    @Override
-    public String toString() {
-        return "Tile{" +
-                "position=" + position +
-                '}';
+
+    private static float clamp(float stink) {
+        if (stink < 0.0f) {
+            return 0.0f;
+        }
+        if (stink > maxStink) {
+            return 1.0f;
+        }
+        return stink;
     }
 }

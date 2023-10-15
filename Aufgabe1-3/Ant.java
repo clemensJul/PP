@@ -1,5 +1,6 @@
 import java.util.Arrays;
 
+
 public class Ant implements Entity {
     // Current position of ant
     private Vector position;
@@ -10,8 +11,9 @@ public class Ant implements Entity {
     // Referencing the grid for selecting neighbors
     private final Grid grid;
 
-    private float[] bias;
     private float[] modifiedBias;
+    private float[] bias;
+
 
     private enum State {
         EXPLORE,

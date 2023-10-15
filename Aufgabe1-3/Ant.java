@@ -3,10 +3,10 @@ import java.util.Arrays;
 public class Ant implements Entity {
     private Vector position;
     private Vector direction;
-    private Grid grid;
+    private final Grid grid;
 
     private float[] bias;
-    private float[] stateBias;
+    private float badScent = 0.75f;
 
     private enum State {
         EXPLORE,
@@ -16,9 +16,6 @@ public class Ant implements Entity {
 
     private State state;
 
-    private final double stinkLowerBorder = 0.3;
-    private final double stinkUpperBorder = 0.7;
-
     private final int switchToExploreAfter = 7;
 
     private int badScentsCounter = 0;
@@ -27,19 +24,13 @@ public class Ant implements Entity {
         this.position = position;
         this.direction = Vector.RandomDirection();
         this.grid = grid;
-        this.stateBias = grid.getStateBias();
         state = state.EXPLORE;
     }
 
     @Override
     public boolean update() {
-
         //get every possible neighbour and calculate standard bias
         Tile[] neighbours = grid.availableNeighbours(this);
-//        System.out.println(position);
-//        System.out.println(direction);
-//        System.out.println(Arrays.toString(neighbours));
-
         bias = grid.getBias();
 
         switch (state) {
@@ -55,8 +46,8 @@ public class Ant implements Entity {
 
         }
         float totalWeight = 0f;
-        for (int i = 0; i < bias.length; i++) {
-            totalWeight += bias[i];
+        for (float bia : bias) {
+            totalWeight += bia;
         }
         Tile chosenTile = selectTile(totalWeight, neighbours);
         moveTile(chosenTile);
@@ -74,50 +65,64 @@ public class Ant implements Entity {
                 return true;
             }
             float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] + stink * stateBias[2];
+            bias[i] = bias[i] + stink * grid.getStateBias()[2];
         }
         return false;
     }
 
     private boolean scavenge(Tile[] neighbours) {
-        float totalStink = 0f;
+        boolean foundNeighborWithGoodScent = false;
         for (int i = 0; i < neighbours.length; i++) {
             if (neighbours[i] instanceof FoodSource) {
                 state = State.COLLECT;
                 moveTile(neighbours[i]);
-                //direction = direction.invert();
+                direction = direction.invert();
                 return true;
             }
-            float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] + stink * stateBias[1];
-            totalStink += stink;
 
-            if (totalStink > 0.75f) badScentsCounter++;
-            else badScentsCounter = 0;
-            if (badScentsCounter > switchToExploreAfter) {
-                state = State.EXPLORE;
+            float stink = neighbours[i].getCurrentStink();
+
+            if (stink > badScent) {
+                foundNeighborWithGoodScent = true;
             }
+            bias[i] = bias[i] + stink * grid.getStateBias()[1];
         }
+
+        if(foundNeighborWithGoodScent) {
+            badScentsCounter = 0;
+        }
+        else {
+            badScentsCounter++;
+        }
+
+        if (badScentsCounter > switchToExploreAfter) {
+            state = State.EXPLORE;
+        }
+
         return false;
     }
 
     private boolean explore(Tile[] neighbours) {
         for (int i = 0; i < neighbours.length; i++) {
 
-            if (neighbours[i].isFoodPresent()) {
-                state = State.SCAVENGE;
-                moveTile(neighbours[i]);
-                direction = direction.invert();
-                return true;
-            } else if (neighbours[i] instanceof FoodSource) {
+            if (neighbours[i] instanceof FoodSource) {
                 state = State.COLLECT;
                 moveTile(neighbours[i]);
                 direction = direction.invert();
                 return true;
             }
 
+            // TODO: sollt ma nit zuerst alle neighbors anschauen und dann zufällig aus denen auswählen?
+            // jetzt wird immer der erste genommen
+            if (neighbours[i].isFoodPresent()) {
+                state = State.SCAVENGE;
+                moveTile(neighbours[i]);
+                direction = direction.invert();
+                return true;
+            }
+
             float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] * (1 - stink * stateBias[0]);
+            bias[i] = bias[i] * (1 - stink * grid.getStateBias()[0]);
         }
         return false;
     }
@@ -127,7 +132,6 @@ public class Ant implements Entity {
         double cumulativeWeight = 0.0;
         double maxWeight = 0;
         int maxWeightIndex = 0;
-        int randomWeightIndex = 0;
         for (int i = 0; i < bias.length; i++) {
             cumulativeWeight += bias[i];
             if (maxWeight <= bias[i]) {
@@ -144,18 +148,16 @@ public class Ant implements Entity {
     private void moveTile(Tile newTile) {
         Tile currentTile = grid.getTile(position);
         Vector newPos = newTile.getPosition();
-
         currentTile.decreaseAntsPresent();
         newTile.increaseAntsPresent();
+
         if (state == State.COLLECT) {
             currentTile.decreaseFoodPresent();
             newTile.increaseFoodPresent();
         }
-
         direction = position.calculateDirection(newPos);
         position = newPos;
     }
-
 
     @Override
     public Vector getPosition() {

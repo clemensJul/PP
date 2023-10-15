@@ -39,7 +39,6 @@ public class Tile implements Entity {
         }
 
 
-
         if (antsPresent > 0) {
             tileColor = Color.black;
             return true;
@@ -69,7 +68,11 @@ public class Tile implements Entity {
     }
 
     public void decreaseFoodPresent() {
-        foodPresent--;
+        if (foodPresent <= 0) {
+            foodPresent = 0;
+        } else {
+            foodPresent--;
+        }
     }
 
     public void increaseAntsScavenge() {
@@ -77,11 +80,11 @@ public class Tile implements Entity {
     }
 
     public void decreaseAntsScavenge() {
-        if(antsScavenge <= 0) {
+        if (antsScavenge <= 0) {
             antsScavenge = 0;
-            return;
+        } else {
+            antsScavenge--;
         }
-        antsScavenge--;
     }
 
     public void increaseAntsPresent() {
@@ -98,12 +101,17 @@ public class Tile implements Entity {
     }
 
     public void decreaseAntsPresent() {
-        antsPresent--;
+        if (antsPresent <= 0) {
+            antsPresent = 0;
+        } else {
+            antsPresent--;
+        }
     }
 
     public float getCurrentStink() {
         return currentStink;
     }
+
     public float getCurrentStinkOfFood() {
         return currentStinkOfFood;
     }

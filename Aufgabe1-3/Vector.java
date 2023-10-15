@@ -33,7 +33,7 @@ public class Vector {
         return new Vector(-this.x, -this.y);
     }
 
-    // calculates an direction even over the border pixels
+    // calculates a direction even over the border pixels
     public Vector calculateDirection(Vector secondPos) {
 
         int dx2 = secondPos.x - this.x;
@@ -62,7 +62,6 @@ public class Vector {
     public Vector add(Vector vector) {
         return new Vector(this.x + vector.x, this.y + vector.y);
     }
-
 
     public int getX() {
         return x;

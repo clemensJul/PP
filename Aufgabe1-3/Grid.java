@@ -1,12 +1,14 @@
 import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
+
 // handles the entire logic that depends on grid operations
 public class Grid {
     private final int sizeX, sizeY;
-    private Tile[][] tiles;
-    private ArrayList<Ant> ants;
-    private Queue<Tile> updateQueue;
-    private float[] bias;
+    private final Tile[][] tiles;
+    private Nest nest;
+    private final ArrayList<Ant> ants;
+    private final Queue<Tile> updateQueue;
+    private final float[] bias;
 
     public Grid(int sizeX, int sizeY, int numberOfAnts, float[] bias) {
         this.sizeX = sizeX;
@@ -36,12 +38,11 @@ public class Grid {
         }
 
         //place nest semi randomly
-        Nest nest = null;
         int paddingInline = sizeX / 5;
         int paddingBlock = sizeX / 5;
         for (int i = 0; i < 1; i++) {
-            int randomX = paddingInline + (int) (Math.random() * (sizeX - paddingInline));
-            int randomY = paddingBlock + (int) (Math.random() * (sizeY - paddingBlock));
+            int randomX = paddingInline + (int) (Math.random() * (sizeX - 2 * paddingInline));
+            int randomY = paddingBlock + (int) (Math.random() * (sizeY - 2 * paddingBlock));
 
             if (tiles[randomX][randomY] instanceof FoodSource) {
                 i--;
@@ -53,7 +54,7 @@ public class Grid {
         }
 
         // we need to define a radius in which ants can be spawned around the nest
-        int maxSpawnDistance = 2;
+        int maxSpawnDistance = 10;
         // spawn ants
         for (int i = 0; i < numberOfAnts; i++) {
             int x = Math.abs((nest.getPosition().getX() + (int) (Math.random() * maxSpawnDistance * 2) - maxSpawnDistance) % sizeX);
@@ -66,6 +67,7 @@ public class Grid {
 
         System.out.println("created everything");
     }
+
     //updates every entity - if the tile needed an update it gets added to the priority queue that determines which tiles need a visual update in Codedraw
     public void update() {
         for (Ant ant : ants) {
@@ -101,10 +103,12 @@ public class Grid {
 
         return neighbours;
     }
+
     //returns tile to a position
     public Tile getTile(Vector position) {
         return tiles[modulo(position.getX(), sizeX)][modulo(position.getY(), sizeY)];
     }
+
     //returns queue of updated tiles
     public Queue<Tile> getUpdateQueue() {
         return updateQueue;
@@ -118,5 +122,17 @@ public class Grid {
     //returns current biases as set by the simulation parameters
     public float[] getBias() {
         return Arrays.copyOf(bias, bias.length);
+    }
+
+    public Nest getNest() {
+        return nest;
+    }
+
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    public int getSizeY() {
+        return sizeY;
     }
 }

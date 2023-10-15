@@ -1,12 +1,11 @@
 import java.awt.*;
-import java.util.LinkedList;
 
 //extends Tiles with custom methodes
 public class Nest extends Tile {
     /**
      * Initializes the Nest at the given position
      *
-     * @param  position Position where Nest is located.
+     * @param position Position where Nest is located.
      */
     public Nest(Vector position) {
         super(position);
@@ -17,7 +16,7 @@ public class Nest extends Tile {
      *
      * @return {@link Color#YELLOW}
      */
-    public Color getTileColor(){
+    public Color getTileColor() {
         return Color.YELLOW;
     }
 

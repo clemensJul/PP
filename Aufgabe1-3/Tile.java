@@ -1,4 +1,5 @@
 import java.awt.*;
+
 // basic tile  - handles coloring logic
 public class Tile implements Entity {
     private final Vector position;
@@ -38,7 +39,6 @@ public class Tile implements Entity {
             tileColor = Color.green;
             return true;
         }
-
 
         if (antsPresent > 0) {
             tileColor = Color.black;
@@ -121,20 +121,14 @@ public class Tile implements Entity {
     public float getCurrentStink() {
         return currentStink;
     }
+
     // get current stink of food
     public float getCurrentStinkOfFood() {
         return currentStinkOfFood;
     }
+
     // returns color of the tile
     public Color getTileColor() {
         return tileColor;
-    }
-
-    //returns a String representation of the tile
-    @Override
-    public String toString() {
-        return "Tile{" +
-                "position=" + position +
-                '}';
     }
 }

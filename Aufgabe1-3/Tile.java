@@ -26,37 +26,40 @@ public class Tile implements Entity {
     @Override
     public boolean update() {
         currentStink *= stinkDeletionRate;
-        if (foodPresent > 0){
+        if (foodPresent > 0) {
             tileColor = Color.green;
             return true;
         }
-        if (antsPresent > 0){
+        if (antsPresent > 0) {
             tileColor = Color.black;
             return true;
-        }
-        else if (currentStink > 0.005f){
-            tileColor = new Color(1f,0f,1f, currentStink);
+        } else if (currentStink > 0.005f) {
+            tileColor = new Color(1f, 0f, 1f, currentStink);
             return true;
-        }
-        else {
+        } else {
             tileColor = Color.gray;
             return false;
         }
     }
-    public boolean isFoodPresent(){
-        if (foodPresent > 0 ) return true;
+
+    public boolean isFoodPresent() {
+        if (foodPresent > 0) return true;
         return false;
     }
-    public void increaseFoodPresent(){
+
+    public void increaseFoodPresent() {
         foodPresent++;
     }
-    public void decreaseFoodPresent(){
+
+    public void decreaseFoodPresent() {
         foodPresent--;
     }
-    public void increaseAntsPresent(){
+
+    public void increaseAntsPresent() {
         antsPresent++;
-        currentStink = clamp(currentStink+antStink);
+        currentStink = clamp(currentStink + antStink);
     }
+
     private static float clamp(float stink) {
         if (stink < 0.0f) {
             return 0.0f;
@@ -66,13 +69,16 @@ public class Tile implements Entity {
         }
         return stink;
     }
-    public void decreaseAntsPresent(){
+
+    public void decreaseAntsPresent() {
         antsPresent--;
     }
+
     public float getCurrentStink() {
         return currentStink;
     }
-    public Color getTileColor(){
+
+    public Color getTileColor() {
         return tileColor;
     }
 

@@ -7,6 +7,7 @@ public class Ant implements Entity {
 
     private float[] bias;
     private float[] stateBias;
+
     private enum State {
         EXPLORE,
         SCAVENGE,
@@ -41,7 +42,7 @@ public class Ant implements Entity {
 
         bias = grid.getBias();
 
-        switch (state){
+        switch (state) {
             case EXPLORE -> {
                 if (explore(neighbours)) return true;
             }
@@ -65,7 +66,7 @@ public class Ant implements Entity {
     private boolean collect(Tile[] neighbours) {
         for (int i = 0; i < neighbours.length; i++) {
 
-            if ( neighbours[i] instanceof Nest){
+            if (neighbours[i] instanceof Nest) {
                 moveTile(neighbours[i]);
                 state = State.SCAVENGE;
                 grid.getTile(position).decreaseFoodPresent();
@@ -73,7 +74,7 @@ public class Ant implements Entity {
                 return true;
             }
             float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] +  stink*stateBias[2];
+            bias[i] = bias[i] + stink * stateBias[2];
         }
         return false;
     }
@@ -88,12 +89,12 @@ public class Ant implements Entity {
                 return true;
             }
             float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] + stink*stateBias[1];
+            bias[i] = bias[i] + stink * stateBias[1];
             totalStink += stink;
 
             if (totalStink > 0.75f) badScentsCounter++;
             else badScentsCounter = 0;
-            if (badScentsCounter>switchToExploreAfter){
+            if (badScentsCounter > switchToExploreAfter) {
                 state = State.EXPLORE;
             }
         }
@@ -103,12 +104,12 @@ public class Ant implements Entity {
     private boolean explore(Tile[] neighbours) {
         for (int i = 0; i < neighbours.length; i++) {
 
-            if (neighbours[i].isFoodPresent()){
+            if (neighbours[i].isFoodPresent()) {
                 state = State.SCAVENGE;
                 moveTile(neighbours[i]);
                 direction = direction.invert();
                 return true;
-            }else if (neighbours[i] instanceof FoodSource){
+            } else if (neighbours[i] instanceof FoodSource) {
                 state = State.COLLECT;
                 moveTile(neighbours[i]);
                 direction = direction.invert();
@@ -116,7 +117,7 @@ public class Ant implements Entity {
             }
 
             float stink = neighbours[i].getCurrentStink();
-            bias[i] = bias[i] * (1 - stink*stateBias[0]);
+            bias[i] = bias[i] * (1 - stink * stateBias[0]);
         }
         return false;
     }
@@ -129,7 +130,7 @@ public class Ant implements Entity {
         int randomWeightIndex = 0;
         for (int i = 0; i < bias.length; i++) {
             cumulativeWeight += bias[i];
-            if (maxWeight<=bias[i]){
+            if (maxWeight <= bias[i]) {
                 maxWeight = bias[i];
                 maxWeightIndex = i;
             }
@@ -139,13 +140,14 @@ public class Ant implements Entity {
         }
         return neighbours[maxWeightIndex];
     }
-    private void moveTile(Tile newTile){
+
+    private void moveTile(Tile newTile) {
         Tile currentTile = grid.getTile(position);
         Vector newPos = newTile.getPosition();
 
         currentTile.decreaseAntsPresent();
         newTile.increaseAntsPresent();
-        if (state == State.COLLECT){
+        if (state == State.COLLECT) {
             currentTile.decreaseFoodPresent();
             newTile.increaseFoodPresent();
         }

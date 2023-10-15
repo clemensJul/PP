@@ -2,17 +2,22 @@ import java.awt.*;
 
 public class Tile implements Entity {
     private final Vector position;
-    private Color tileColor = Color.gray;
-
-
     private float currentStink = 0f;
-    private static final float maxStink = 1f;
-    private static final float stinkDeletionRate = 0.98f;
-    private final float antStink = 1f;
 
+    private static final float stinkDeletionRate = 0.99999f;
 
+    private final float antStink = .2f;
     private int foodPresent = 0;
     private int antsPresent = 0;
+
+    // only for appearance
+    private int antsScavenge = 0;
+
+    private float currentStinkOfFood = 0f;
+
+    private static final float maxStink = 1f;
+
+    private Color tileColor = Color.gray;
 
     public Tile(Vector position) {
         this.position = position;
@@ -26,20 +31,32 @@ public class Tile implements Entity {
     @Override
     public boolean update() {
         currentStink *= stinkDeletionRate;
+        currentStinkOfFood *= stinkDeletionRate;
+
         if (foodPresent > 0) {
             tileColor = Color.green;
             return true;
         }
+
+
+
         if (antsPresent > 0) {
             tileColor = Color.black;
             return true;
-        } else if (currentStink > 0.005f) {
+        }
+
+        if (currentStinkOfFood > 0.005f) {
+            tileColor = new Color(1f, 1f, 1f, currentStinkOfFood);
+            return true;
+        }
+
+        if (currentStink > 0.005f) {
             tileColor = new Color(1f, 0f, 1f, currentStink);
             return true;
-        } else {
-            tileColor = Color.gray;
-            return false;
         }
+
+        tileColor = Color.gray;
+        return false;
     }
 
     public boolean isFoodPresent() {
@@ -48,15 +65,23 @@ public class Tile implements Entity {
 
     public void increaseFoodPresent() {
         foodPresent++;
-        currentStink = clamp(currentStink+antStink);
+        currentStinkOfFood = clamp(currentStinkOfFood + antStink);
     }
 
     public void decreaseFoodPresent() {
-        if (foodPresent <= 0) {
-            foodPresent = 0;
-        } else {
-            foodPresent--;
+        foodPresent--;
+    }
+
+    public void increaseAntsScavenge() {
+        antsScavenge++;
+    }
+
+    public void decreaseAntsScavenge() {
+        if(antsScavenge <= 0) {
+            antsScavenge = 0;
+            return;
         }
+        antsScavenge--;
     }
 
     public void increaseAntsPresent() {
@@ -64,30 +89,33 @@ public class Tile implements Entity {
         currentStink = clamp(currentStink + antStink);
     }
 
-    public void decreaseAntsPresent() {
-        if (antsPresent <= 0) {
-            antsPresent = 0;
-        } else {
-            antsPresent--;
+    private static float clamp(float stink) {
+        if (stink < 0.0f) {
+            return 0.0f;
         }
+
+        return Math.min(stink, maxStink);
+    }
+
+    public void decreaseAntsPresent() {
+        antsPresent--;
     }
 
     public float getCurrentStink() {
         return currentStink;
+    }
+    public float getCurrentStinkOfFood() {
+        return currentStinkOfFood;
     }
 
     public Color getTileColor() {
         return tileColor;
     }
 
-
-    private static float clamp(float stink) {
-        if (stink < 0.0f) {
-            return 0.0f;
-        }
-        if (stink > maxStink) {
-            return 1.0f;
-        }
-        return stink;
+    @Override
+    public String toString() {
+        return "Tile{" +
+                "position=" + position +
+                '}';
     }
 }

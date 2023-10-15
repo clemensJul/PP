@@ -225,12 +225,19 @@ public class Ant implements Entity {
     private void moveTile(Tile newTile) {
         Tile currentTile = grid.getTile(position);
         Vector newPos = newTile.getPosition();
-        currentTile.decreaseAntsPresent();
-        newTile.increaseAntsPresent();
-
-        if (state == State.COLLECT) {
-            currentTile.decreaseFoodPresent();
-            newTile.increaseFoodPresent();
+        switch (this.state){
+            case EXPLORE -> {
+                currentTile.decreaseAntsPresent();
+                newTile.increaseAntsPresent();
+            }
+            case SCAVENGE -> {
+                currentTile.decreaseAntsScavenge();
+                newTile.increaseAntsScavenge();
+            }
+            case COLLECT -> {
+                currentTile.decreaseFoodPresent();
+                newTile.increaseFoodPresent();
+            }
         }
         direction = position.calculateDirection(newPos);
         position = newPos;

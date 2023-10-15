@@ -2,18 +2,19 @@ import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
 
 public class Grid {
-    private int sizeX, sizeY, numberOfAnts;
+    private final int sizeX, sizeY;
     private Tile[][] tiles;
     private ArrayList<Ant> ants;
     private Queue<Tile> updateQueue;
     private float[] bias;
+    private float[] stateBias;
 
-    public Grid(int sizeX, int sizeY, int numberOfAnts, float[] bias) {
+    public Grid(int sizeX, int sizeY, int numberOfAnts, float[] bias, float[] stateBias) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-        this.numberOfAnts = numberOfAnts;
         this.tiles = new Tile[sizeX][sizeY];
         this.bias = bias;
+        this.stateBias = stateBias;
         ants = new ArrayList<>();
         updateQueue = new LinkedList<>();
         int foodCount = (int) (3 + Math.round((Math.random() * 6)));
@@ -25,10 +26,10 @@ public class Grid {
         }
 
         for (int i = 0; i < foodCount; i++) {
-            int randomX = (int)(Math.random() * sizeX);
-            int randomY = (int)(Math.random() * sizeY);
+            int randomX = (int) (Math.random() * sizeX);
+            int randomY = (int) (Math.random() * sizeY);
 
-            if(!(tiles[randomX][randomY] instanceof Tile)) {
+            if (tiles[randomX][randomY] instanceof FoodSource) {
                 i--;
                 continue;
             }
@@ -37,11 +38,13 @@ public class Grid {
         }
 
         Nest nest = null;
+        int paddingInline = sizeX / 5;
+        int paddingBlock = sizeX / 5;
         for (int i = 0; i < 1; i++) {
-            int randomX = (int)(Math.random() * sizeX);
-            int randomY = (int)(Math.random() * sizeY);
+            int randomX = paddingInline + (int) (Math.random() * (sizeX - paddingInline));
+            int randomY = paddingBlock + (int) (Math.random() * (sizeY - paddingBlock));
 
-            if(!(tiles[randomX][randomY] instanceof Tile)) {
+            if (tiles[randomX][randomY] instanceof FoodSource) {
                 i--;
                 continue;
             }
@@ -54,30 +57,30 @@ public class Grid {
         int maxSpawnDistance = 2;
         // spawn ants
         for (int i = 0; i < numberOfAnts; i++) {
-            int x = Math.abs((nest.getPosition().getX() + (int)(Math.random() * maxSpawnDistance*2)-maxSpawnDistance) % sizeX);
-            int y = Math.abs((nest.getPosition().getY() + (int)(Math.random() * maxSpawnDistance*2)-maxSpawnDistance) % sizeY);
+            int x = Math.abs((nest.getPosition().getX() + (int) (Math.random() * maxSpawnDistance * 2) - maxSpawnDistance) % sizeX);
+            int y = Math.abs((nest.getPosition().getY() + (int) (Math.random() * maxSpawnDistance * 2) - maxSpawnDistance) % sizeY);
 
             Vector spawnPos = new Vector(x, y);
             tiles[x][y].increaseAntsPresent();
-            ants.add(new Ant(spawnPos,this));
+            ants.add(new Ant(spawnPos, this));
         }
 
         System.out.println("created everything");
     }
 
     public void update() {
-        for (Ant ant :
-                ants) {
+        for (Ant ant : ants) {
             ant.update();
         }
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                if (tiles[x][y].update()){
+                if (tiles[x][y].update()) {
                     updateQueue.add(tiles[x][y]);
                 }
             }
         }
     }
+
     //get all neighbours
     public Tile[] availableNeighbours(Ant ant) {
         Vector direction = ant.getDirection();
@@ -85,10 +88,10 @@ public class Grid {
         Tile[] neighbours = new Tile[5];
 
         //generate vectors
-        Vector left = Vector.orthogonalVector(direction,true);
+        Vector left = Vector.orthogonalVector(direction, true);
         Vector leftFront = direction.sharpVector(left);
 
-        Vector right = Vector.orthogonalVector(direction,false);
+        Vector right = Vector.orthogonalVector(direction, false);
         Vector rightFront = direction.sharpVector(left);
 
         neighbours[0] = getTile(position.add(left));
@@ -100,39 +103,23 @@ public class Grid {
         return neighbours;
     }
 
-    public int getSizeX() {
-        return sizeX;
-    }
-
-    public int getSizeY() {
-        return sizeY;
-    }
-
-    public Tile[][] getTiles() {
-        return tiles;
-    }
-
     public Tile getTile(Vector position) {
-        return tiles[modulo(position.getX(),sizeX)][modulo(position.getY(),sizeY)];
+        return tiles[modulo(position.getX(), sizeX)][modulo(position.getY(), sizeY)];
     }
-    public Tile getTile(int x, int y) {
-        return tiles[modulo(x,sizeX)][modulo(y,sizeY)];
-    }
+
     public Queue<Tile> getUpdateQueue() {
         return updateQueue;
     }
 
-    private static int modulo(int number, int divisor){
-        return (number+divisor)%divisor;
+    private static int modulo(int number, int divisor) {
+        return (number + divisor) % divisor;
     }
 
-    public float[] getBias(){
-        return Arrays.copyOf(bias,bias.length);
+    public float[] getBias() {
+        return Arrays.copyOf(bias, bias.length);
     }
 
-    /*
-     * -1,1  0,1  1,1
-     * -1,0  0,0  1,0
-     * -1-1  0-1  1-1
-     * */
+    public float[] getStateBias() {
+        return stateBias;
+    }
 }

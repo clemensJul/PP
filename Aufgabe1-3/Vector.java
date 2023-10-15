@@ -1,6 +1,6 @@
 public class Vector {
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public Vector(int x, int y) {
         this.x = x;
@@ -8,7 +8,10 @@ public class Vector {
     }
 
     public static Vector orthogonalVector(Vector vector, boolean isLeft) {
-        if (isLeft) return new Vector(-vector.y, vector.x);
+        if (isLeft) {
+            return new Vector(-vector.y, vector.x);
+        }
+
         return new Vector(vector.y, -vector.x);
     }
 
@@ -16,12 +19,10 @@ public class Vector {
         int x = this.x + orthogonal.x;
         int y = this.y + orthogonal.y;
 
-        if (x > 1) x = 1;
-        else if (x < -1) x = -1;
-        if (y > 1) y = 1;
-        else if (y < -1) y = -1;
-        return new Vector(x, y);
+        x = Math.max(-1, Math.min(1, x));
+        y = Math.max(-1, Math.min(1, y));
 
+        return new Vector(x, y);
     }
 
     public Vector invert() {
@@ -29,15 +30,15 @@ public class Vector {
     }
 
     public Vector calculateDirection(Vector secondPos) {
-        int dx = secondPos.x - this.x;
-        int dy = secondPos.y - this.y;
+        int dx2 = secondPos.x - this.x;
+        int dy2 = secondPos.y - this.y;
 
-        if (dx > 1) dx = -1;
-        if (dx < -1) dx = 1;
-        if (dy > 1) dy = -1;
-        if (dy < -1) dy = 1;
+        if (dx2 > 1) dx2 = -1;
+        if (dx2 < -1) dx2 = 1;
+        if (dy2 > 1) dy2 = -1;
+        if (dy2 < -1) dy2 = 1;
 
-        return new Vector(dx, dy);
+        return new Vector(dx2, dy2);
     }
 
     public static Vector RandomDirection() {
@@ -61,13 +62,5 @@ public class Vector {
 
     public int getY() {
         return y;
-    }
-
-    @Override
-    public String toString() {
-        return "Vector{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
     }
 }

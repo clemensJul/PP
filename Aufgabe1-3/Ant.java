@@ -14,7 +14,6 @@ public class Ant implements Entity {
     private float[] modifiedBias;
     private final float[] bias;
 
-
     private enum State {
         EXPLORE,
         SCAVENGE,
@@ -27,13 +26,18 @@ public class Ant implements Entity {
     // Defines the maximal successive steps of bad fields before switching to Explore state
     private final int switchToExploreAfter = 100;
 
-
     // Counts the successive steps of bad fields
     private int badScentsCounter = 0;
 
     // Defines what counts as a badScent tile
     private final float badScent = 0.75f;
 
+    /**
+     * Initializes an Ant at the given position
+     *
+     * @param position Starting position of ant
+     * @param grid     Reference to Grid where the Ant lives on
+     */
     public Ant(Vector position, Grid grid) {
         this.position = position;
         this.direction = Vector.RandomDirection();
@@ -42,8 +46,6 @@ public class Ant implements Entity {
         bias = grid.getBias();
         modifiedBias = Arrays.copyOf(bias, bias.length);
     }
-
-    // TODO
 
     /**
      * Handles the update process of ant.
@@ -60,16 +62,9 @@ public class Ant implements Entity {
         Tile[] neighbours = grid.availableNeighbours(this);
 
         switch (state) {
-            case EXPLORE -> {
-                explore(neighbours);
-            }
-            case SCAVENGE -> {
-                scavenge(neighbours);
-            }
-            case COLLECT -> {
-                collect(neighbours);
-            }
-
+            case EXPLORE -> explore(neighbours);
+            case SCAVENGE -> scavenge(neighbours);
+            case COLLECT -> collect(neighbours);
         }
         return true;
     }
@@ -88,19 +83,23 @@ public class Ant implements Entity {
                 return;
             }
         }
-        moveTile(selectBestTile(neighbours));
+        moveTile(selectTileFromDirectWayToNest(neighbours));
     }
 
-    private Tile selectBestTile(Tile[] neighbors) {
+    /**
+     * Selects the best neighbor given to the shortest way to the nest.
+     *
+     * @param neighbors Represents all neighbors from which we can choose
+     * @return selected Tile from neighbors
+     */
+    private Tile selectTileFromDirectWayToNest(Tile[] neighbors) {
         // we need to know where the nest is
         Vector nestPosition = grid.getNest().getPosition();
 
         int dX = (getPosition().getX() - nestPosition.getX()) % grid.getSizeX();
         int dY = (getPosition().getY() - nestPosition.getY()) % grid.getSizeY();
 
-        // we need to look in the right direction
         int stepsToNest = Math.abs(dX) + Math.abs(dY);
-
         Vector direction = new Vector(Math.round((float) dX / stepsToNest), Math.round((float) dY / stepsToNest));
 
         // check if both directions are possible
@@ -115,6 +114,7 @@ public class Ant implements Entity {
             return neighbor;
         }
 
+        // if both directions were not available, try only one coordinate
         for (Tile neighbor : neighbors) {
             if (neighbor.getPosition().getX() != (getPosition().getX() - direction.getX()) % grid.getSizeX()) {
                 continue;
@@ -131,6 +131,7 @@ public class Ant implements Entity {
             return neighbor;
         }
 
+        // if this might also not work - choose a random neighbor
         return neighbors[(int) Math.floor(Math.random() * (neighbors.length))];
     }
 
@@ -217,14 +218,24 @@ public class Ant implements Entity {
         return null;
     }
 
-
+    /**
+     * Selects the neighbor with the highest stink.
+     * If all neighbors have no stink at all - a random neighbor gets picked
+     *
+     * @param neighbours Represents all neighbors from which we can choose
+     *
+     * @return selected tile
+     */
     private Tile selectMaxTile(Tile[] neighbours) {
         int indexMaxWeight = 0;
         float maxWeight = 0;
         for (int i = 0; i < neighbours.length; i++) {
             float stink;
-            if (state == State.COLLECT) stink = neighbours[i].getCurrentStink();
-            else stink = neighbours[i].getCurrentStinkOfFood();
+            if (state == State.COLLECT) {
+                stink = neighbours[i].getCurrentStink();
+            } else {
+                stink = neighbours[i].getCurrentStinkOfFood();
+            }
             if (stink > maxWeight) {
                 maxWeight = stink;
                 indexMaxWeight = i;
@@ -234,7 +245,11 @@ public class Ant implements Entity {
         return maxWeight == 0 ? selectRandomTile(neighbours) : neighbours[indexMaxWeight];
     }
 
-
+    /**
+     * Handles the logic of increasing and decreasing the ant counter on the tiles.
+     *
+     * @param state State which is about to get picked
+     */
     private void changeState(State state) {
         Tile currentTile = grid.getTile(position);
         switch (this.state) {

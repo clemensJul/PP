@@ -17,7 +17,7 @@ public class Nest extends Tile {
      * @return {@link Color#YELLOW}
      */
     public Color getTileColor() {
-        return Color.YELLOW;
+        return Color.CYAN;
     }
 
     /**

@@ -1,21 +1,26 @@
 import codedraw.CodeDraw;
-
 import java.awt.*;
 import java.util.Queue;
 
 // combines visuals from CodeDraw with the logic found in Grid
 public class Simulation {
-
     private final int cellSize;
     private final int maxX;
     private final int maxY;
-
     private final int updatesPerCircle;
-
-
     private final CodeDraw cd;
     private final Grid grid;
 
+    /**
+     * Initializes a Simulation.
+     *
+     * @param cellSize cellSize for Grid
+     * @param maxX width of Grid
+     * @param maxY height of Grid
+     * @param numberOfAnts number of ants on Grid
+     * @param bias Biases for ants on directions
+     * @param updatesPerCircle how many iterations are made before visual update
+     */
     public Simulation(int cellSize, int maxX, int maxY, int numberOfAnts, float[] bias, int updatesPerCircle) {
         this.cellSize = cellSize;
         this.maxX = maxX;
@@ -25,14 +30,21 @@ public class Simulation {
         //simulation parameters
         cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
         grid = new Grid(maxX, maxY, numberOfAnts, bias);
-
     }
 
+    /**
+     * Checks if the CodeDraw window is closed.
+     *
+     * @return if simulation window is closed
+     */
     public boolean isClosed() {
         return cd.isClosed();
     }
 
-    //runs one circle of the simulation - multiple updates can happen in each circle
+    /**
+     * Runs one circle of the simulation.
+     * Multiple updates can happen in each circle
+     */
     public void run() {
         if (!cd.isClosed()) {
             Queue<Tile> priorityQueue = grid.getUpdateQueue();
@@ -50,7 +62,7 @@ public class Simulation {
                 cd.fillRectangle(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
             }
 
-            cd.show(100);
+            cd.show();
         }
     }
 }

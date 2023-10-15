@@ -20,16 +20,32 @@ public class Tile implements Entity {
 
     private Color tileColor = Color.gray;
 
+    /**
+     * Initializes a Tile at the given position.
+     *
+     * @param position Position of Tile
+     */
     public Tile(Vector position) {
         this.position = position;
     }
 
+    /**
+     * Returns the tile´s position.
+     *
+     * @return Position of Tile
+     */
     @Override
     public Vector getPosition() {
         return position;
     }
 
     //updates color according to simple rules
+
+    /**
+     * Returns the tile´s color based on the ants and the currentStink.
+     *
+     * @return true if there is a need for an visual update.
+     */
     @Override
     public boolean update() {
         currentStink *= stinkDeletionRate;
@@ -59,18 +75,25 @@ public class Tile implements Entity {
         return false;
     }
 
-    // checks if ant with food is present
+    /**
+     * Checks if there are any ants which carry food on this tile.
+     */
     public boolean isFoodPresent() {
         return foodPresent > 0;
     }
 
-    // increases stink of food and food present
+    /**
+     * Increases the value of present ants which carry food and the corresponding stink.
+     */
     public void increaseFoodPresent() {
         foodPresent++;
         currentStinkOfFood = clamp(currentStinkOfFood + antStink);
     }
 
-    // decreases food present
+    /**
+     * Decreases the value of present ants which carry food.
+     * The minimum of the counter is 0.
+     */
     public void decreaseFoodPresent() {
         if (foodPresent <= 0) {
             foodPresent = 0;
@@ -79,12 +102,17 @@ public class Tile implements Entity {
         }
     }
 
-    // increases ants scavenging on tile
+    /**
+     * Increases the value of present ants which are in scavenge state.
+     */
     public void increaseAntsScavenge() {
         antsScavenge++;
     }
 
-    // decreases ants scavenging on tile
+    /**
+     * Decreases the value of present ants which are in scavenge state.
+     * The minimum of the counter is 0.
+     */
     public void decreaseAntsScavenge() {
         if (antsScavenge <= 0) {
             antsScavenge = 0;
@@ -93,13 +121,22 @@ public class Tile implements Entity {
         }
     }
 
-    // increases ants presents
+    /**
+     * Increases the value of present ants which are in exploring state and the corresponding stink.
+     * Only ants in exploring mode are taken into account.
+     */
     public void increaseAntsPresent() {
         antsPresent++;
         currentStink = clamp(currentStink + antStink);
     }
 
-    // created math clamp in java
+    /**
+     * Makes sure the stink is always in between 0 and maxStink
+     *
+     * @param stink stink to clamp
+     *
+     * @return clamped stink
+     */
     private static float clamp(float stink) {
         if (stink < 0.0f) {
             return 0.0f;
@@ -108,7 +145,10 @@ public class Tile implements Entity {
         return Math.min(stink, maxStink);
     }
 
-    // decreases ants present
+    /**
+     * Decreases the value of present ants which are in exploring state.
+     * The minimum of the counter is 0.
+     */
     public void decreaseAntsPresent() {
         if (antsPresent <= 0) {
             antsPresent = 0;
@@ -117,17 +157,31 @@ public class Tile implements Entity {
         }
     }
 
-    // get current smell of ants
+    /**
+     * Return the currentStink of ants.
+     * This stink only describe ants which are not carrying food.
+     *
+     * @return currentStink
+     */
     public float getCurrentStink() {
         return currentStink;
     }
 
-    // get current stink of food
+    /**
+     * Return the currentStinkOfFood of ants.
+     * This stink only describe ants which are carrying food.
+     *
+     * @return currentStinkOfFood
+     */
     public float getCurrentStinkOfFood() {
         return currentStinkOfFood;
     }
 
-    // returns color of the tile
+    /**
+     * Return the color of Tile.
+     *
+     * @return Color of Tile
+     */
     public Color getTileColor() {
         return tileColor;
     }

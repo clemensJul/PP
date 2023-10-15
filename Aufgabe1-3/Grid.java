@@ -10,6 +10,14 @@ public class Grid {
     private final Queue<Tile> updateQueue;
     private final float[] bias;
 
+    /**
+     * Initializes a Grid.
+     *
+     * @param sizeX width of Grid
+     * @param sizeY height of Grid
+     * @param numberOfAnts number of ants on Grid
+     * @param bias Biases for ants on directions
+     */
     public Grid(int sizeX, int sizeY, int numberOfAnts, float[] bias) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
@@ -24,6 +32,7 @@ public class Grid {
                 tiles[x][y] = new Tile(new Vector(x, y));
             }
         }
+
         //place food tiles randomly
         for (int i = 0; i < foodCount; i++) {
             int randomX = (int) (Math.random() * sizeX);
@@ -37,7 +46,7 @@ public class Grid {
             tiles[randomX][randomY] = new FoodSource(new Vector(randomX, randomY));
         }
 
-        //place nest semi randomly
+        //place nest randomly
         int paddingInline = sizeX / 5;
         int paddingBlock = sizeX / 5;
         for (int i = 0; i < 1; i++) {
@@ -68,7 +77,10 @@ public class Grid {
         System.out.println("created everything");
     }
 
-    //updates every entity - if the tile needed an update it gets added to the priority queue that determines which tiles need a visual update in Codedraw
+    /**
+     * Handles the update process of the Grid.
+     * If a tile needs an update, it gets added to a priority queue to handle visual updates.
+     */
     public void update() {
         for (Ant ant : ants) {
             ant.update();
@@ -82,7 +94,12 @@ public class Grid {
         }
     }
 
-    //get all neighbour tiles that an ant can see
+    /**
+     * Returns all possible neighbor tile of an ant.
+     * It takes the current looking direction of an ant into account.
+     *
+     * @return Possible five neighbor tiles
+     */
     public Tile[] availableNeighbours(Ant ant) {
         Vector direction = ant.getDirection();
         Vector position = ant.getPosition();
@@ -104,34 +121,68 @@ public class Grid {
         return neighbours;
     }
 
-    //returns tile to a position
+    /**
+     * Returns a tile at a given position
+     *
+     * @return Tile
+     */
     public Tile getTile(Vector position) {
         return tiles[modulo(position.getX(), sizeX)][modulo(position.getY(), sizeY)];
     }
 
-    //returns queue of updated tiles
+    /**
+     * Returns a queue of all tiles which need visual update.
+     *
+     * @return Queue of Tiles
+     */
     public Queue<Tile> getUpdateQueue() {
         return updateQueue;
     }
 
-    //returns an always positive int after a modulo operation
+    /**
+     * Modulo operation of given params.
+     *
+     * @param number Number
+     * @param divisor Divisor
+     *
+     * @return modulu
+     */
     private static int modulo(int number, int divisor) {
         return (number + divisor) % divisor;
     }
 
-    //returns current biases as set by the simulation parameters
+    /**
+     * Returns the biases.
+     *
+     * @return Bias
+     */
     public float[] getBias() {
         return Arrays.copyOf(bias, bias.length);
     }
 
+    /**
+     * Returns the nest.
+     *
+     * @return Nest
+     */
     public Nest getNest() {
         return nest;
     }
 
+    /**
+     * Returns the width of Grid.
+     *
+     * @return sizeX
+     */
     public int getSizeX() {
         return sizeX;
     }
 
+    /**
+     * Returns the height of Grid.
+     *
+     * @return sizeY
+     */
     public int getSizeY() {
         return sizeY;
     }

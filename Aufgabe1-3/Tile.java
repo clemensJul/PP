@@ -38,14 +38,13 @@ public class Tile implements Entity {
             tileColor = Color.green;
             return true;
         }
-        if (antsScavenge > 0) {
-            tileColor = Color.red;
-            return true;
-        }
+
+
         if (antsPresent > 0) {
             tileColor = Color.black;
             return true;
         }
+
         if (currentStinkOfFood > 0.005f) {
             tileColor = new Color(1f, 1f, 1f, currentStinkOfFood);
             return true;
@@ -73,7 +72,11 @@ public class Tile implements Entity {
 
     // decreases food present
     public void decreaseFoodPresent() {
-        foodPresent--;
+        if (foodPresent <= 0) {
+            foodPresent = 0;
+        } else {
+            foodPresent--;
+        }
     }
 
     // increases ants scavenging on tile
@@ -83,11 +86,11 @@ public class Tile implements Entity {
 
     // decreases ants scavenging on tile
     public void decreaseAntsScavenge() {
-        if(antsScavenge <= 0) {
+        if (antsScavenge <= 0) {
             antsScavenge = 0;
-            return;
+        } else {
+            antsScavenge--;
         }
-        antsScavenge--;
     }
 
     // increases ants presents
@@ -107,7 +110,11 @@ public class Tile implements Entity {
 
     // decreases ants present
     public void decreaseAntsPresent() {
-        antsPresent--;
+        if (antsPresent <= 0) {
+            antsPresent = 0;
+        } else {
+            antsPresent--;
+        }
     }
 
     // get current smell of ants

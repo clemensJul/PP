@@ -1,6 +1,6 @@
 import java.util.Arrays;
 // Modularisierungseinheit: Klasse
-// Daten werden von Ants gekapselt und nur notwendige Daten sind von außen sichtar. (Data-Hiding)
+// Daten werden von Ants gekapselt und nur notwendige Daten sind von außen sichtbar. (Data-Hiding)
 // ist ein Untertyp von Entity. (Design By Contract)
 
 // Ant holds the logic of the different states.

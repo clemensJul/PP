@@ -1,4 +1,5 @@
 import java.util.*;
+// Modularisierungseinheit: Klasse
 
 // handles the entire logic that depends on grid operations
 public class Grid {

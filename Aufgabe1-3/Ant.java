@@ -1,6 +1,11 @@
 import java.util.Arrays;
+// Modularisierungseinheit: Klasse
+// Daten werden von Ants gekapselt und nur notwendige Daten sind von außen sichtar. (Data-Hiding)
+// ist ein Untertyp von Entity. (Design By Contract)
 
-
+// Ant holds the logic of the different states.
+// It handles the process of finding the next tiles.
+// It implements the Entity since it needs a position.
 public class Ant implements Entity {
     // Current position of ant
     private Vector position;

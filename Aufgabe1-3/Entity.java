@@ -1,6 +1,7 @@
-// An entity which holds
+// Modularisierungseinheit: Modul
+// Design by Contract
 
-// TODO: welche Moduleinheit??
+// An entity is an object that lives on a Grid and needs a position.
 public interface Entity {
 
     /**

@@ -1,4 +1,6 @@
 import java.awt.*;
+// Modularisierungseinheit: Klasse
+// Eine Erweiterung der Tile-Klasse, die ein Untertyp von Entity ist.
 
 // This class extends from Tile
 // It describes the FoodSources

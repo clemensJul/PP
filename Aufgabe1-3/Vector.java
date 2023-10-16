@@ -1,3 +1,6 @@
+// Modularisierungseinheit: Klasse
+// genutzt für die Datenkapselung der Position
+
 // class that represents vectors - vectors are used for positions and directions
 public class Vector {
     private final int x;

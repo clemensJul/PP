@@ -1,6 +1,9 @@
 import java.awt.*;
+// Modularisierungseinheit: Klasse
+// Daten werden von Ants gekapselt und nur notwendige Daten sind von außen sichtar. (Data-Hiding)
+// ist ein Untertyp von Entity
 
-// basic tile  - handles coloring logic
+// basic tile - handles coloring logic
 public class Tile implements Entity {
     private final Vector position;
     private float currentStink = 0f;

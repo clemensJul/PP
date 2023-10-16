@@ -1,6 +1,7 @@
 import codedraw.CodeDraw;
 import java.awt.*;
 import java.util.Queue;
+// Modularisierungseinheit: Klasse
 
 // combines visuals from CodeDraw with the logic found in Grid
 public class Simulation {

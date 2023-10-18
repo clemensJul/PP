@@ -5,6 +5,7 @@
 public class Vector {
     private final int x;
     private final int y;
+    private final long cords;
 
     /**
      * Returns a Vector object that represents the current position of the ant.
@@ -14,6 +15,7 @@ public class Vector {
     public Vector(int x, int y) {
         this.x = x;
         this.y = y;
+        cords = ((long)x<< 32) | (y & 0xFFFFFFFFL);
     }
 
     /**
@@ -67,15 +69,20 @@ public class Vector {
      * @return Direction to secondPos vector
      */
     public Vector calculateDirection(Vector secondPos) {
-        int dx2 = secondPos.x - this.x;
-        int dy2 = secondPos.y - this.y;
+        int dx = secondPos.x - this.x;
+        int dy = secondPos.y - this.y;
 
-        if (dx2 > 1) dx2 = -1;
-        if (dx2 < -1) dx2 = 1;
-        if (dy2 > 1) dy2 = -1;
-        if (dy2 < -1) dy2 = 1;
+        int length = dx+dy;
 
-        return new Vector(dx2, dy2);
+        dx = Math.round(dx/length);
+        dy = Math.round(dy/length);
+
+        if (dx > 1) dx = 1;
+        if (dx < -1) dx = -1;
+        if (dy > 1) dy = 1;
+        if (dy < -1) dy = -1;
+
+        return new Vector(dx, dy);
     }
 
     /**
@@ -120,5 +127,8 @@ public class Vector {
      */
     public int getY() {
         return y;
+    }
+    public long getCords(){
+        return cords;
     }
 }

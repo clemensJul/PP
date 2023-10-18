@@ -16,5 +16,5 @@ public interface Entity {
      *
      * @return If there is a need of a visual update.
      */
-    boolean update();
+    void update();
 }

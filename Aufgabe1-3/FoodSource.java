@@ -16,21 +16,12 @@ public class FoodSource extends Tile {
     }
 
     /**
-     * Returns the color of the FoodSource
-     *
-     * @return Color of FoodSource
-     */
-    public Color getTileColor() {
-        return new Color(150, 200, 0);
-    }
-
-    /**
      * There is no need to update a FoodSource
      *
      * @return always true
      */
     @Override
-    public boolean update() {
-        return true;
+    public void update() {
+        return;
     }
 }

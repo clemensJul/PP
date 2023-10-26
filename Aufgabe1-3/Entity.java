@@ -1,6 +1,8 @@
 // Modularisierungseinheit: Modul
 // Design by Contract
 
+import java.awt.*;
+
 // An entity is an object that lives on a Grid and needs a position.
 public interface Entity {
 
@@ -12,9 +14,16 @@ public interface Entity {
     Vector getPosition();
 
     /**
+     * Returns the Color of the Entity.
+     *
+     * @return Color of entity
+     */
+    Color getColor();
+
+    /**
      * Handles the update process of the Entity.
      *
      * @return If there is a need of a visual update.
      */
-    void update();
+    boolean update();
 }

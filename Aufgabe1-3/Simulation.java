@@ -18,11 +18,10 @@ public class Simulation {
      * @param cellSize cellSize for Grid
      * @param maxX width of Grid
      * @param maxY height of Grid
-     * @param numberOfAnts number of ants on Grid
      * @param bias Biases for ants on directions
      * @param updatesPerCircle how many iterations are made before visual update
      */
-    public Simulation(int cellSize, int maxX, int maxY, int numberOfAnts, float[] bias, int updatesPerCircle) {
+    public Simulation(int cellSize, int maxX, int maxY, float[] bias, int updatesPerCircle) {
         this.cellSize = cellSize;
         this.maxX = maxX;
         this.maxY = maxY;
@@ -30,7 +29,7 @@ public class Simulation {
 
         //simulation parameters
         cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
-        grid = new Grid(maxX, maxY, numberOfAnts, bias);
+        grid = new Grid(bias);
     }
 
     /**
@@ -48,20 +47,24 @@ public class Simulation {
      */
     public void run() {
         if (!cd.isClosed()) {
-            Queue<Tile> priorityQueue = grid.getUpdateQueue();
             for (int i = 0; i < updatesPerCircle; i++) {
                 grid.update();
             }
+
             cd.setColor(Color.gray);
             cd.fillRectangle(0, 0, maxX * cellSize, maxY * cellSize);
 
-            while (!priorityQueue.isEmpty()) {
-                Tile tile = priorityQueue.poll();
-                Color tileColor = tile.getTileColor();
+            // prints ants
+            grid.getAnts().forEach(ant -> {
+                cd.setColor(Color.BLACK);
+                cd.fillRectangle(ant.getPosition().getX() * cellSize, ant.getPosition().getY() * cellSize, cellSize, cellSize);
+            });
+
+            grid.getMap().forEach((position, tile) -> {
+                Color tileColor = grid.getColor(tile);
                 cd.setColor(tileColor);
-                Vector position = tile.getPosition();
                 cd.fillRectangle(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
-            }
+            });
 
             cd.show();
         }

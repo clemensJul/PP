@@ -12,7 +12,6 @@ public class Test {
         int cellSize = 3;
         int maxX = 250;
         int maxY = 200;
-        int numberOfAnts = 250;
         float[] bias = new float[]{0.01f, 0.05f, 1f, 0.05f, 0.01f};
         int updatesPerCircle = 1;
 
@@ -20,7 +19,7 @@ public class Test {
 
         Simulation[] sims = new Simulation[numberOfSims];
         for (int i = 0; i < sims.length; i++) {
-            sims[i] = new Simulation(cellSize, maxX, maxY, numberOfAnts, bias, updatesPerCircle);
+            sims[i] = new Simulation(cellSize, maxX, maxY, bias, updatesPerCircle);
         }
 
         while (areNotClosed) {

@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -47,9 +48,11 @@ public class Ant implements Entity {
 
     // Defines what counts as a badScent tile
     private final float badScent = 0.75f;
+    private final Nest nest;
 
-    public Ant(Grid grid,Nest nest, float[] bias, float mutationStrength, int lifetime, Vector position) {
+    public Ant(Grid grid, Nest nest, float[] bias, float mutationStrength, int lifetime, Vector position) {
         this.grid = grid;
+        this.nest = nest;
         this.mutationStrength = mutationStrength;
         this.lifetime = lifetime;
         this.position = position;
@@ -74,7 +77,7 @@ public class Ant implements Entity {
     }
 
     @Override
-    public void update() {
+    public boolean update() {
 
         // new neighbours are found
         updateAvailableNeighbours();
@@ -95,7 +98,7 @@ public class Ant implements Entity {
             }
         }
 
-        return;
+        return true;
     }
 
     /**
@@ -106,6 +109,11 @@ public class Ant implements Entity {
     @Override
     public Vector getPosition() {
         return position;
+    }
+
+    @Override
+    public Color getColor() {
+        return null;
     }
 
     /**
@@ -135,5 +143,9 @@ public class Ant implements Entity {
         this.availableNeighbours[2] = this.grid.getTile(this.position.add(lookDirection[2]));
         this.availableNeighbours[3] = this.grid.getTile(this.position.add(lookDirection[3]));
         this.availableNeighbours[4] = this.grid.getTile(this.position.add(lookDirection[4]));
+    }
+
+    public Nest getNest() {
+        return nest;
     }
 }

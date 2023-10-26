@@ -34,6 +34,20 @@ public class Vector {
 
         return new Vector(vector.y, -vector.x);
     }
+    /**
+     * Creates a random direction vector that will always point somewhere
+     *
+     * @return Random direction vector
+     */
+    public static Vector RandomDirection() {
+        int x = 0;
+        int y = 0;
+        while (x == 0 && y == 0) {
+            x = (int) Math.round(Math.random() * 2 - 1);
+            y = (int) Math.round(Math.random() * 2 - 1);
+        }
+        return new Vector(x, y);
+    }
 
     /**
      * Calculates the vector between an orthogonal vector and its main vector
@@ -50,6 +64,13 @@ public class Vector {
         y = Math.max(-1, Math.min(1, y));
 
         return new Vector(x, y);
+    }
+    public static double dotProduct(Vector a, Vector b) {
+        boolean aBool = false,bBool = false;
+        if (a.x != 0 && a.y != 0) aBool = true;
+        if (b.y != 0 && b.y !=0) bBool = true;
+
+        return aBool&&bBool? a.x * b.x + a.y * b.y:aBool?a.x * b.x + a.y * b.y : bBool? a.x * b.x + a.y * b.y:a.x * b.x + a.y * b.y;
     }
 
     /**
@@ -83,21 +104,6 @@ public class Vector {
         if (dy < -1) dy = -1;
 
         return new Vector(dx, dy);
-    }
-
-    /**
-     * Creates a random direction vector that will always point somewhere
-     *
-     * @return Random direction vector
-     */
-    public static Vector RandomDirection() {
-        int x = 0;
-        int y = 0;
-        while (x == 0 && y == 0) {
-            x = (int) Math.round(Math.random() * 2 - 1);
-            y = (int) Math.round(Math.random() * 2 - 1);
-        }
-        return new Vector(x, y);
     }
 
     /**

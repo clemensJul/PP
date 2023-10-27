@@ -42,6 +42,9 @@ public class Tile implements Entity {
      */
     @Override
     public Color getColor() {
+        if(stinkMap.isEmpty()) {
+            return null;
+        }
         // should return the foodScent of the nest with the highest scent
         return Collections.max(stinkMap.entrySet(), Map.Entry.comparingByValue()).getKey().getColor();
     }
@@ -67,6 +70,9 @@ public class Tile implements Entity {
     public float getCurrentStink(Nest nest) {
         // we want to return the max stink for checking if there is a stink (needed in grid)
         if(nest == null) {
+            if(stinkMap.isEmpty()) {
+                return 0f;
+            }
             return Collections.max(stinkMap.entrySet(), Map.Entry.comparingByValue()).getValue();
         }
 

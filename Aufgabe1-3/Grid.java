@@ -28,7 +28,7 @@ public class Grid {
             int randomX = paddingInline + (int) (Math.random() * (sizeX - 2 * paddingInline));
             int randomY = paddingBlock + (int) (Math.random() * (sizeY - 2 * paddingBlock));
 
-            Tile tile = getTile(randomX, randomY);
+            Tile tile = map.get(new Vector(randomX, randomY));
             if (tile != null) {
                 i--;
                 continue;
@@ -64,8 +64,7 @@ public class Grid {
             int randomX = (int) (Math.random() * sizeX);
             int randomY = (int) (Math.random() * sizeY);
 
-            Tile tile = getTile(randomX, randomY);
-
+            Tile tile = map.get(new Vector(randomX, randomY));
             if (tile != null) {
                 i--;
                 continue;
@@ -81,8 +80,7 @@ public class Grid {
             int randomX = (int) (Math.random() * sizeX);
             int randomY = (int) (Math.random() * sizeY);
 
-            Tile tile = getTile(randomX, randomY);
-
+            Tile tile = map.get(new Vector(randomX, randomY));
             if (tile != null) {
                 i--;
                 continue;
@@ -94,7 +92,7 @@ public class Grid {
             for (int x = 0; x < obstacleWidth; x++) {
                 for (int y = 0; y < obstacleHeight; y++) {
                     Vector position = new Vector(x + randomX, y + randomY);
-                    if (getTile(position) != null) {
+                    if (map.get(position) != null) {
                         continue;
                     }
                     putTileAt(new Obstacle(new Vector(randomX, randomY)), position);
@@ -154,7 +152,9 @@ public class Grid {
     public Tile getTile(Vector position) {
         Tile tile = map.get(position);
         if(tile == null) {
-            return putTile(new Tile(position));
+            Tile newTile = new Tile(position);
+            putTile(newTile);
+            return newTile;
         }
         return tile;
     }

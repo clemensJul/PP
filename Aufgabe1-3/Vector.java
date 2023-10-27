@@ -42,9 +42,9 @@ public class Vector {
      *
      * @return vector between orthogonal vector and this instance
      */
-    public Vector sharpVector(Vector orthogonal) {
-        int x = this.x + orthogonal.x;
-        int y = this.y + orthogonal.y;
+    public static Vector sharpVector(Vector position,Vector orthogonal) {
+        int x = position.x + orthogonal.x;
+        int y = position.y + orthogonal.y;
 
         x = Math.max(-1, Math.min(1, x));
         y = Math.max(-1, Math.min(1, y));

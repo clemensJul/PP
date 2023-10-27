@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+
 // Modularisierungseinheit: Klasse
 // Daten werden von Ants gekapselt und nur notwendige Daten sind von außen sichtbar. (Data-Hiding)
 // ist ein Untertyp von Entity. (Design By Contract)
@@ -14,6 +14,7 @@ public class Ant implements Entity {
     private final Grid grid;
     //inherited bias
     private final float[] bias;
+
     //strength of offsprings mutations
     private final float mutationStrength;
 
@@ -22,12 +23,12 @@ public class Ant implements Entity {
 
     // Current position of ant
     private Vector position;
-    // Current looking direction of ant
-    private Vector direction;
     // saves learned locations
     private ArrayList<Tile> knownLocations;
     // both modifiedBias and neighbours are fixed arrays for each ant to increase performance
     private float[] modifiedBias;
+    //direction vectors
+    private Vector[] lookDirection;
     private Tile[] availableNeighbours;
     private Vector target;
     // current state of ant
@@ -54,7 +55,18 @@ public class Ant implements Entity {
         this.position = position;
 
         //calculate
-        this.direction = Vector.RandomDirection();
+        Vector direction = Vector.RandomDirection();
+        lookDirection = new Vector[5];
+        Vector left = Vector.orthogonalVector(direction, true);
+        Vector leftFront = direction.sharpVector(direction,left);
+        Vector right = Vector.orthogonalVector(direction, false);
+        Vector rightFront = direction.sharpVector(direction,left);
+        lookDirection[0] = left;
+        lookDirection[1] = leftFront;
+        lookDirection[2] = direction;
+        lookDirection[3] = right;
+        lookDirection[4] = rightFront;
+
         this.availableNeighbours = new Tile[5];
         this.bias = Arrays.copyOf(bias,bias.length);
         knownLocations = new ArrayList<>();
@@ -63,6 +75,26 @@ public class Ant implements Entity {
 
     @Override
     public void update() {
+
+        // new neighbours are found
+        updateAvailableNeighbours();
+
+        //influence of target bias
+        if (target != null){
+
+        }
+        switch (state){
+            case EXPLORE -> {
+
+            }
+            case SCAVENGE -> {
+
+            }
+            case COLLECT -> {
+
+            }
+        }
+
         return;
     }
 
@@ -82,7 +114,7 @@ public class Ant implements Entity {
      * @return direction of ant
      */
     public Vector getDirection() {
-        return direction;
+        return lookDirection[2];
     }
 
     //method should incoperate biases from target(you can use the Vector direction method to calculate what direction should be biased), stink and direction
@@ -90,17 +122,18 @@ public class Ant implements Entity {
 
     }
     private void updateAvailableNeighbours(){
-        //generate vectors
-        Vector left = Vector.orthogonalVector(this.direction, true);
-        Vector leftFront = this.direction.sharpVector(left);
+        //generate left hand side vectors
+        lookDirection[0] = Vector.orthogonalVector(lookDirection[2], true);
+        lookDirection[1] = lookDirection[2].sharpVector(lookDirection[2],lookDirection[0]);
 
-        Vector right = Vector.orthogonalVector(this.direction, false);
-        Vector rightFront = this.direction.sharpVector(left);
+        //generate right hand side vectors
+        lookDirection[4] = Vector.orthogonalVector(lookDirection[2], false);
+        lookDirection[3] = lookDirection[2].sharpVector(lookDirection[2],lookDirection[4]);
 
-        this.availableNeighbours[0] = this.grid.getTile(this.position.add(left));
-        this.availableNeighbours[1] = this.grid.getTile(this.position.add(leftFront));
-        this.availableNeighbours[2] = this.grid.getTile(this.position.add(this.direction));
-        this.availableNeighbours[3] = this.grid.getTile(this.position.add(rightFront));
-        this.availableNeighbours[4] = this.grid.getTile(this.position.add(right));
+        this.availableNeighbours[0] = this.grid.getTile(this.position.add(lookDirection[0]));
+        this.availableNeighbours[1] = this.grid.getTile(this.position.add(lookDirection[1]));
+        this.availableNeighbours[2] = this.grid.getTile(this.position.add(lookDirection[2]));
+        this.availableNeighbours[3] = this.grid.getTile(this.position.add(lookDirection[3]));
+        this.availableNeighbours[4] = this.grid.getTile(this.position.add(lookDirection[4]));
     }
 }

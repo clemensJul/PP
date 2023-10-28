@@ -14,7 +14,7 @@ public class Ant implements Entity {
     //grid
     private final Grid grid;
     //inherited bias
-    private final float[] bias;
+    private final int[] bias;
 
     //strength of offsprings mutations
     private final float mutationStrength;
@@ -22,12 +22,18 @@ public class Ant implements Entity {
     //lifetime for each ant - maybe i
     private final int lifetime;
 
+    private final int stinkBias;
+
+    private final int directionBias;
+
+    private final int targetBias;
+
     // Current position of ant
     private Vector position;
     // saves learned locations
     private ArrayList<Tile> knownLocations;
     // both modifiedBias and neighbours are fixed arrays for each ant to increase performance
-    private float[] modifiedBias;
+    private int[] modifiedBias;
     //direction vectors
     private Vector[] lookDirection;
     private Tile[] availableNeighbours;
@@ -37,7 +43,9 @@ public class Ant implements Entity {
     private enum State {
         EXPLORE,
         SCAVENGE,
-        COLLECT
+        COLLECT,
+
+        RETURN
     }
 
 
@@ -50,7 +58,7 @@ public class Ant implements Entity {
     private final float badScent = 0.75f;
     private final Nest nest;
 
-    public Ant(Grid grid, Nest nest, float[] bias, float mutationStrength, int lifetime, Vector position) {
+    public Ant(Grid grid, Nest nest, int[] bias, float mutationStrength, int lifetime, Vector position) {
         this.grid = grid;
         this.nest = nest;
         this.mutationStrength = mutationStrength;
@@ -59,21 +67,27 @@ public class Ant implements Entity {
 
         //calculate
         Vector direction = Vector.RandomDirection();
-        lookDirection = new Vector[5];
+        this.lookDirection = new Vector[bias.length];
+        this.availableNeighbours = new Tile[bias.length];
+        this.bias = Arrays.copyOf(bias,bias.length);
+        this.knownLocations = new ArrayList<>();
+        this.knownLocations.add(nest);
+
         Vector left = Vector.orthogonalVector(direction, true);
         Vector leftFront = direction.sharpVector(direction,left);
         Vector right = Vector.orthogonalVector(direction, false);
         Vector rightFront = direction.sharpVector(direction,left);
-        lookDirection[0] = left;
-        lookDirection[1] = leftFront;
-        lookDirection[2] = direction;
-        lookDirection[3] = right;
-        lookDirection[4] = rightFront;
+        this.lookDirection[0] = left;
+        this.lookDirection[1] = leftFront;
+        this.lookDirection[2] = direction;
+        this.lookDirection[3] = right;
+        this.lookDirection[4] = rightFront;
 
-        this.availableNeighbours = new Tile[5];
-        this.bias = Arrays.copyOf(bias,bias.length);
-        knownLocations = new ArrayList<>();
-        knownLocations.add(nest);
+        stinkBias = 10;
+        directionBias = 10;
+        targetBias = 10;
+
+
     }
 
     @Override
@@ -126,8 +140,32 @@ public class Ant implements Entity {
     }
 
     //method should incoperate biases from target(you can use the Vector direction method to calculate what direction should be biased), stink and direction
-    private void updateBiases(){
+    private Tile makeMove(){
+        Vector normalizedTarget = null;
+        int totalBias = 0;
+        if (target != null){
+            normalizedTarget = target.normalizedVector();
+        }
 
+        for (int i = 0; i < bias.length; i++) {
+            //direction bias
+            modifiedBias[i] = bias[i]*directionBias;
+            if (target != null){
+                modifiedBias[i] += Vector.dotProduct(normalizedTarget,lookDirection[i])*targetBias;
+            }
+            if (state == State.EXPLORE) modifiedBias[i] -= (int)(availableNeighbours[i].getCurrentStink(this.nest)*stinkBias);
+            else modifiedBias[i] += (int)(availableNeighbours[i].getCurrentStink(this.nest)*stinkBias);
+            modifiedBias[i] = Math.max(modifiedBias[i],0);
+            totalBias += modifiedBias[i];
+        }
+
+        int randomVariable = (int)(Math.random()*totalBias);
+        int runner = 0;
+        for (int i = 0; i < bias.length; i++) {
+            runner += modifiedBias[i];
+            if (runner >= randomVariable) return availableNeighbours[i];
+        }
+        return null;
     }
     private void updateAvailableNeighbours(){
         //generate left hand side vectors

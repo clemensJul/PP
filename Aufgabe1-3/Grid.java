@@ -120,7 +120,8 @@ public class Grid {
 
         // check for currentStink <= 0.05
         // if the stink is lower than that, we remove it from the map
-        // FoodSources, Obstacles and Nests have a fixed stink
+        // FoodSources, Obstacles and Nests have a fixed stink -
+        //TODO: remove entities could be a function from each tile (maybe something in the update queue) because then you don't ned to go through everythin a second time
         map.entrySet().removeIf(entry -> entry.getValue().getCurrentStink(null) < 0.05f);
 
         // remove empty foodsources

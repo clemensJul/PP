@@ -5,7 +5,6 @@
 public class Vector {
     private final int x;
     private final int y;
-    private final long cords;
 
     /**
      * Returns a Vector object that represents the current position of the ant.
@@ -15,7 +14,6 @@ public class Vector {
     public Vector(int x, int y) {
         this.x = x;
         this.y = y;
-        cords = ((long)x<< 32) | (y & 0xFFFFFFFFL);
     }
 
     /**
@@ -35,21 +33,6 @@ public class Vector {
         return new Vector(vector.y, -vector.x);
     }
     /**
-     * Creates a random direction vector that will always point somewhere
-     *
-     * @return Random direction vector
-     */
-    public static Vector RandomDirection() {
-        int x = 0;
-        int y = 0;
-        while (x == 0 && y == 0) {
-            x = (int) Math.round(Math.random() * 2 - 1);
-            y = (int) Math.round(Math.random() * 2 - 1);
-        }
-        return new Vector(x, y);
-    }
-
-    /**
      * Calculates the vector between an orthogonal vector and its main vector
      *
      * @param orthogonal Orthogonal vector from vector
@@ -65,21 +48,25 @@ public class Vector {
 
         return new Vector(x, y);
     }
-    public static double dotProduct(Vector a, Vector b) {
-        boolean aBool = false,bBool = false;
-        if (a.x != 0 && a.y != 0) aBool = true;
-        if (b.y != 0 && b.y !=0) bBool = true;
-
-        return aBool&&bBool? a.x * b.x + a.y * b.y:aBool?a.x * b.x + a.y * b.y : bBool? a.x * b.x + a.y * b.y:a.x * b.x + a.y * b.y;
-    }
-
     /**
-     * Inverts the vector.
+     * Calculates dotproduct of 2 vectors
      *
-     * @return inverted vector
+     * @param a,b Vectors for dot product calculation
+     *
+     * @return dot product
      */
-    public Vector invert() {
-        return new Vector(-this.x, -this.y);
+    public static int dotProduct(Vector a, Vector b){
+        return a.x * b.x + a.y * b.y;
+    }
+    /**
+     * normalizes vector
+     *
+     *
+     * @return Direction to secondPos vector
+     */
+    public Vector normalizedVector(){
+        double length = Math.sqrt((this.x*this.x)+(this.y*this.y));
+        return new Vector((int)(x/length),(int)(y/length));
     }
 
     /**
@@ -104,6 +91,21 @@ public class Vector {
         if (dy < -1) dy = -1;
 
         return new Vector(dx, dy);
+    }
+
+    /**
+     * Creates a random direction vector that will always point somewhere
+     *
+     * @return Random direction vector
+     */
+    public static Vector RandomDirection() {
+        int x = 0;
+        int y = 0;
+        while (x == 0 && y == 0) {
+            x = (int) Math.round(Math.random() * 2 - 1);
+            y = (int) Math.round(Math.random() * 2 - 1);
+        }
+        return new Vector(x, y);
     }
 
     /**
@@ -134,7 +136,5 @@ public class Vector {
     public int getY() {
         return y;
     }
-    public long getCords(){
-        return cords;
-    }
+
 }

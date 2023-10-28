@@ -54,14 +54,9 @@ public class Simulation {
             cd.setColor(Color.gray);
             cd.fillRectangle(0, 0, maxX * cellSize, maxY * cellSize);
 
-            // prints ants
-            grid.getAnts().forEach(ant -> {
-                cd.setColor(Color.BLACK);
-                cd.fillRectangle(ant.getPosition().getX() * cellSize, ant.getPosition().getY() * cellSize, cellSize, cellSize);
-            });
-
-            grid.getMap().forEach((position, tile) -> {
-                Color tileColor = grid.getColor(tile);
+            grid.queue().forEach(entry -> {
+                Vector position = entry.getPosition();
+                Color tileColor = entry.getColor();
                 cd.setColor(tileColor);
                 cd.fillRectangle(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
             });

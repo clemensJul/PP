@@ -115,7 +115,7 @@ public class Ant implements Entity {
 
     @Override
     public Color getColor() {
-        return null;
+        return Color.BLACK;
     }
 
     /**

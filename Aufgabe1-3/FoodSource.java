@@ -49,6 +49,6 @@ public class FoodSource extends Tile {
      */
     @Override
     public boolean update() {
-        return false;
+        return foodAmount < 0;
     }
 }

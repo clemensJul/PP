@@ -116,23 +116,29 @@ public class Grid {
         // update all entities
         // how to know which one need updates??
         ants.forEach(Ant::update);
-        map.values().forEach(Tile::update);
+        map.entrySet().removeIf(entry -> entry.getValue().update());
+    }
 
-        // check for currentStink <= 0.05
-        // if the stink is lower than that, we remove it from the map
-        // FoodSources, Obstacles and Nests have a fixed stink -
-        //TODO: remove entities could be a function from each tile (maybe something in the update queue) because then you don't ned to go through everythin a second time
-        map.entrySet().removeIf(entry -> entry.getValue().getCurrentStink(null) < 0.05f);
+    public ArrayList<Entity> queue() {
+        ArrayList<Entity> entities = new ArrayList<>();
 
-        // remove empty foodsources
-        map.entrySet().removeIf(entry -> {
-            if (entry.getValue() instanceof FoodSource foodSource) {
-                return foodSource.getFoodAmount() <= 0;
+        // first add tiles with scent (scent is always <= 1f)
+        map.forEach((key, value) -> {
+            if (value.getCurrentStink(null) <= 1f) {
+                entities.add(value);
             }
-            return false;
         });
 
-        System.out.println(map.size());
+        // ants
+        entities.addAll(ants);
+
+        // then obstacles, food, and nest. (scent is fixed to 100)
+        map.forEach((key, value) -> {
+            if (value.getCurrentStink(null) > 1f) {
+                entities.add(value);
+            }
+        });
+        return entities;
     }
 
     /**

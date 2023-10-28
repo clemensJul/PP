@@ -56,8 +56,11 @@ public class Tile implements Entity {
      */
     @Override
     public boolean update() {
+        // decrease stinks
         stinkMap.replaceAll((nest, stink) -> stink * stinkDeletionRate);
-        return true;
+
+        // if there is a stink > 0.05f, we need to remove it from the map.
+        return !stinkMap.entrySet().stream().anyMatch(entry-> entry.getValue() > 0.05f);
     }
 
     /**

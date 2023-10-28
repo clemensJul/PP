@@ -12,7 +12,7 @@ public class Test {
         int cellSize = 3;
         int maxX = 250;
         int maxY = 200;
-        float[] bias = new float[]{0.01f, 0.05f, 1f, 0.05f, 0.01f};
+        int[] bias = new int[]{1,3,15,3,1};
         int updatesPerCircle = 1;
 
         boolean areNotClosed = true;

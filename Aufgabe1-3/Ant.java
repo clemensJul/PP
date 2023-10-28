@@ -69,6 +69,7 @@ public class Ant implements Entity {
         Vector direction = Vector.RandomDirection();
         this.lookDirection = new Vector[bias.length];
         this.availableNeighbours = new Tile[bias.length];
+        this.modifiedBias = new int[bias.length];
         this.bias = Arrays.copyOf(bias,bias.length);
         this.knownLocations = new ArrayList<>();
         this.knownLocations.add(nest);
@@ -95,23 +96,10 @@ public class Ant implements Entity {
 
         // new neighbours are found
         updateAvailableNeighbours();
+        Tile next = makeMove();
 
-        //influence of target bias
-        if (target != null){
-
-        }
-        switch (state){
-            case EXPLORE -> {
-
-            }
-            case SCAVENGE -> {
-
-            }
-            case COLLECT -> {
-
-            }
-        }
-
+        this.setDirection(this.position.calculateDirection(next.getPosition()));
+        this.position = next.getPosition();
         return true;
     }
 
@@ -138,6 +126,9 @@ public class Ant implements Entity {
     public Vector getDirection() {
         return lookDirection[2];
     }
+    public void setDirection(Vector direction) {
+         lookDirection[2] = direction;
+    }
 
     //method should incoperate biases from target(you can use the Vector direction method to calculate what direction should be biased), stink and direction
     private Tile makeMove(){
@@ -150,9 +141,13 @@ public class Ant implements Entity {
         for (int i = 0; i < bias.length; i++) {
             //direction bias
             modifiedBias[i] = bias[i]*directionBias;
+
+            //target bias
             if (target != null){
                 modifiedBias[i] += Vector.dotProduct(normalizedTarget,lookDirection[i])*targetBias;
             }
+
+            //
             if (state == State.EXPLORE) modifiedBias[i] -= (int)(availableNeighbours[i].getCurrentStink(this.nest)*stinkBias);
             else modifiedBias[i] += (int)(availableNeighbours[i].getCurrentStink(this.nest)*stinkBias);
             modifiedBias[i] = Math.max(modifiedBias[i],0);
@@ -181,6 +176,21 @@ public class Ant implements Entity {
         this.availableNeighbours[2] = this.grid.getTile(this.position.add(lookDirection[2]));
         this.availableNeighbours[3] = this.grid.getTile(this.position.add(lookDirection[3]));
         this.availableNeighbours[4] = this.grid.getTile(this.position.add(lookDirection[4]));
+    }
+    private void switchState(State newState){
+        switch (state){
+            case EXPLORE -> {
+
+            }case SCAVENGE -> {
+
+            }
+            case COLLECT -> {
+
+            }case RETURN -> {
+
+            }
+        }
+
     }
 
     public Nest getNest() {

@@ -80,10 +80,6 @@ public class Vector {
         int dx = secondPos.x - this.x;
         int dy = secondPos.y - this.y;
 
-        int length = dx+dy;
-
-        dx = Math.round(dx/length);
-        dy = Math.round(dy/length);
 
         if (dx > 1) dx = 1;
         if (dx < -1) dx = -1;
@@ -137,4 +133,11 @@ public class Vector {
         return y;
     }
 
+    @Override
+    public String toString() {
+        return "Vector{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

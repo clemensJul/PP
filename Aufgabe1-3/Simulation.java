@@ -21,7 +21,7 @@ public class Simulation {
      * @param bias Biases for ants on directions
      * @param updatesPerCircle how many iterations are made before visual update
      */
-    public Simulation(int cellSize, int maxX, int maxY, float[] bias, int updatesPerCircle) {
+    public Simulation(int cellSize, int maxX, int maxY, int[] bias, int updatesPerCircle) {
         this.cellSize = cellSize;
         this.maxX = maxX;
         this.maxY = maxY;

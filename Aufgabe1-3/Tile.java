@@ -101,4 +101,11 @@ public class Tile implements Entity {
         currentStink = Math.min(currentStink + antStink, 1);
         stinkMap.put(nest, currentStink);
     }
+
+    @Override
+    public String toString() {
+        return "Tile{" +
+                "position=" + position +
+                '}';
+    }
 }

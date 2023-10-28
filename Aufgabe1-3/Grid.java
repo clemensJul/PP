@@ -5,7 +5,7 @@ import java.util.*;
 // handles the entire logic that depends on grid operations
 public class Grid {
     private final ArrayList<Ant> ants;
-    private final float[] bias;
+    private final int[] bias;
     private Map<Vector, Tile> map;
 
     private int sizeX = 200;
@@ -16,7 +16,7 @@ public class Grid {
     private static final Color baseNestColor = new Color(53, 120, 0);
     private static final Color emptyCellColor = new Color(224, 224, 224);
 
-    public Grid(float[] bias) {
+    public Grid(int[] bias) {
         this.bias = bias;
         this.map = new HashMap<>();
         ants = new ArrayList<>();
@@ -214,7 +214,7 @@ public class Grid {
      *
      * @return Bias
      */
-    public float[] getBias() {
+    public int[] getBias() {
         return Arrays.copyOf(bias, bias.length);
     }
 

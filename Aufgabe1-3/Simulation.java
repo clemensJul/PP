@@ -29,6 +29,7 @@ public class Simulation {
 
         //simulation parameters
         cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
+        cd.setAlwaysOnTop(true);
         grid = new Grid(bias);
     }
 
@@ -45,7 +46,7 @@ public class Simulation {
      * Runs one circle of the simulation.
      * Multiple updates can happen in each circle
      */
-    public void run() {
+    private void run() {
         if (!cd.isClosed()) {
             for (int i = 0; i < updatesPerCircle; i++) {
                 grid.update();
@@ -62,6 +63,12 @@ public class Simulation {
             });
 
             cd.show();
+        }
+    }
+
+    public void start() {
+        while(!cd.isClosed()) {
+            run();
         }
     }
 }

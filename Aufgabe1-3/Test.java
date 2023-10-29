@@ -24,6 +24,7 @@ public class Test {
                 sim.start();
             }
             catch (RuntimeException e) {
+                System.out.println(e.getMessage());
                 System.out.println("closed window");
             }
         }

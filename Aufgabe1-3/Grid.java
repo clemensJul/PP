@@ -7,14 +7,11 @@ import java.util.List;
 public class Grid {
     private final ArrayList<Ant> ants;
     private final int[] bias;
-    private Map<Vector, Tile> map;
+    private final Map<Vector, Tile> map;
 
-    private int sizeX = 200;
-    private int sizeY = 250;
     private Vector startPoint = new Vector(0, 0);
     private Vector endPoint = new Vector(200, 250);
     //colors
-    private static final Color baseNestColor = new Color(53, 120, 0);
     private static final Color emptyCellColor = new Color(224, 224, 224);
 
     public Grid(int[] bias) {
@@ -22,84 +19,13 @@ public class Grid {
         this.map = new HashMap<>();
         ants = new ArrayList<>();
 
-        //place nest randomly
-        int paddingInline = sizeX / 5;
-        int paddingBlock = sizeX / 5;
-        for (int i = 0; i < 3; i++) {
-            int randomX = paddingInline + (int) (Math.random() * (sizeX - 2 * paddingInline));
-            int randomY = paddingBlock + (int) (Math.random() * (sizeY - 2 * paddingBlock));
+        int nestCounter = (int) (Math.random() * 5) + 3;
+        int foodCounter = (int) (Math.random() * 10) + 3;
+        int antsPerNest = (int) (Math.random() * 100) + 75;
+        int obstacleCounter = (int) (Math.random() * 15) + 5;
 
-            Tile tile = map.get(new Vector(randomX, randomY));
-            if (tile != null) {
-                i--;
-                continue;
-            }
-
-            Color nestColor = new Color(baseNestColor.getRed(), baseNestColor.getGreen(), 255 / (i + 1));
-            Nest nest = new Nest(new Vector(randomX, randomY), nestColor);
-            putTile(nest);
-//            // make the nest 3x3
-//            for (int x = -1; x < 2; x++) {
-//                for (int y = -1; y < 2; y++) {
-//                    putTileAt(nest, new Vector(x + nest.getPosition().getX(), y + nest.getPosition().getY()));
-//                }
-//            }
-
-            // spawn ants for nest
-            // we need to define a radius in which ants can be spawned around the nest
-            int maxSpawnDistance = 1;
-            // spawn ants
-            for (int antCounter = 0; antCounter < 10; antCounter++) {
-                int x = Math.abs((nest.getPosition().getX() + (int) (Math.random() * maxSpawnDistance * 2) - maxSpawnDistance) % sizeX);
-                int y = Math.abs((nest.getPosition().getY() + (int) (Math.random() * maxSpawnDistance * 2) - maxSpawnDistance) % sizeY);
-
-                Vector spawnPos = new Vector(x, y);
-                ants.add(new Ant(this, nest, bias, 0, 100, spawnPos));
-            }
-        }
-
-
-        int foodCount = (int) (8 + Math.round((Math.random() * 6)));
-        //place food tiles randomly
-        for (int i = 0; i < foodCount; i++) {
-            int randomX = (int) (Math.random() * sizeX);
-            int randomY = (int) (Math.random() * sizeY);
-
-            Tile tile = map.get(new Vector(randomX, randomY));
-            if (tile != null) {
-                i--;
-                continue;
-            }
-
-            tile = new FoodSource(new Vector(randomX, randomY));
-            putTile(tile);
-        }
-
-        int obstacleCount = (int) (8 + Math.round((Math.random() * 6)));
-        //place obstacle tiles randomly
-        for (int i = 0; i < obstacleCount; i++) {
-            int randomX = (int) (Math.random() * sizeX);
-            int randomY = (int) (Math.random() * sizeY);
-
-            Tile tile = map.get(new Vector(randomX, randomY));
-            if (tile != null) {
-                i--;
-                continue;
-            }
-
-            // make the nest nxm
-            int obstacleHeight = Math.min(1 + (int) (Math.random() * 5), sizeX);
-            int obstacleWidth = Math.min(1 + (int) (Math.random() * 5), sizeY);
-            for (int x = 0; x < obstacleWidth; x++) {
-                for (int y = 0; y < obstacleHeight; y++) {
-                    Vector position = new Vector(x + randomX, y + randomY);
-                    if (map.get(position) != null) {
-                        continue;
-                    }
-                    putTileAt(new Obstacle(new Vector(randomX, randomY)), position);
-                }
-            }
-        }
+        Generator generator = new Generator(this, nestCounter, foodCounter, antsPerNest, obstacleCounter, bias);
+        generator.generateTilesForChunk(startPoint, endPoint);
         System.out.println("created everything");
     }
 
@@ -236,7 +162,7 @@ public class Grid {
         extendSides[3] = ants.stream().anyMatch(ant -> ant.getPosition().getY() == endPoint.getY());
 
         // no need to update chunks
-        if(!List.of(extendSides).contains(true)) {
+        if (!List.of(extendSides).contains(true)) {
             return;
         }
 

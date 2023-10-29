@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Stream;
 // Modularisierungseinheit: Klasse
 
 // handles the entire logic that depends on grid operations
@@ -109,7 +111,6 @@ public class Grid {
     /**
      * Handles the update process of the Grid.
      * If a tile needs an update, it gets added to a priority queue to handle visual updates.
-     *
      * Takes care of empty foodSources.
      */
     public void update() {
@@ -117,6 +118,7 @@ public class Grid {
         // how to know which one need updates??
         ants.forEach(Ant::update);
         map.entrySet().removeIf(entry -> entry.getValue().update());
+        generateNewChunks();
     }
 
     public ArrayList<Entity> queue() {
@@ -158,7 +160,7 @@ public class Grid {
      */
     public Tile getTile(Vector position) {
         Tile tile = map.get(position);
-        if(tile == null) {
+        if (tile == null) {
             Tile newTile = new Tile(position);
             putTile(newTile);
             return newTile;
@@ -192,7 +194,7 @@ public class Grid {
      * Puts a tile into the map.
      * The key is directly specified.
      *
-     * @param tile tile
+     * @param tile     tile
      * @param position Position
      * @return Tile
      */
@@ -225,8 +227,19 @@ public class Grid {
     }
 
     // TODO chunk generating
-    private void generateNewChunk(Ant ant) {
+    private void generateNewChunks() {
         int chunkSize = 200;
+
+        Boolean[] extendSides = new Boolean[4];
+        extendSides[0] = ants.stream().anyMatch(ant -> ant.getPosition().getX() == startPoint.getX());
+        extendSides[1] = ants.stream().anyMatch(ant -> ant.getPosition().getX() == endPoint.getX());
+        extendSides[2] = ants.stream().anyMatch(ant -> ant.getPosition().getY() == startPoint.getY());
+        extendSides[3] = ants.stream().anyMatch(ant -> ant.getPosition().getY() == endPoint.getY());
+
+        // no need to update chunks
+        if(!List.of(extendSides).contains(true)) {
+            return;
+        }
 
         // if an ant reaches end of current world
         // create new chunks
@@ -237,33 +250,72 @@ public class Grid {
         // wenn jetzt mal links z.b. erweitert werden sollte, dann wird der chunk größer sein als der erste, weil die höhe vom ganzen grid sich geändert hat
 
         // check on which end the ant wants to leave the world
-        Vector position = ant.getPosition();
         Vector newStartPoint = new Vector(startPoint.getX(), startPoint.getY());
+        Vector newChunkStartPoint = new Vector(startPoint.getX(), startPoint.getY());
         Vector newEndPoint = new Vector(endPoint.getX(), endPoint.getY());
-        if (position.getX() == startPoint.getX()) {
+        Vector newChunkEndPoint = new Vector(endPoint.getX(), endPoint.getY());
+
+        if (extendSides[0]) {
             // extend left
             newStartPoint = new Vector(startPoint.getX() - chunkSize, startPoint.getY());
+//            newEndPoint = endPoint;
+
+            newChunkStartPoint = newStartPoint;
+            newChunkEndPoint = new Vector(startPoint.getX(), endPoint.getY());
+
+            startPoint = newStartPoint;
+
+            Generator generator = new Generator(1, 7, 100, 12);
+            this.map.putAll(generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint));
         }
 
-        if(position.getX() == endPoint.getX()) {
+        if (extendSides[1]) {
             // extend right
+//            newStartPoint = startPoint;
             newEndPoint = new Vector(endPoint.getX() + chunkSize, endPoint.getY());
+
+            newChunkStartPoint = new Vector(endPoint.getX(), startPoint.getY());
+            newChunkEndPoint = endPoint;
+
+            endPoint = newEndPoint;
+
+            Generator generator = new Generator(1, 7, 100, 12);
+            this.map.putAll(generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint));
         }
 
-        if (position.getY() == startPoint.getY()) {
+        if (extendSides[2]) {
             // extend bottom
-            newStartPoint = new Vector(startPoint.getX(), startPoint.getY()  - chunkSize);
+            newStartPoint = new Vector(startPoint.getX(), startPoint.getY() - chunkSize);
+//            newEndPoint = endPoint;
+
+            newChunkStartPoint = newStartPoint;
+            newChunkEndPoint = new Vector(endPoint.getX(), startPoint.getY());
+
+            startPoint = newStartPoint;
+
+            Generator generator = new Generator(1, 7, 100, 12);
+            this.map.putAll(generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint));
         }
 
-        if(position.getX() == endPoint.getX()) {
+        if (extendSides[3]) {
             // extend top
+//            newStartPoint = startPoint;
             newEndPoint = new Vector(endPoint.getX(), endPoint.getY() + chunkSize);
+
+            newChunkStartPoint = new Vector(startPoint.getX(), endPoint.getY());
+            newChunkEndPoint = newEndPoint;
+
+            endPoint = newEndPoint;
+
+            Generator generator = new Generator(1, 7, 100, 12);
+            this.map.putAll(generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint));
         }
 
-        // calculate area in which we should create new entities
-//        Vector chunkStartingPoint = newStartPoint.subtract()
-//        for (int i = 0; i < ; i++) {
-//
-//        }
+//        startPoint = newStartPoint;
+//        endPoint = newEndPoint;
+
+        // run generator for new chunk
     }
+
+
 }

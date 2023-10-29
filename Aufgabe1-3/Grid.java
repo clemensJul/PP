@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Stream;
 // Modularisierungseinheit: Klasse
 
 // handles the entire logic that depends on grid operations
@@ -265,8 +264,8 @@ public class Grid {
 
             startPoint = newStartPoint;
 
-            Generator generator = new Generator(1, 7, 100, 12);
-            this.map.putAll(generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint));
+            Generator generator = new Generator(this, 1, 7, 100, 12, bias);
+            generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
 
         if (extendSides[1]) {
@@ -279,8 +278,8 @@ public class Grid {
 
             endPoint = newEndPoint;
 
-            Generator generator = new Generator(1, 7, 100, 12);
-            this.map.putAll(generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint));
+            Generator generator = new Generator(this, 1, 7, 100, 12, bias);
+            generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
 
         if (extendSides[2]) {
@@ -293,8 +292,8 @@ public class Grid {
 
             startPoint = newStartPoint;
 
-            Generator generator = new Generator(1, 7, 100, 12);
-            this.map.putAll(generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint));
+            Generator generator = new Generator(this, 1, 7, 100, 12, bias);
+            generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
 
         if (extendSides[3]) {
@@ -307,15 +306,8 @@ public class Grid {
 
             endPoint = newEndPoint;
 
-            Generator generator = new Generator(1, 7, 100, 12);
-            this.map.putAll(generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint));
+            Generator generator = new Generator(this, 1, 7, 100, 12, bias);
+            generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
-
-//        startPoint = newStartPoint;
-//        endPoint = newEndPoint;
-
-        // run generator for new chunk
     }
-
-
 }

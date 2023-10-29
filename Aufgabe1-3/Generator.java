@@ -1,26 +1,29 @@
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Generator {
     private int nestCounter = 3;
     private int foodCounter = 3;
     private int antsPerNest = 100;
     private int obstacleCounter = 100;
+    private final int[] antBias;
 
-    public Generator(int nestCounter, int foodCounter, int antsPerNest, int obstacleCounter) {
+    private final Grid grid;
+
+    public Generator(Grid grid, int nestCounter, int foodCounter, int antsPerNest, int obstacleCounter, int[] antBias) {
+        this.grid = grid;
         this.nestCounter = nestCounter;
         this.foodCounter = foodCounter;
         this.antsPerNest = antsPerNest;
         this.obstacleCounter = obstacleCounter;
+        this.antBias = antBias;
     }
 
-    private void generateObstacles(Map<Vector, Tile> map, Vector startPoint, Vector endPoint) {
+    private void generateObstacles(Vector startPoint, Vector endPoint) {
         for (int i = 0; i < obstacleCounter; i++) {
             int randomX = generateRandomNumberBetween(startPoint.getX(), endPoint.getX());
             int randomY = generateRandomNumberBetween(startPoint.getY(), endPoint.getY());
 
-            Tile tile = map.get(new Vector(randomX, randomY));
+            Tile tile = grid.getMap().get(new Vector(randomX, randomY));
             if (tile != null) {
                 i--;
                 continue;
@@ -32,35 +35,36 @@ public class Generator {
             for (int x = 0; x < obstacleWidth; x++) {
                 for (int y = 0; y < obstacleHeight; y++) {
                     Vector position = new Vector(x + randomX, y + randomY);
-                    if (map.get(position) != null) {
+                    if (grid.getMap().get(position) != null) {
                         continue;
                     }
-                    map.put(position, new Obstacle(new Vector(randomX, randomY)));
+                    grid.getMap().put(position, new Obstacle(new Vector(randomX, randomY)));
                 }
             }
         }
     }
 
-    private void generateFoodSources(Map<Vector, Tile> map, Vector startPoint, Vector endPoint) {
+    private void generateFoodSources(Vector startPoint, Vector endPoint) {
         for (int i = 0; i < foodCounter; i++) {
             int randomX = generateRandomNumberBetween(startPoint.getX(), endPoint.getX());
             int randomY = generateRandomNumberBetween(startPoint.getY(), endPoint.getY());
 
-            Tile tile = map.get(new Vector(randomX, randomY));
+            Tile tile = grid.getMap().get(new Vector(randomX, randomY));
             if (tile != null) {
                 i--;
                 continue;
             }
 
-            map.put(new Vector(randomX, randomY), new Obstacle(new Vector(randomX, randomY)));
+            grid.getMap().put(new Vector(randomX, randomY), new Obstacle(new Vector(randomX, randomY)));
         }
     }
-    private void generateNests(Map<Vector, Tile> map, Vector startPoint, Vector endPoint) {
+
+    private void generateNests(Vector startPoint, Vector endPoint) {
         for (int i = 0; i < nestCounter; i++) {
             int randomX = generateRandomNumberBetween(startPoint.getX(), endPoint.getX());
             int randomY = generateRandomNumberBetween(startPoint.getY(), endPoint.getY());
 
-            Tile tile = map.get(new Vector(randomX, randomY));
+            Tile tile = grid.getMap().get(new Vector(randomX, randomY));
             if (tile != null) {
                 i--;
                 continue;
@@ -69,25 +73,25 @@ public class Generator {
             Color nestColor = new Color(generateRandomNumberBetween(0, 255), generateRandomNumberBetween(0, 255), generateRandomNumberBetween(0, 255));
             Nest nest = new Nest(new Vector(randomX, randomY), nestColor);
 
-            map.put(new Vector(randomX, randomY), nest);
-//
-//            // spawn ants for nest
-//            // we need to define a radius in which ants can be spawned around the nest
-//            int maxSpawnDistance = 1;
-//            // spawn ants
-//            for (int antCounter = 0; antCounter < 10; antCounter++) {
-//                ants.add(new Ant(this, nest, bias, 0, 100, spawnPos));
-//            }
+            grid.getMap().put(new Vector(randomX, randomY), nest);
+
+            // spawn ants for nest
+            int maxSpawnDistance = 10;
+            // spawn ants
+            for (int antCounter = 0; antCounter < antsPerNest; antCounter++) {
+                int randomXDelta = (int) (Math.random() * maxSpawnDistance * 2) - maxSpawnDistance;
+                int randomYDelta = (int) (Math.random() * maxSpawnDistance * 2) - maxSpawnDistance;
+
+                Vector spawnPos = new Vector(nest.getPosition().getX() + randomXDelta, nest.getPosition().getY() + randomYDelta);
+                grid.getAnts().add(new Ant(grid, nest, antBias, 0, 100, spawnPos));
+            }
         }
     }
 
-    public Map<Vector, Tile> generateTilesForChunk(Vector startPoint, Vector endPoint) {
-        HashMap<Vector, Tile> map = new HashMap<>();
-        generateObstacles(map, startPoint, endPoint);
-        generateFoodSources(map, startPoint, endPoint);
-        generateNests(map, startPoint, endPoint);
-
-        return map;
+    public void generateTilesForChunk(Vector startPoint, Vector endPoint) {
+        generateObstacles(startPoint, endPoint);
+        generateFoodSources(startPoint, endPoint);
+        generateNests(startPoint, endPoint);
     }
 
     private int generateRandomNumberBetween(int min, int max) {

@@ -1,8 +1,8 @@
 # How to compile on server 101
 
-connect to ssh via:
+connect to ssh via using X11 forwarding:
 ```
-ssh p<Matrikelnummer>@g0.complang.tuwien.ac.at
+ssh -X p<Matrikelnummer>@g0.complang.tuwien.ac.at
 ```
 
 then switch to directory and make sure we are up-to-date:

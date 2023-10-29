@@ -46,7 +46,9 @@ public class Tile implements Entity {
             return null;
         }
         // should return the foodScent of the nest with the highest scent
-        return Collections.max(stinkMap.entrySet(), Map.Entry.comparingByValue()).getKey().getColor();
+        Map.Entry<Nest,Float> pair =  Collections.max(stinkMap.entrySet(), Map.Entry.comparingByValue());
+        Color base = pair.getKey().getColor().brighter();
+        return new Color(base.getRed(),base.getGreen(),base.getBlue(),(int)(pair.getValue()*255));
     }
 
     /**

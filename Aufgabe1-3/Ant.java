@@ -20,7 +20,7 @@ public class Ant implements Entity {
     private final float mutationStrength;
 
     //lifetime for each ant - maybe i
-    private final int lifetime;
+    private int lifetime;
 
     private final int stinkBias;
 
@@ -87,7 +87,7 @@ public class Ant implements Entity {
         stinkBias = 10;
         directionBias = 10;
         targetBias = 10;
-
+        lifetime = 100;
 
     }
 
@@ -96,10 +96,14 @@ public class Ant implements Entity {
 
         // new neighbours are found
         updateAvailableNeighbours();
+        grid.getTile(this.position).addStink(nest);
         Tile next = makeMove();
 
         this.setDirection(this.position.calculateDirection(next.getPosition()));
         this.position = next.getPosition();
+
+        lifetime--;
+        if (lifetime < 0 && target == null) target = knownLocations.get(0).getPosition();
         return true;
     }
 
@@ -115,7 +119,7 @@ public class Ant implements Entity {
 
     @Override
     public Color getColor() {
-        return Color.BLACK;
+        return nest.getColor().darker();
     }
 
     /**

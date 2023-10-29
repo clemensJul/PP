@@ -2,6 +2,7 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 // Modularisierungseinheit: Klasse
 // Daten werden von Ants gekapselt und nur notwendige Daten sind von außen sichtar. (Data-Hiding)
 // ist ein Untertyp von Entity
@@ -85,7 +86,7 @@ public class Tile implements Entity {
         if(currentStink == null) {
             return 0f;
         }
-        return currentStink;
+        return currentStink.floatValue();
     }
     public float totalOtherSmell(Nest nest){
         float sum = 0;
@@ -127,5 +128,18 @@ public class Tile implements Entity {
         return "Tile{" +
                 "position=" + position +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tile tile = (Tile) o;
+        return Objects.equals(position, tile.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position);
     }
 }

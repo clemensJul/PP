@@ -1,6 +1,8 @@
 // Modularisierungseinheit: Klasse
 // genutzt für die Datenkapselung der Position
 
+import java.util.Objects;
+
 // class that represents vectors - vectors are used for positions and directions
 public class Vector {
     private final int x;
@@ -64,9 +66,18 @@ public class Vector {
      *
      * @return Direction to secondPos vector
      */
-    public Vector normalizedVector(){
-        double length = Math.sqrt((this.x*this.x)+(this.y*this.y));
-        return new Vector((int)(x/length),(int)(y/length));
+    public Vector normalizedVector(Vector position) {
+        int dx = this.x - position.x;
+        int dy = this.y - position.y;
+        double length = Math.sqrt(dx * dx + dy * dx);
+        if (length != 0) {
+            int normalizedX = (int)Math.round(dx / length);
+            int normalizedY = (int)Math.round(dy/ length);
+            return new Vector(normalizedX, normalizedY);
+        } else {
+            // Handle the case where the vector has zero length (avoid division by zero).
+            return new Vector(0, 0); // Or you can choose another appropriate default value.
+        }
     }
 
     /**
@@ -139,5 +150,18 @@ public class Vector {
                 "x=" + x +
                 ", y=" + y +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector vector = (Vector) o;
+        return x == vector.x && y == vector.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

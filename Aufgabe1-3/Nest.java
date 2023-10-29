@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Objects;
 // Modularisierungseinheit: Klasse
 // Eine Erweiterung der Tile-Klasse, die ein Untertyp von Entity ist.
 
@@ -49,4 +50,5 @@ public class Nest extends Tile {
     public boolean update() {
         return false;
     }
+
 }

@@ -125,8 +125,8 @@ public class Generator {
                 continue;
             }
 
-            int foodSourceHeight = (int) (Math.random() * 5) + 1;
-            int foodSourceWidth = (int) (Math.random() * 5) + 1;
+            int foodSourceHeight = 1;//(int) (Math.random() * 5) + 1;
+            int foodSourceWidth =1;// (int) (Math.random() * 5) + 1;
 
             for (int x = 0; x < foodSourceWidth; x++) {
                 for (int y = 0; y < foodSourceHeight; y++) {

@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.List;
 import java.util.Objects;
 // Modularisierungseinheit: Klasse
 // Eine Erweiterung der Tile-Klasse, die ein Untertyp von Entity ist.
@@ -7,6 +8,7 @@ import java.util.Objects;
 public class Nest extends Tile {
 
     private Color color;
+    List<Tile> knownLocations;
 
     /**
      * Return nestColor.
@@ -49,6 +51,13 @@ public class Nest extends Tile {
     @Override
     public boolean update() {
         return false;
+    }
+
+    public void updateKnownLocations(List<Tile> list){
+        knownLocations.addAll(list);
+    }
+    public List<Tile> getKnownLocations(){
+        return knownLocations;
     }
 
 }

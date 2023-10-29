@@ -89,8 +89,8 @@ public class Ant implements Entity {
         this.stinkBias = 10;
         this.directionBias = 10;
         this.targetBias = 10;
-        this.lifetime = 100;
-        this.currentLifetime = lifetime;
+        this.lifetime = 30+(int)(Math.random()*300);
+        this.currentLifetime = this.lifetime;
     }
 
     @Override
@@ -173,6 +173,8 @@ public class Ant implements Entity {
 
             if (currentTile.totalOtherSmell(this.nest)>0f) stinkDirectionBias = -1000;
             else if (currentTile instanceof Obstacle) stinkDirectionBias = -1000;
+
+
             int totalDirectionBias = stinkDirectionBias + directionBias + targetDirectionBias;
             // Update the best direction if this direction has a higher bias.
             if (totalDirectionBias > maxBias) {
@@ -180,7 +182,6 @@ public class Ant implements Entity {
                 maxBias = totalDirectionBias;
             }
         }
-        System.out.println("]");
         // Return the tile in the best direction.
         lookDirection[2] = lookDirection[bestDirection];
         position = availableNeighbours[bestDirection].getPosition();
@@ -188,48 +189,34 @@ public class Ant implements Entity {
     }
     private void doThing(){
         Tile current = grid.getTile(this.position);
-        current.addStink(nest);
+        current.addStink(nest,state == State.COLLECT);
         if (current instanceof Nest){
             currentLifetime = lifetime;
-            switchState(State.SCAVENGE);
+            //nest.updateKnownLocations(knownLocations);
+            //knownLocations.addAll(nest.getKnownLocations());
+            if (state == State.COLLECT){
+                state = State.SCAVENGE;
+                setDirection(getDirection().invert());
+            }  else state = State.EXPLORE;
+
         } else if (current instanceof FoodSource) {
             if (!knownLocations.contains(current)) knownLocations.add(current);
-            switchState(State.COLLECT);
+            state = State.COLLECT;
+            setDirection(getDirection().invert());
         }
         this.currentLifetime = currentLifetime-1;
-        if (currentLifetime < 0 && target == null) switchState(State.RETURN);
-    }
-
-    private void switchState(State newState){
-        switch (state){
-            case EXPLORE -> {
-            }
-            case RETURN -> {
-            }
-            case SCAVENGE -> {
-            }
-            case COLLECT -> {
-            }
-
-        }
-        switch (newState){
-            case EXPLORE -> {
-            }
-            case SCAVENGE -> {
-                target = getFoodSource();
-            }
-            case COLLECT -> {
-            }
-            case RETURN -> {
-                target = knownLocations.get(0).getPosition();
-            }
-        }
-        state = newState;
+        if (currentLifetime < 0 && target == null){
+            state = State.RETURN;
+            target = knownLocations.get(0).getPosition();
+            setDirection(getDirection().invert());
+        };
     }
     private Vector getFoodSource(){
-        if (knownLocations.size() > 1){
-
-            return knownLocations.get(1).getPosition();
+        int length = knownLocations.size();
+        int index = 0;
+        while (index<length){
+            if (!(knownLocations.get(index) instanceof Nest)) return knownLocations.get(index).getPosition();
+            index++;
         }
         return null;
     }

@@ -90,6 +90,7 @@ public class Tile implements Entity {
     }
     public float totalOtherSmell(Nest nest){
         float sum = 0;
+
         for (Map.Entry<Nest, Float> entry : stinkMap.entrySet()) {
             Nest key = entry.getKey();
             Float value = entry.getValue();
@@ -110,7 +111,7 @@ public class Tile implements Entity {
      * @param nest Corresponding nest
      * @return true.
      */
-    public void addStink(Nest nest) {
+    public void addStink(Nest nest,boolean hasFood) {
         if(nest == null) {
             return;
         }
@@ -119,7 +120,7 @@ public class Tile implements Entity {
         if(currentStink == null) {
             currentStink = 0f;
         }
-        currentStink = Math.min(currentStink + antStink, 1);
+        currentStink = Math.min(currentStink + antStink*3, 1);
         stinkMap.put(nest, currentStink);
     }
 

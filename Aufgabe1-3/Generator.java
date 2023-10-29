@@ -9,6 +9,16 @@ public class Generator {
 
     private final Grid grid;
 
+    /**
+     * Initializes the Generator.
+     *
+     * @param grid Grid
+     * @param nestCounter Amount of nests which are getting generated
+     * @param foodCounter Amount of foodSources which are getting generated
+     * @param antsPerNest Amount of ants which are getting generated per nest
+     * @param obstacleCounter Amount of ants which are getting generated per nest
+     * @param antBias Biases for ants on directions
+     */
     public Generator(Grid grid, int nestCounter, int foodCounter, int antsPerNest, int obstacleCounter, int[] antBias) {
         this.grid = grid;
         this.nestCounter = nestCounter;
@@ -18,7 +28,17 @@ public class Generator {
         this.antBias = antBias;
     }
 
-    // Methode zur Überprüfung, ob ein Punkt im Dreieck liegt
+    /**
+     * Checks if a given point is in between a triangle.
+     *
+     * @param point1 Point1
+     * @param point2 Point2
+     * @param point3 Point3
+     * @param x X value of given Point
+     * @param y Y value of given Point
+     *
+     * @return isInside of triangle
+     */
     private static boolean isInside(Vector point1, Vector point2, Vector point3, int x, int y) {
         double d1 = sign(new Vector(x, y), point1, point2);
         double d2 = sign(new Vector(x, y), point2, point3);
@@ -30,19 +50,34 @@ public class Generator {
         return !(hasNeg && hasPos);
     }
 
-    // Methode zur Berechnung der Signatur eines Punkts in Bezug auf eine Kante
+    /**
+     * Calculates the point's orientation with respect to an edge.
+     *
+     * @param p1 First edge point.
+     * @param p2 Second edge point.
+     * @param p3 The point to check.
+     * @return The point's orientation.
+     */
     private static double sign(Vector p1, Vector p2, Vector p3) {
         return (p1.getX() - p3.getX()) * (p2.getY() - p3.getY()) - (p2.getX() - p3.getX()) * (p1.getY() - p3.getY());
     }
 
+    /**
+     * Generates obstacles in a given area.
+     * Obstacles are generated in a triangle form.
+     *
+     * @param startPoint Start Point of a rectangle.
+     * @param endPoint End Point of a rectangle.
+     */
     private void generateObstacles(Vector startPoint, Vector endPoint) {
         for (int i = 0; i < obstacleCounter; i++) {
             int randomX = generateRandomNumberBetween(startPoint.getX(), endPoint.getX());
             int randomY = generateRandomNumberBetween(startPoint.getY(), endPoint.getY());
 
+            int maxDistance = 10;
             Vector point1 = new Vector(randomX, randomY);
-            Vector point2 = new Vector(generateRandomNumberBetween(randomX - 20, randomX + 20), generateRandomNumberBetween(randomY - 20, randomY + 20));
-            Vector point3 = new Vector(generateRandomNumberBetween(randomX - 20, randomX + 20), generateRandomNumberBetween(randomY - 20, randomY + 20));
+            Vector point2 = new Vector(generateRandomNumberBetween(randomX - maxDistance, randomX + maxDistance), generateRandomNumberBetween(randomY - maxDistance, randomY + maxDistance));
+            Vector point3 = new Vector(generateRandomNumberBetween(randomX - maxDistance, randomX + maxDistance), generateRandomNumberBetween(randomY - maxDistance, randomY + maxDistance));
 
             Tile tile = grid.getMap().get(new Vector(randomX, randomY));
             // should never be the case because obstacles are generated first
@@ -70,22 +105,15 @@ public class Generator {
                     }
                 }
             }
-
-//            // make the nest nxm
-//            int obstacleHeight = Math.min(1 + (int) (Math.random() * 5), Math.abs(startPoint.getX() - endPoint.getX()));
-//            int obstacleWidth = Math.min(1 + (int) (Math.random() * 5), Math.abs(startPoint.getY() - endPoint.getY()));
-//            for (int x = 0; x < obstacleWidth; x++) {
-//                for (int y = 0; y < obstacleHeight; y++) {
-//                    Vector position = new Vector(x + randomX, y + randomY);
-//                    if (grid.getMap().get(position) != null) {
-//                        continue;
-//                    }
-//                    grid.getMap().put(position, new Obstacle(position));
-//                }
-//            }
         }
     }
 
+    /**
+     * Generates foodSources in a given area.
+     *
+     * @param startPoint Start Point of a rectangle.
+     * @param endPoint End Point of a rectangle.
+     */
     private void generateFoodSources(Vector startPoint, Vector endPoint) {
         for (int i = 0; i < foodCounter; i++) {
             int randomX = generateRandomNumberBetween(startPoint.getX(), endPoint.getX());
@@ -97,10 +125,24 @@ public class Generator {
                 continue;
             }
 
-            grid.getMap().put(new Vector(randomX, randomY), new Obstacle(new Vector(randomX, randomY)));
+            int foodSourceHeight = (int) (Math.random() * 5) + 1;
+            int foodSourceWidth = (int) (Math.random() * 5) + 1;
+
+            for (int x = 0; x < foodSourceWidth; x++) {
+                for (int y = 0; y < foodSourceHeight; y++) {
+                    Vector position = new Vector(randomX + x, randomY + y);
+                    grid.getMap().put(position, new FoodSource(position));
+                }
+            }
         }
     }
 
+    /**
+     * Generates nests in a given area.
+     *
+     * @param startPoint Start Point of a rectangle.
+     * @param endPoint End Point of a rectangle.
+     */
     private void generateNests(Vector startPoint, Vector endPoint) {
         for (int i = 0; i < nestCounter; i++) {
             int randomX = generateRandomNumberBetween(startPoint.getX(), endPoint.getX());
@@ -130,13 +172,25 @@ public class Generator {
         }
     }
 
+    /**
+     * Generates obstacles, nests and foodsources in a given area.
+     *
+     * @param startPoint Start Point of a rectangle.
+     * @param endPoint End Point of a rectangle.
+     */
     public void generateTilesForChunk(Vector startPoint, Vector endPoint) {
         generateObstacles(startPoint, endPoint);
         generateFoodSources(startPoint, endPoint);
         generateNests(startPoint, endPoint);
     }
 
-    private int generateRandomNumberBetween(int min, int max) {
+    /**
+     * Returns a random number in a given range.
+     *
+     * @param min Lower bound
+     * @param max Lower bound
+     */
+    private static int generateRandomNumberBetween(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
 }

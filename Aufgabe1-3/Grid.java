@@ -14,6 +14,12 @@ public class Grid {
     //colors
     private static final Color emptyCellColor = new Color(224, 224, 224);
 
+    /**
+     * Initializes the Grid.
+     * Generates basic entities in the Grid.
+     *
+     * @param bias Biases for ants on directions
+     */
     public Grid(int[] bias) {
         this.bias = bias;
         this.map = new HashMap<>();
@@ -29,14 +35,18 @@ public class Grid {
         System.out.println("created everything!");
     }
 
+    /**
+     * Returns the entities in a map.
+     *
+     * @return Entity Map
+     */
     public Map<Vector, Tile> getMap() {
         return map;
     }
 
     /**
      * Handles the update process of the Grid.
-     * If a tile needs an update, it gets added to a priority queue to handle visual updates.
-     * Takes care of empty foodSources.
+     * Tiles which are not needed anymore are removed from the map.
      */
     public void update() {
         // update all entities
@@ -46,6 +56,15 @@ public class Grid {
         generateNewChunks();
     }
 
+    /**
+     * Returns all entities which need an update in a List.
+     * Map is build in this way:
+     * normal tiles,
+     * ants,
+     * foodSources, obstacles & nests
+     *
+     * @return Entity List
+     */
     public ArrayList<Entity> queue() {
         ArrayList<Entity> entities = new ArrayList<>();
 
@@ -151,7 +170,10 @@ public class Grid {
         return Arrays.copyOf(bias, bias.length);
     }
 
-    // TODO chunk generating
+    /**
+     * Checks if there is any ant which want to go to unknown territory.
+     * If so, the map increases and new obstacles, nests and foodsources are getting generated.
+     */
     private void generateNewChunks() {
         int chunkSize = 200;
 
@@ -166,20 +188,7 @@ public class Grid {
             return;
         }
 
-        // if an ant reaches end of current world
-        // create new chunks
-
-        // check which side we need to extend
-        // i werd da jetzt nur einen einfachen chunk generator brauchen:
-        // heißt also dass wenn die ant z.b. oben ankommt, wird einfach oben das grid um x cells erweitert
-        // wenn jetzt mal links z.b. erweitert werden sollte, dann wird der chunk größer sein als der erste, weil die höhe vom ganzen grid sich geändert hat
-
-        // check on which end the ant wants to leave the world
-        Vector newStartPoint = new Vector(startPoint.getX(), startPoint.getY());
-        Vector newChunkStartPoint = new Vector(startPoint.getX(), startPoint.getY());
-        Vector newEndPoint = new Vector(endPoint.getX(), endPoint.getY());
-        Vector newChunkEndPoint = new Vector(endPoint.getX(), endPoint.getY());
-
+        Vector newStartPoint, newChunkStartPoint, newEndPoint, newChunkEndPoint;
         if (extendSides[0]) {
             // extend left
             newStartPoint = new Vector(startPoint.getX() - chunkSize, startPoint.getY());

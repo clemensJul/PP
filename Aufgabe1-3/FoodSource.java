@@ -18,14 +18,24 @@ public class FoodSource extends Tile {
         super(position);
     }
 
+    /**
+     * Returns a static stink value.
+     *
+     * @return 100
+     */
     @Override
     public float getCurrentStink(Nest nest) {
         return 100;
     }
 
+    /**
+     * Returns the color of a foodsource, where the remaining amount is indicated by the opacity.
+     *
+     * @return Color
+     */
     @Override
     public Color getColor() {
-        return color;
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), (255 / 100) * foodAmount);
     }
 
     /**

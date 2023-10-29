@@ -66,6 +66,9 @@ public class Simulation {
         }
     }
 
+    /**
+     * Starts the simulation.
+     */
     public void start() {
         while(!cd.isClosed()) {
             run();

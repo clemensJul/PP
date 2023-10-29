@@ -26,7 +26,7 @@ public class Grid {
 
         Generator generator = new Generator(this, nestCounter, foodCounter, antsPerNest, obstacleCounter, bias);
         generator.generateTilesForChunk(startPoint, endPoint);
-        System.out.println("created everything");
+        System.out.println("created everything!");
     }
 
     public Map<Vector, Tile> getMap() {

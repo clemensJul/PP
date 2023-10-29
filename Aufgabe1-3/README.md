@@ -1,0 +1,29 @@
+# How to compile on server 101
+
+connect to ssh via:
+```
+ssh p<Matrikelnummer>@g0.complang.tuwien.ac.at
+```
+
+then switch to directory and make sure we are up-to-date:
+```
+cd ppH5 && git pull
+```
+
+then switch to Aufgabe1-3:
+```
+cd Aufgabe1-3
+```
+
+compile files into bin folder:
+```
+javac -d bin -cp lib/CodeDraw.jar *.java
+```
+
+run Test
+```
+java -cp bin:lib/CodeDraw.jar Test
+```
+
+
+

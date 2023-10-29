@@ -114,6 +114,9 @@ public class Vector {
         }
         return new Vector(x, y);
     }
+    public Vector invert(){
+        return new Vector(-x,-y);
+    }
 
     /**
      * Add a vector to this instance coordinate wise.

@@ -1,5 +1,8 @@
 // Modularisierungseinheit: Modul
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 //starts the simulation
 public class Test {
 
@@ -7,6 +10,8 @@ public class Test {
      * Initializes some simulations.
      */
     public static void main(String[] args) {
+
+
         //simulation parameters
         int numberOfSims = 1;
         int cellSize = 3;
@@ -31,6 +36,7 @@ public class Test {
             areNotClosed = !isClosed;
         }
     }
+
 }
 
 // Jessica was working on the entire simulation set up

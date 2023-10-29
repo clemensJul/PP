@@ -87,6 +87,21 @@ public class Tile implements Entity {
         }
         return currentStink;
     }
+    public float totalOtherSmell(Nest nest){
+        float sum = 0;
+        for (Map.Entry<Nest, Float> entry : stinkMap.entrySet()) {
+            Nest key = entry.getKey();
+            Float value = entry.getValue();
+
+            // Check if the key is not equal to the key to exclude
+            if (!key.equals(nest)) {
+                // Add the value to the sum
+                sum += value;
+            }
+        }
+        return sum;
+    }
+
 
     /**
      * Adds a stink to the corresponding scent.

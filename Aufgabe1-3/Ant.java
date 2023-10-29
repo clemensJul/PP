@@ -64,6 +64,7 @@ public class Ant implements Entity {
         this.mutationStrength = mutationStrength;
         this.lifetime = lifetime;
         this.position = position;
+        this.state = State.EXPLORE;
 
         //calculate
         Vector direction = Vector.RandomDirection();
@@ -84,9 +85,9 @@ public class Ant implements Entity {
         this.lookDirection[3] = right;
         this.lookDirection[4] = rightFront;
 
-        stinkBias = 10;
+        stinkBias = 1;
         directionBias = 10;
-        targetBias = 10;
+        targetBias = 1;
         lifetime = 100;
 
     }
@@ -97,13 +98,13 @@ public class Ant implements Entity {
         // new neighbours are found
         updateAvailableNeighbours();
         grid.getTile(this.position).addStink(nest);
-        Tile next = makeMove();
 
+        Tile next = makeMove();
         this.setDirection(this.position.calculateDirection(next.getPosition()));
         this.position = next.getPosition();
 
         lifetime--;
-        if (lifetime < 0 && target == null) target = knownLocations.get(0).getPosition();
+        if (lifetime < 0 && target == null) switchState(State.RETURN);
         return true;
     }
 
@@ -135,36 +136,66 @@ public class Ant implements Entity {
     }
 
     //method should incoperate biases from target(you can use the Vector direction method to calculate what direction should be biased), stink and direction
-    private Tile makeMove(){
-        Vector normalizedTarget = null;
-        int totalBias = 0;
-        if (target != null){
-            normalizedTarget = target.normalizedVector();
-        }
+    private Tile makeMove() {
 
-        for (int i = 0; i < bias.length; i++) {
-            //direction bias
-            modifiedBias[i] = bias[i]*directionBias;
+        int bestDirection = 2;
+        int maxBias = 0;
+        randomizeBias();
+        Vector normalizedTarget = target != null ? target.normalizedVector() : null;
 
-            //target bias
-            if (target != null){
-                modifiedBias[i] += Vector.dotProduct(normalizedTarget,lookDirection[i])*targetBias;
+
+        for (int i = 0; i < availableNeighbours.length; i++) {
+
+            int directionBias = i == 2 ? targetBias*2/3 : modifiedBias[i]; // Penalties for changing direction.
+
+            int targetDirectionBias = 0;
+            if (target != null) {
+                targetDirectionBias = Vector.dotProduct(normalizedTarget, lookDirection[i]) * targetBias;
             }
 
-            //
-            if (state == State.EXPLORE) modifiedBias[i] -= (int)(availableNeighbours[i].getCurrentStink(this.nest)*stinkBias);
-            else modifiedBias[i] += (int)(availableNeighbours[i].getCurrentStink(this.nest)*stinkBias);
-            modifiedBias[i] = Math.max(modifiedBias[i],0);
-            totalBias += modifiedBias[i];
+            int stinkDirectionBias = 0;
+            Tile currentTile = availableNeighbours[i];
+            switch (state){
+                case EXPLORE -> {
+                    stinkDirectionBias -= currentTile.getCurrentStink(this.nest)*stinkBias;
+                    if (currentTile instanceof FoodSource) stinkDirectionBias = 1000;
+                }
+                case SCAVENGE -> {
+                    stinkDirectionBias += currentTile.getCurrentStink(this.nest)*stinkBias;
+                    if (currentTile instanceof FoodSource) stinkDirectionBias = 1000;
+
+                }
+                case COLLECT -> {
+                    stinkDirectionBias += currentTile.getCurrentStink(this.nest)*stinkBias;
+                    if (currentTile instanceof Nest) stinkDirectionBias = 1000;
+
+                }
+                case RETURN -> {
+                    stinkDirectionBias += currentTile.getCurrentStink(this.nest)*stinkBias;
+                    if (currentTile instanceof FoodSource) stinkDirectionBias = 1000;
+                }
+            }
+            stinkDirectionBias -= currentTile.totalOtherSmell(this.nest)*stinkBias*100;
+
+            int totalDirectionBias = stinkDirectionBias + directionBias + targetDirectionBias;
+
+            // Update the best direction if this direction has a higher bias.
+            if (totalDirectionBias > maxBias) {
+                bestDirection = i;
+                maxBias = totalDirectionBias;
+            }
         }
 
-        int randomVariable = (int)(Math.random()*totalBias);
-        int runner = 0;
-        for (int i = 0; i < bias.length; i++) {
-            runner += modifiedBias[i];
-            if (runner >= randomVariable) return availableNeighbours[i];
+        // Return the tile in the best direction.
+        lookDirection[2] = lookDirection[bestDirection];
+        Tile output = availableNeighbours[bestDirection];
+        updateAvailableNeighbours();
+        return output;
+    }
+    private void randomizeBias(){
+        for (int i = 0; i < modifiedBias.length; i++) {
+            modifiedBias[i] = (int)(Math.random()*directionBias);
         }
-        return null;
     }
     private void updateAvailableNeighbours(){
         //generate left hand side vectors
@@ -194,6 +225,7 @@ public class Ant implements Entity {
 
             }
         }
+        state = newState;
 
     }
 

@@ -211,7 +211,8 @@ public class Ant implements Entity {
             if (!knownLocations.contains(current)) knownLocations.add(current);
             if (!((FoodSource) current).decreaseFoodAmount()){
                 grid.removeTile(current);
-                knownLocations.remove(current);
+                if(!(knownLocations.remove(current))) System.out.println("not removed");
+                else System.out.println("removed");
             }
             target = getNest().getPosition();
             state = State.COLLECT;

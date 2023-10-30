@@ -8,6 +8,7 @@ import java.util.Objects;
 // ist ein Untertyp von Entity
 
 // basic tile - handles coloring logic
+// it's heavily oop
 public class Tile implements Entity {
     private final Vector position;
 

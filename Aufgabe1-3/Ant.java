@@ -102,7 +102,9 @@ public class Ant implements Entity {
 
         // new neighbours are found
         updateAvailableNeighbours();
+        //act on tile
         doThing();
+        //find new tile
         makeMove();
 
 
@@ -135,8 +137,7 @@ public class Ant implements Entity {
     public void setDirection(Vector direction) {
          lookDirection[2] = direction;
     }
-
-    //method should incoperate biases from target(you can use the Vector direction method to calculate what direction should be biased), stink and direction
+    //determines the next chosen tile
     private void makeMove() {
 
         int bestDirection = 2;
@@ -190,6 +191,7 @@ public class Ant implements Entity {
         position = availableNeighbours[bestDirection].getPosition();
 
     }
+    //acts on the current tile and changes states of the ants
     private void doThing(){
         Tile current = grid.getTile(this.position);
         current.addStink(nest,state == State.COLLECT);
@@ -221,6 +223,7 @@ public class Ant implements Entity {
             setDirection(getDirection().invert());
         };
     }
+    //randomly choose next foodsource that is known to the ants
     private Vector getFoodSource(){
         int length = knownLocations.size();
         if (length <2) return null;
@@ -232,11 +235,13 @@ public class Ant implements Entity {
     public Nest getNest() {
         return nest;
     }
+    //randomize biases - make move tries to keep it's path
     private void randomizeBias(){
         for (int i = 0; i < modifiedBias.length; i++) {
             modifiedBias[i] = (int)(Math.random()*directionBias);
         }
     }
+    // update neighbours gathered
     private void updateAvailableNeighbours(){
         //generate left hand side vectors
         lookDirection[0] = Vector.orthogonalVector(lookDirection[2], true);

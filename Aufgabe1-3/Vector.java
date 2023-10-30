@@ -4,6 +4,7 @@
 import java.util.Objects;
 
 // class that represents vectors - vectors are used for positions and directions
+// the programm paradigma is a mix between oop and many static functions acting via functional programming
 public class Vector {
     private final int x;
     private final int y;

@@ -37,3 +37,4 @@ public class Test {
 //hw2
 //Clemens revamp of ants logic
 //Raphael revamp of grid logic
+//most of the classes are object-oriented. A notable exception is the Vector class, having many static functions

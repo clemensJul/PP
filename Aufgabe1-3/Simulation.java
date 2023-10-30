@@ -48,6 +48,9 @@ public class Simulation {
      */
     private void run() {
         if (!cd.isClosed()) {
+            // STYLE: prozedulale Programmierung + objektorientierte Programmierung
+            // wir arbeiten immer am gleichen Grid Objekt aber verursachen den Programmfortschritt über Seiteneffekte.
+            // grid.update() triggert alle Entities und überarbeitet die Entities in der Map.
             for (int i = 0; i < updatesPerCircle; i++) {
                 grid.update();
             }

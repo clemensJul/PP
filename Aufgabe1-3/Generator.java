@@ -96,7 +96,6 @@ public class Generator {
             for (int x = minX; x <= maxX; x++) {
                 for (int y = minY; y <= maxY; y++) {
                     Vector position = new Vector(x, y);
-                    // Überprüfe, ob der Punkt im Dreieck liegt
                     if (isInside(point1, point2, point3, x, y)) {
                         if (grid.getMap().get(position) != null) {
                             continue;
@@ -144,6 +143,9 @@ public class Generator {
      * @param endPoint End Point of a rectangle.
      */
     private void generateNests(Vector startPoint, Vector endPoint) {
+        // STYLE: prozeduale Programmierung + objektorientierte Programmierung
+        // prozedual: weil es z.B. mit Seiteneffekten am grid arbeitet
+        // oo: verwendet Objekte von Colors, Vector, Ants, ..
         for (int i = 0; i < nestCounter; i++) {
             int randomX = generateRandomNumberBetween(startPoint.getX(), endPoint.getX());
             int randomY = generateRandomNumberBetween(startPoint.getY(), endPoint.getY());
@@ -190,6 +192,9 @@ public class Generator {
      * @param min Lower bound
      * @param max Lower bound
      */
+    // STYLE: funktionale Programmierung
+    // basiert nur auf den Eingangsparametern basiert und verändert keinen Zustand und hat keine Seiteneffekte.
+    // kann aber in fast allen Paradigmen verwendet werden.
     private static int generateRandomNumberBetween(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }

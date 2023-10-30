@@ -30,6 +30,8 @@ public class Grid {
         int antsPerNest = (int) (Math.random() * 100) + 75;
         int obstacleCounter = (int) (Math.random() * 15) + 5;
 
+        // STYLE: objektorientierte Programmierung
+        // hohe Objektkopplung. Generator braucht unbedingt eine Grid-Instanz.
         Generator generator = new Generator(this, nestCounter, foodCounter, antsPerNest, obstacleCounter, bias);
         generator.generateTilesForChunk(startPoint, endPoint);
         System.out.println("created everything!");

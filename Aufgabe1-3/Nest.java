@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 // Modularisierungseinheit: Klasse
@@ -8,7 +10,7 @@ import java.util.Objects;
 public class Nest extends Tile {
 
     private Color color;
-    List<Tile> knownLocations;
+    LinkedList<Tile> knownLocations;
 
     /**
      * Return nestColor.
@@ -25,9 +27,11 @@ public class Nest extends Tile {
      *
      * @param position Position where Nest is located.
      */
-    public Nest(Vector position, Color nestColor) {
+    public Nest(Vector position, Color nestColor, int antsAmount,Grid grid) {
         super(position);
         this.color = nestColor;
+        this.knownLocations = new LinkedList<Tile>();
+        knownLocations.add(this);
     }
 
     /**
@@ -50,13 +54,14 @@ public class Nest extends Tile {
      */
     @Override
     public boolean update() {
+
         return false;
     }
 
     public void updateKnownLocations(List<Tile> list){
         knownLocations.addAll(list);
     }
-    public List<Tile> getKnownLocations(){
+    public LinkedList<Tile> getKnownLocations(){
         return knownLocations;
     }
 

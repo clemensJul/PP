@@ -155,7 +155,7 @@ public class Generator {
             }
 
             Color nestColor = new Color(generateRandomNumberBetween(0, 255), generateRandomNumberBetween(0, 255), generateRandomNumberBetween(0, 255));
-            Nest nest = new Nest(new Vector(randomX, randomY), nestColor);
+            Nest nest = new Nest(new Vector(randomX, randomY), nestColor,antsPerNest,grid);
 
             grid.getMap().put(new Vector(randomX, randomY), nest);
 
@@ -167,7 +167,7 @@ public class Generator {
                 int randomYDelta = (int) (Math.random() * maxSpawnDistance * 2) - maxSpawnDistance;
 
                 Vector spawnPos = new Vector(nest.getPosition().getX() + randomXDelta, nest.getPosition().getY() + randomYDelta);
-                grid.getAnts().add(new Ant(grid, nest, antBias, 0, 100, spawnPos));
+                grid.getAnts().add(new Ant(grid, nest, 0, 100, spawnPos));
             }
         }
     }

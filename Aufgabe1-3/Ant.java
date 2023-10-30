@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 // Modularisierungseinheit: Klasse
 // Daten werden von Ants gekapselt und nur notwendige Daten sind von außen sichtbar. (Data-Hiding)
@@ -13,8 +14,6 @@ public class Ant implements Entity {
 
     //grid
     private final Grid grid;
-    //inherited bias
-    private final int[] bias;
 
     //strength of offsprings mutations
     private final float mutationStrength;
@@ -28,16 +27,20 @@ public class Ant implements Entity {
 
     private final int targetBias;
 
+    private static int ids = 0;
+    private int id;
+
     // Current position of ant
     private Vector position;
     // saves learned locations
-    private ArrayList<Tile> knownLocations;
+    private LinkedList<Tile> knownLocations;
     // both modifiedBias and neighbours are fixed arrays for each ant to increase performance
     private int[] modifiedBias;
     //direction vectors
     private Vector[] lookDirection;
     private Tile[] availableNeighbours;
     private int currentLifetime;
+    private int lifeCycle;
     private Vector target;
     // current state of ant
     private State state;
@@ -59,7 +62,7 @@ public class Ant implements Entity {
     private final float badScent = 0.75f;
     private final Nest nest;
 
-    public Ant(Grid grid, Nest nest, int[] bias, float mutationStrength, int lifetime, Vector position) {
+    public Ant(Grid grid, Nest nest, float mutationStrength, int lifetime, Vector position) {
         this.grid = grid;
         this.nest = nest;
         this.mutationStrength = mutationStrength;
@@ -69,12 +72,11 @@ public class Ant implements Entity {
 
         //calculate
         Vector direction = Vector.RandomDirection();
-        this.lookDirection = new Vector[bias.length];
-        this.availableNeighbours = new Tile[bias.length];
-        this.modifiedBias = new int[bias.length];
-        this.bias = Arrays.copyOf(bias,bias.length);
-        this.knownLocations = new ArrayList<>();
-        this.knownLocations.add(nest);
+        this.lookDirection = new Vector[5];
+        this.availableNeighbours = new Tile[5];
+        this.modifiedBias = new int[5];
+        this.knownLocations = nest.getKnownLocations();
+        //this.knownLocations.add(nest);
 
         Vector left = Vector.orthogonalVector(direction, true);
         Vector leftFront = direction.sharpVector(direction,left);
@@ -86,11 +88,13 @@ public class Ant implements Entity {
         this.lookDirection[3] = right;
         this.lookDirection[4] = rightFront;
 
-        this.stinkBias = 10;
-        this.directionBias = 10;
-        this.targetBias = 10;
-        this.lifetime = 30+(int)(Math.random()*300);
+        this.stinkBias = 15;
+        this.directionBias = 15;
+        this.targetBias = 5;
+        this.lifetime = 50+(int)(Math.random()*50);
         this.currentLifetime = this.lifetime;
+        this.lifeCycle = 3;
+        id = ids++;
     }
 
     @Override
@@ -139,6 +143,7 @@ public class Ant implements Entity {
         int maxBias = 0;
         randomizeBias();
         Vector normalizedTarget = target != null ? target.normalizedVector(position) : null;
+        //System.out.print("pos "+position+" dir "+getDirection()+" norm tar "+normalizedTarget+" [");
         for (int i = 0; i < availableNeighbours.length; i++) {
 
             int directionBias = i == 2 ? targetBias*2/3 : modifiedBias[i]; // Penalties for changing direction.
@@ -160,28 +165,26 @@ public class Ant implements Entity {
                     if (currentTile instanceof FoodSource) stinkDirectionBias = 1000;
 
                 }
-                case COLLECT -> {
+                case COLLECT,RETURN -> {
                     stinkDirectionBias += currentTile.getCurrentStink(this.nest)*stinkBias;
                     if (currentTile instanceof Nest) stinkDirectionBias = 1000;
 
                 }
-                case RETURN -> {
-                    stinkDirectionBias += currentTile.getCurrentStink(this.nest)*stinkBias;
-                    if (currentTile instanceof FoodSource) stinkDirectionBias = 1000;
-                }
             }
 
-            if (currentTile.totalOtherSmell(this.nest)>0f) stinkDirectionBias = -1000;
-            else if (currentTile instanceof Obstacle) stinkDirectionBias = -1000;
+            stinkDirectionBias -= currentTile.totalOtherSmell(this.nest)*stinkBias;
+            if (currentTile instanceof Obstacle) stinkDirectionBias = -1000;
 
 
             int totalDirectionBias = stinkDirectionBias + directionBias + targetDirectionBias;
+            //System.out.print("["+stinkDirectionBias+","+directionBias+","+targetDirectionBias+"]");
             // Update the best direction if this direction has a higher bias.
             if (totalDirectionBias > maxBias) {
                 bestDirection = i;
                 maxBias = totalDirectionBias;
             }
         }
+        //System.out.println("]");
         // Return the tile in the best direction.
         lookDirection[2] = lookDirection[bestDirection];
         position = availableNeighbours[bestDirection].getPosition();
@@ -194,18 +197,25 @@ public class Ant implements Entity {
             currentLifetime = lifetime;
             //nest.updateKnownLocations(knownLocations);
             //knownLocations.addAll(nest.getKnownLocations());
-            if (state == State.COLLECT){
+            target = getFoodSource();
+            if (target != null){
                 state = State.SCAVENGE;
                 setDirection(getDirection().invert());
             }  else state = State.EXPLORE;
 
         } else if (current instanceof FoodSource) {
             if (!knownLocations.contains(current)) knownLocations.add(current);
+            target = knownLocations.get(0).getPosition();
             state = State.COLLECT;
             setDirection(getDirection().invert());
         }
         this.currentLifetime = currentLifetime-1;
-        if (currentLifetime < 0 && target == null){
+        if (currentLifetime < 0 && state != State.RETURN){
+            /*lifeCycle --;
+            if (lifeCycle <0){
+                System.out.println("one ant of nest died "+nest.toString());
+                grid.getAnts().remove(this);
+            }*/
             state = State.RETURN;
             target = knownLocations.get(0).getPosition();
             setDirection(getDirection().invert());
@@ -213,12 +223,10 @@ public class Ant implements Entity {
     }
     private Vector getFoodSource(){
         int length = knownLocations.size();
-        int index = 0;
-        while (index<length){
-            if (!(knownLocations.get(index) instanceof Nest)) return knownLocations.get(index).getPosition();
-            index++;
-        }
-        return null;
+        if (length <2) return null;
+        int index = (int)(Math.random()*length);
+        if (index == 0 ) return knownLocations.get(1).getPosition();
+        return knownLocations.get(index).getPosition();
     }
 
     public Nest getNest() {

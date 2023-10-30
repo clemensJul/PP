@@ -11,7 +11,7 @@ public class Test {
      */
     public static void main(String[] args) {
         //simulation parameters
-        int numberOfSims = 1;
+        int numberOfSims = 3;
         int cellSize = 3;
         int maxX = 250;
         int maxY = 200;
@@ -30,7 +30,10 @@ public class Test {
         }
     }
 }
-
-// Jessica was working on the entire simulation set up
+//hw1
 // Clemens worked on vectors and the grid
 // Raphael did the ant logic
+
+//hw2
+//Clemens revamp of ants logic
+//Raphael revamp of grid logic

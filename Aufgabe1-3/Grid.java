@@ -25,8 +25,8 @@ public class Grid {
         this.map = new HashMap<>();
         ants = new ArrayList<>();
 
-        int nestCounter = (int) (Math.random() * 5) + 3;
-        int foodCounter = (int) (Math.random() * 10) + 3;
+        int nestCounter = (int) (Math.random() * 2) + 4;
+        int foodCounter = (int) (Math.random() * 20) + 5;
         int antsPerNest = (int) (Math.random() * 100) + 75;
         int obstacleCounter = (int) (Math.random() * 15) + 5;
 

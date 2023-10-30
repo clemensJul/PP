@@ -200,35 +200,41 @@ public class Ant implements Entity {
             //nest.updateKnownLocations(knownLocations);
             //knownLocations.addAll(nest.getKnownLocations());
             target = getFoodSource();
-            if (target != null){
+            if (target == null){
+                state = State.EXPLORE;
+            }  else {
                 state = State.SCAVENGE;
                 setDirection(getDirection().invert());
-            }  else state = State.EXPLORE;
+            }
 
         } else if (current instanceof FoodSource) {
             if (!knownLocations.contains(current)) knownLocations.add(current);
-            target = knownLocations.get(0).getPosition();
+            if (!((FoodSource) current).decreaseFoodAmount()){
+                grid.removeTile(current);
+                knownLocations.remove(current);
+            }
+            target = getNest().getPosition();
             state = State.COLLECT;
             setDirection(getDirection().invert());
         }
-        this.currentLifetime = currentLifetime-1;
-        if (currentLifetime < 0 && state != State.RETURN){
+        this.currentLifetime--;
+        if (currentLifetime == 0){
             /*lifeCycle --;
             if (lifeCycle <0){
                 System.out.println("one ant of nest died "+nest.toString());
                 grid.getAnts().remove(this);
             }*/
             state = State.RETURN;
-            target = knownLocations.get(0).getPosition();
+            target = getNest().getPosition();;
             setDirection(getDirection().invert());
         };
     }
     //randomly choose next foodsource that is known to the ants
     private Vector getFoodSource(){
         int length = knownLocations.size();
-        if (length <2) return null;
+        if (length == 0) return null;
         int index = (int)(Math.random()*length);
-        if (index == 0 ) return knownLocations.get(1).getPosition();
+        // if (index == 0 ) return knownLocations.get(1).getPosition();
         return knownLocations.get(index).getPosition();
     }
 

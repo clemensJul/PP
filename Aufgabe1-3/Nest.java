@@ -31,7 +31,7 @@ public class Nest extends Tile {
         super(position);
         this.color = nestColor;
         this.knownLocations = new LinkedList<Tile>();
-        knownLocations.add(this);
+        //knownLocations.add(this);
     }
 
     /**

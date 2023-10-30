@@ -113,6 +113,9 @@ public class Grid {
         }
         return tile;
     }
+    public void removeTile(Tile tile){
+        map.remove(tile);
+    }
 
     /**
      * Returns a tile at a given position

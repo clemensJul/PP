@@ -7,7 +7,7 @@ import java.awt.*;
 // It describes the FoodSources
 public class FoodSource extends Tile {
     private static Color color = Color.GREEN;
-    private int foodAmount = 100;
+    private int foodAmount = 200;
 
     /**
      * Initializes a FoodSource at the given position.
@@ -35,14 +35,16 @@ public class FoodSource extends Tile {
      */
     @Override
     public Color getColor() {
-        return new Color(color.getRed(), color.getGreen(), color.getBlue(), (255 / 100) * foodAmount);
+        return new Color(color.getRed(), color.getGreen(), color.getBlue());
     }
 
     /**
      * Decreases the amount of left food.
      */
-    public void decreaseFoodAmount() {
+    public boolean decreaseFoodAmount() {
         foodAmount--;
+        if (foodAmount == 0) return false;
+        return true;
     }
 
     /**

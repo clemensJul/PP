@@ -26,7 +26,7 @@ public class Grid {
         ants = new ArrayList<>();
 
         int nestCounter = (int) (Math.random() * 2) + 4;
-        int foodCounter = (int) (Math.random() * 20) + 5;
+        int foodCounter = (int) (Math.random() * 20) + 12;
         int antsPerNest = (int) (Math.random() * 100) + 75;
         int obstacleCounter = (int) (Math.random() * 15) + 5;
 
@@ -114,7 +114,10 @@ public class Grid {
         return tile;
     }
     public void removeTile(Tile tile){
-        map.remove(tile);
+        if(tile instanceof FoodSource) {
+            ants.forEach(ant -> ant.removeLocation(tile));
+        }
+        map.remove(tile.getPosition());
     }
 
     /**

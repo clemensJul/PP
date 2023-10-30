@@ -97,6 +97,10 @@ public class Ant implements Entity {
         id = ids++;
     }
 
+    public void removeLocation(Tile tile) {
+        knownLocations.remove(tile);
+    }
+
     @Override
     public boolean update() {
 

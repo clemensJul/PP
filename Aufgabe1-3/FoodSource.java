@@ -43,8 +43,7 @@ public class FoodSource extends Tile {
      */
     public boolean decreaseFoodAmount() {
         foodAmount--;
-        if (foodAmount == 0) return false;
-        return true;
+        return foodAmount > 0;
     }
 
     /**

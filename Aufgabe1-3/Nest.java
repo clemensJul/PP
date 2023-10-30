@@ -57,6 +57,22 @@ public class Nest extends Tile {
 
         return false;
     }
+    public void addLocation(Tile tile){
+        knownLocations.add(tile);
+    }
+    public Tile getRandomLocation(){
+        int length = knownLocations.size();
+        if (length == 0) return null;
+        int index = (int)(Math.random()*length);
+        // if (index == 0 ) return knownLocations.get(1).getPosition();
+        return knownLocations.get(index);
+    }
+    public boolean containsLocation(Tile tile){
+        return knownLocations.contains(tile);
+    }
+    public boolean removeLocation(Tile tile){
+        return knownLocations.remove(tile);
+    }
 
     public void updateKnownLocations(List<Tile> list){
         knownLocations.addAll(list);

@@ -166,6 +166,7 @@ public class Grid {
         return tile.getColor();
     }
 
+
     /**
      * Returns the biases.
      *

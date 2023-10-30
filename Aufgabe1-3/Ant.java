@@ -41,7 +41,7 @@ public class Ant implements Entity {
     private Tile[] availableNeighbours;
     private int currentLifetime;
     private int lifeCycle;
-    private Vector target;
+    private Tile target;
     // current state of ant
     private State state;
     private enum State {
@@ -143,7 +143,7 @@ public class Ant implements Entity {
         int bestDirection = 2;
         int maxBias = 0;
         randomizeBias();
-        Vector normalizedTarget = target != null ? target.normalizedVector(position) : null;
+        Vector normalizedTarget = target != null ? target.getPosition().normalizedVector(position) : null;
         //System.out.print("pos "+position+" dir "+getDirection()+" norm tar "+normalizedTarget+" [");
         for (int i = 0; i < availableNeighbours.length; i++) {
 
@@ -199,7 +199,7 @@ public class Ant implements Entity {
             currentLifetime = lifetime;
             //nest.updateKnownLocations(knownLocations);
             //knownLocations.addAll(nest.getKnownLocations());
-            target = getFoodSource();
+            target = nest.getRandomLocation();
             if (target == null){
                 state = State.EXPLORE;
             }  else {
@@ -208,13 +208,12 @@ public class Ant implements Entity {
             }
 
         } else if (current instanceof FoodSource) {
-            if (!knownLocations.contains(current)) knownLocations.add(current);
+            if (!nest.containsLocation(current)) nest.addLocation(current);
             if (!((FoodSource) current).decreaseFoodAmount()){
                 grid.removeTile(current);
-                if(!(knownLocations.remove(current))) System.out.println("not removed");
-                else System.out.println("removed");
+               nest.removeLocation(current);
             }
-            target = getNest().getPosition();
+            target = getNest();
             state = State.COLLECT;
             setDirection(getDirection().invert());
         }
@@ -226,19 +225,10 @@ public class Ant implements Entity {
                 grid.getAnts().remove(this);
             }*/
             state = State.RETURN;
-            target = getNest().getPosition();;
+            target = getNest();
             setDirection(getDirection().invert());
         };
     }
-    //randomly choose next foodsource that is known to the ants
-    private Vector getFoodSource(){
-        int length = knownLocations.size();
-        if (length == 0) return null;
-        int index = (int)(Math.random()*length);
-        // if (index == 0 ) return knownLocations.get(1).getPosition();
-        return knownLocations.get(index).getPosition();
-    }
-
     public Nest getNest() {
         return nest;
     }

@@ -1,9 +1,7 @@
-import codedraw.CodeDraw;
-import codedraw.Event;
-import codedraw.EventScanner;
-import codedraw.Key;
+import codedraw.*;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.Queue;
 import java.util.Scanner;
 
@@ -67,20 +65,23 @@ public class Simulation {
                 grid.update();
             }
 
-            cd.setColor(Color.gray);
-            cd.fillRectangle(0, 0, maxX * cellSize, maxY * cellSize);
-
-            offset = offset.add(updateOffset(input));
-
-            grid.queue().forEach(entry -> {
-                Vector position = entry.getPosition().add(this.offset);
-                Color tileColor = entry.getColor();
-                cd.setColor(tileColor);
-                cd.fillRectangle(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
-            });
-
-            cd.show();
+            updateOffset(input);
+            drawWindow();
         }
+    }
+
+    private void drawWindow() {
+        cd.setColor(Color.gray);
+        cd.fillRectangle(0, 0, maxX * cellSize, maxY * cellSize);
+
+        grid.queue().forEach(entry -> {
+            Vector position = entry.getPosition().add(this.offset);
+            Color tileColor = entry.getColor();
+            cd.setColor(tileColor);
+            cd.fillRectangle(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
+        });
+
+        cd.show();
     }
 
     /**
@@ -92,30 +93,68 @@ public class Simulation {
         }
     }
 
+    private void updateOffSet(EventScanner input){
+        if (input.hasEventNow()){
+
+            MouseDownEvent down = input.nextMouseDownEvent();
+        }
+
+    }
+
     //STYLE: 
-    private Vector updateOffset(EventScanner input) {
-        int x = 0, y = 0;
-        int offsetByStep = 20;
-        while (input.hasEventNow() && !input.hasKeyDownEvent()){
+    private void updateOffset(EventScanner input) {
+        int x, y;
+        while (input.hasEventNow() && !input.hasMouseDownEvent()) {
             input.nextEvent();
         }
-        while (input.hasKeyDownEvent()) {
-            Key key = input.nextKeyDownEvent().getKey();
-            switch (key){
-                case W,UP -> {
-                    y++;
+
+        if (input.hasEventNow() && input.hasMouseDownEvent()) {
+            MouseDownEvent down = input.nextMouseDownEvent();
+            x = down.getX();
+            y = down.getY();
+            Vector oldOffset = new Vector(offset.getX(),offset.getY());
+            int newX, newY;
+            while (input.hasMouseMoveEvent()) {
+                MouseMoveEvent move = input.nextMouseMoveEvent();
+                if(input.hasMouseUpEvent()) {
+                    return;
                 }
-                case S,DOWN -> {
-                    y--;
-                }
-                case D,RIGHT -> {
-                    x--;
-                }
-                case A,LEFT -> {
-                    x++;
-                }
+
+                newX = move.getX();
+                newY = move.getY();
+                offset = oldOffset.add(new Vector(newX - x, newY - y));
+                drawWindow();
             }
+
         }
-        return new Vector(x*offsetByStep, y*offsetByStep);
+
+//            int oldX = event.getX();''
+//            int oldY = event.getY();
+//            return new Vector(oldX,oldY);
     }
+        /*
+            while (input.hasMouseClickEvent() && input.h) {
+                Event e = input.nextMouseMoveEvent();
+                e.
+                System.out.println(e.getX() + " - " + e.getY());
+
+//            Key key = input.nextKeyDownEvent().getKey();
+//            switch (key){
+//                case W,UP -> {
+//                    y++;
+//                }
+//                case S,DOWN -> {
+//                    y--;
+//                }
+//                case D,RIGHT -> {
+//                    x--;
+//                }
+//                case A,LEFT -> {
+//                    x++;
+//                }
+//            }
+            }
+        return new Vector(x * offsetByStep, y * offsetByStep);
+
+         */
 }

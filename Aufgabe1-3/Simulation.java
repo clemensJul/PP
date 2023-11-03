@@ -1,6 +1,11 @@
 import codedraw.CodeDraw;
+import codedraw.EventScanner;
+import codedraw.Key;
+
 import java.awt.*;
 import java.util.Queue;
+import java.util.Scanner;
+
 // Modularisierungseinheit: Klasse
 
 // combines visuals from CodeDraw with the logic found in Grid
@@ -11,6 +16,8 @@ public class Simulation {
     private final int updatesPerCircle;
     private final CodeDraw cd;
     private final Grid grid;
+    private EventScanner input;
+    private Vector offset;
 
     /**
      * Initializes a Simulation.
@@ -31,6 +38,10 @@ public class Simulation {
         cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
         cd.setAlwaysOnTop(true);
         grid = new Grid(bias);
+
+        //movement
+        input = cd.getEventScanner();
+        offset = new Vector(0,0);
     }
 
     /**
@@ -58,8 +69,10 @@ public class Simulation {
             cd.setColor(Color.gray);
             cd.fillRectangle(0, 0, maxX * cellSize, maxY * cellSize);
 
+            offset = offset.add(updateOffset(input ));
+
             grid.queue().forEach(entry -> {
-                Vector position = entry.getPosition();
+                Vector position = entry.getPosition().add(this.offset);
                 Color tileColor = entry.getColor();
                 cd.setColor(tileColor);
                 cd.fillRectangle(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
@@ -76,5 +89,26 @@ public class Simulation {
         while(!cd.isClosed()) {
             run();
         }
+    }
+    private Vector updateOffset(EventScanner input){
+        int x = 0 ,y = 0;
+        while (input.hasKeyDownEvent()){
+            Key key = input.nextKeyDownEvent().getKey();
+            switch (key){
+                case W -> {
+                    x--;
+                }
+                case S -> {
+                    x++;
+                }
+                case D -> {
+                    y--;
+                }
+                case A -> {
+                    y++;
+                }
+            }
+        }
+        return new Vector(x,y);
     }
 }

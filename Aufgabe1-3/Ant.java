@@ -32,8 +32,6 @@ public class Ant implements Entity {
 
     // Current position of ant
     private Vector position;
-    // saves learned locations
-    private LinkedList<Tile> knownLocations;
     // both modifiedBias and neighbours are fixed arrays for each ant to increase performance
     private int[] modifiedBias;
     //direction vectors
@@ -74,13 +72,12 @@ public class Ant implements Entity {
         this.lookDirection = new Vector[5];
         this.availableNeighbours = new Tile[5];
         this.modifiedBias = new int[5];
-        this.knownLocations = nest.getKnownLocations();
         //this.knownLocations.add(nest);
 
         Vector left = Vector.orthogonalVector(direction, true);
-        Vector leftFront = direction.sharpVector(direction, left);
+        Vector leftFront = Vector.sharpVector(direction, left);
         Vector right = Vector.orthogonalVector(direction, false);
-        Vector rightFront = direction.sharpVector(direction, left);
+        Vector rightFront = Vector.sharpVector(direction, left);
         this.lookDirection[0] = left;
         this.lookDirection[1] = leftFront;
         this.lookDirection[2] = direction;
@@ -94,10 +91,6 @@ public class Ant implements Entity {
         this.currentLifetime = this.lifetime;
         this.lifeCycle = 3;
         id = ids++;
-    }
-
-    public void removeLocation(Tile tile) {
-        knownLocations.remove(tile);
     }
 
     @Override
@@ -123,6 +116,10 @@ public class Ant implements Entity {
     public Vector getPosition() {
         return position;
     }
+
+//    public void removeLocation(Tile tile) {
+//        knownLocations.remove(tile);
+//    }
 
     @Override
     public Color getColor() {

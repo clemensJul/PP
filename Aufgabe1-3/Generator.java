@@ -169,8 +169,9 @@ public class Generator {
                 int randomYDelta = (int) (Math.random() * maxSpawnDistance * 2) - maxSpawnDistance;
 
                 Vector spawnPos = new Vector(nest.getPosition().getX() + randomXDelta, nest.getPosition().getY() + randomYDelta);
-                grid.getAnts().add(new Ant(grid, nest, 0, 100, spawnPos));
+                nest.getAnts().add(new Ant(grid, nest, 0, 100, spawnPos));
             }
+
         }
     }
 

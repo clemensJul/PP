@@ -6,7 +6,6 @@ import java.util.function.Function;
 
 // handles the entire logic that depends on grid operations
 public class Grid {
-    private final ArrayList<Ant> ants;
     private final int[] bias;
     private final Map<Vector, Tile> map;
 
@@ -24,7 +23,6 @@ public class Grid {
     public Grid(int[] bias) {
         this.bias = bias;
         this.map = new HashMap<>();
-        ants = new ArrayList<>();
 
         int nestCounter = (int) (Math.random() * 2) + 4;
         int foodCounter = (int) (Math.random() * 20) + 12;
@@ -55,11 +53,48 @@ public class Grid {
         // update all entities
 
         // BAD: ants sind zwar Entities, werden aber durch unserem Design vom Grid extra gespeichert, deshalb müssen wir die Update Methode von denen extra aufrufen
-        ants.forEach(Ant::update);
+//        ants.forEach(Ant::update);
 
         // GOOD: Durch die Verwendung von dynamischen Binden werden von allen Entities die update Methoden aufgerufen
         map.entrySet().removeIf(entry -> entry.getValue().update());
+
+        Thread[] threads = getNests().stream().map(Thread::new).toArray(Thread[]::new);
+
+        // start threads
+        for (Thread thread : threads) {
+            thread.start();
+        }
+
+        // wait for threads to finish
+        for (int i = 0; i < threads.length; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                System.out.println("Thread " + i + " wurde unterbrochen.");
+            }
+        }
+
+
+        System.out.println("All threads finished");
         generateNewChunks();
+    }
+
+    public ArrayList<Nest> getNests() {
+        ArrayList<Nest> nests = new ArrayList<>();
+
+        map.forEach((key, value) -> {
+            if (value instanceof Nest nest) {
+                nests.add(nest);
+            }
+        });
+
+        return nests;
+    }
+
+    public ArrayList<Ant> getAnts() {
+        ArrayList<Ant> ants = new ArrayList<>();
+        getNests().forEach(nest -> ants.addAll(nest.getAnts()));
+        return ants;
     }
 
     /**
@@ -82,7 +117,7 @@ public class Grid {
         });
 
         // ants
-        entities.addAll(ants);
+        entities.addAll(getAnts());
 
         // then obstacles, food, and nest. (scent is fixed to 100)
         map.forEach((key, value) -> {
@@ -93,14 +128,6 @@ public class Grid {
         return entities;
 
 
-    }
-    /**
-     * Return all ants in grid
-     *
-     * @return Ants
-     */
-    public ArrayList<Ant> getAnts() {
-        return ants;
     }
 
     /**
@@ -119,9 +146,9 @@ public class Grid {
         return tile;
     }
     public void removeTile(Tile tile){
-        if(tile instanceof FoodSource) {
-            ants.forEach(ant -> ant.removeLocation(tile));
-        }
+//        if(tile instanceof FoodSource) {
+//            ants.forEach(ant -> ant.removeLocation(tile));
+//        }
         map.remove(tile.getPosition());
     }
 
@@ -192,6 +219,8 @@ public class Grid {
         int chunkSize = 200;
 
         Boolean[] extendSides = new Boolean[4];
+        ArrayList<Ant> ants = getAnts();
+
         extendSides[0] = ants.stream().anyMatch(ant -> ant.getPosition().getX() == startPoint.getX());
         extendSides[1] = ants.stream().anyMatch(ant -> ant.getPosition().getX() == endPoint.getX());
         extendSides[2] = ants.stream().anyMatch(ant -> ant.getPosition().getY() == startPoint.getY());
@@ -202,6 +231,7 @@ public class Grid {
             return;
         }
 
+        Generator generator = new Generator(this, 0, 7, 0, 12, bias);
         Vector newStartPoint, newChunkStartPoint, newEndPoint, newChunkEndPoint;
         if (extendSides[0]) {
             // extend left
@@ -213,7 +243,6 @@ public class Grid {
 
             startPoint = newStartPoint;
 
-            Generator generator = new Generator(this, 1, 7, 100, 12, bias);
             generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
 
@@ -227,7 +256,6 @@ public class Grid {
 
             endPoint = newEndPoint;
 
-            Generator generator = new Generator(this, 1, 7, 100, 12, bias);
             generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
 
@@ -241,7 +269,6 @@ public class Grid {
 
             startPoint = newStartPoint;
 
-            Generator generator = new Generator(this, 1, 7, 100, 12, bias);
             generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
 
@@ -255,7 +282,6 @@ public class Grid {
 
             endPoint = newEndPoint;
 
-            Generator generator = new Generator(this, 1, 7, 100, 12, bias);
             generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
     }

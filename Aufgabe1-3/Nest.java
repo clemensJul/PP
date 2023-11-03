@@ -1,18 +1,19 @@
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 // Modularisierungseinheit: Klasse
 // Eine Erweiterung der Tile-Klasse, die ein Untertyp von Entity ist.
 
 //extends Tiles with custom methodes
-public class Nest extends Tile {
+public class Nest extends Tile implements Runnable {
 
     private Color color;
     private final LinkedList<Tile> knownLocations;
     private final ArrayList<Ant> ants;
 
+    public ArrayList<Ant> getAnts() {
+        return ants;
+    }
 
     /**
      * Return nestColor.
@@ -29,10 +30,16 @@ public class Nest extends Tile {
      *
      * @param position Position where Nest is located.
      */
-    public Nest(Vector position, Color nestColor, int antsAmount,Grid grid) {
+    public Nest(Vector position, Color nestColor, int antsAmount, Grid grid) {
         super(position);
         this.color = nestColor;
-        this.knownLocations = new LinkedList<Tile>();
+        this.knownLocations = new LinkedList<>();
+
+        this.ants = new ArrayList<>();
+
+        for (int i = 0; i < antsAmount; i++) {
+            ants.add(new Ant(grid, this, 100, 100, position));
+        }
         //knownLocations.add(this);
     }
 
@@ -59,28 +66,51 @@ public class Nest extends Tile {
 
         return false;
     }
-    public void addLocation(Tile tile){
+
+    public void addLocation(Tile tile) {
         knownLocations.add(tile);
     }
-    public Tile getRandomLocation(){
+
+    public Tile getRandomLocation() {
         int length = knownLocations.size();
         if (length == 0) return null;
-        int index = (int)(Math.random()*length);
+        int index = (int) (Math.random() * length);
         // if (index == 0 ) return knownLocations.get(1).getPosition();
         return knownLocations.get(index);
     }
-    public boolean containsLocation(Tile tile){
+
+    public boolean containsLocation(Tile tile) {
         return knownLocations.contains(tile);
     }
-    public boolean removeLocation(Tile tile){
+
+    public boolean removeLocation(Tile tile) {
         return knownLocations.remove(tile);
     }
 
-    public void updateKnownLocations(List<Tile> list){
+    public void updateKnownLocations(List<Tile> list) {
         knownLocations.addAll(list);
     }
-    public LinkedList<Tile> getKnownLocations(){
+
+    public LinkedList<Tile> getKnownLocations() {
         return knownLocations;
     }
 
+    @Override
+    public void run() {
+// do run things here
+        System.out.println("thread started");
+
+        Random random = new Random();
+
+        int randomWaitTime = random.nextInt(5000); // Zufällige Wartezeit zwischen 0 und 5 Sekunden
+        System.out.println("Warte " + randomWaitTime + " Millisekunden...");
+
+        try {
+            Thread.sleep(randomWaitTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Thread finished.");
+    }
 }

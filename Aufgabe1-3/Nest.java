@@ -7,7 +7,6 @@ import java.util.List;
 //extends Tiles with custom methodes
 public class Nest extends Tile implements Runnable {
 
-    private Thread thread;
     private Color color;
     private final LinkedList<Tile> knownLocations;
     private final ArrayList<Ant> ants;
@@ -44,10 +43,6 @@ public class Nest extends Tile implements Runnable {
         //knownLocations.add(this);
     }
 
-    public Thread getThread() {
-        return thread;
-    }
-
     /**
      * Returns 100.
      * Nest is not taken into account.
@@ -68,8 +63,7 @@ public class Nest extends Tile implements Runnable {
      */
     @Override
     public boolean update() {
-        thread = new Thread(this);
-        thread.start();
+
         return false;
     }
 
@@ -102,22 +96,21 @@ public class Nest extends Tile implements Runnable {
     }
 
     @Override
-    public synchronized void run() {
-        // update ants
+    public void run() {
+// do run things here
         System.out.println("thread started");
-        getAnts().forEach(Ant::update);
+
+        Random random = new Random();
+
+        int randomWaitTime = random.nextInt(5000); // Zufällige Wartezeit zwischen 0 und 5 Sekunden
+        System.out.println("Warte " + randomWaitTime + " Millisekunden...");
+
+        try {
+            Thread.sleep(randomWaitTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         System.out.println("Thread finished.");
-
-//        Random random = new Random();
-//
-//        int randomWaitTime = random.nextInt(5000); // Zufällige Wartezeit zwischen 0 und 5 Sekunden
-//        System.out.println("Warte " + randomWaitTime + " Millisekunden...");
-//
-//        try {
-//            Thread.sleep(randomWaitTime);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
     }
 }

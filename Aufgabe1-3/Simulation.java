@@ -99,10 +99,10 @@ public class Simulation {
         while (input.hasEventNow() && input.hasKeyDownEvent()) {
             Key key = input.nextKeyDownEvent().getKey();
             switch (key) {
-                case W, UP, NUMPAD_UP -> y++;
-                case S, DOWN, NUMPAD_DOWN -> y--;
-                case D, RIGHT, NUMPAD_RIGHT -> x--;
-                case A, LEFT, NUMPAD_LEFT -> x++;
+                case W, UP, NUMPAD8 -> y++;
+                case S, DOWN, NUMPAD2 -> y--;
+                case D, RIGHT, NUMPAD6 -> x--;
+                case A, LEFT, NUMPAD4 -> x++;
                 case PLUS, ADD -> cellSize *= (double) 3 / 2;
                 case MINUS, SUBTRACT -> cellSize *= (double) 2 / 3;
             }

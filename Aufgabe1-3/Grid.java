@@ -53,8 +53,11 @@ public class Grid {
      */
     public void update() {
         // update all entities
-        // how to know which one need updates??
+
+        // BAD: ants sind zwar Entities, werden aber durch unserem Design vom Grid extra gespeichert, deshalb müssen wir die Update Methode von denen extra aufrufen
         ants.forEach(Ant::update);
+
+        // GOOD: Durch die Verwendung von dynamischen Binden werden von allen Entities die update Methoden aufgerufen
         map.entrySet().removeIf(entry -> entry.getValue().update());
         generateNewChunks();
     }

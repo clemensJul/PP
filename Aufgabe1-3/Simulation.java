@@ -103,7 +103,7 @@ public class Simulation {
             input.nextEvent();
         }
 
-        while (input.hasKeyDownEvent()) {
+        while (input.hasEventNow() && input.hasKeyDownEvent()) {
             Key key = input.nextKeyDownEvent().getKey();
             switch (key){
                 case W,UP -> {

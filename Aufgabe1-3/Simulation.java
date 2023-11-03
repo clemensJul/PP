@@ -66,21 +66,24 @@ public class Simulation {
             for (int i = 0; i < updatesPerCircle; i++) {
                 grid.update();
             }
-
-            cd.setColor(Color.gray);
-            cd.fillRectangle(0, 0, maxX * cellSize, maxY * cellSize);
-
-            offset = offset.add(updateOffset(input));
-
-            grid.queue().forEach(entry -> {
-                Vector position = entry.getPosition().add(this.offset);
-                Color tileColor = entry.getColor();
-                cd.setColor(tileColor);
-                cd.fillRectangle(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
-            });
-
-            cd.show();
+            updateOffset(input);
+            drawWindow();
         }
+    }
+
+    private void drawWindow() {
+        cd.setColor(Color.gray);
+        cd.fillRectangle(0, 0, maxX * cellSize, maxY * cellSize);
+
+
+        grid.queue().forEach(entry -> {
+            Vector position = entry.getPosition().add(this.offset);
+            Color tileColor = entry.getColor();
+            cd.setColor(tileColor);
+            cd.fillRectangle(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
+        });
+
+        cd.show();
     }
 
     /**
@@ -93,12 +96,13 @@ public class Simulation {
     }
 
     //STYLE: 
-    private Vector updateOffset(EventScanner input) {
+    private void updateOffset(EventScanner input) {
         int x = 0, y = 0;
         int offsetByStep = 20;
-        while (input.hasEventNow() && !input.hasKeyDownEvent()){
+        while (input.hasEventNow() && !input.hasKeyDownEvent()) {
             input.nextEvent();
         }
+
         while (input.hasKeyDownEvent()) {
             Key key = input.nextKeyDownEvent().getKey();
             switch (key){
@@ -115,7 +119,8 @@ public class Simulation {
                     x++;
                 }
             }
+            offset = offset.add(new Vector(x*offsetByStep, y*offsetByStep));
+            drawWindow();
         }
-        return new Vector(x*offsetByStep, y*offsetByStep);
     }
 }

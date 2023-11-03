@@ -74,7 +74,7 @@ public class Generator {
             int randomX = generateRandomNumberBetween(startPoint.getX(), endPoint.getX());
             int randomY = generateRandomNumberBetween(startPoint.getY(), endPoint.getY());
 
-            int maxDistance = 10;
+            int maxDistance = 30;
             Vector point1 = new Vector(randomX, randomY);
             Vector point2 = new Vector(generateRandomNumberBetween(randomX - maxDistance, randomX + maxDistance), generateRandomNumberBetween(randomY - maxDistance, randomY + maxDistance));
             Vector point3 = new Vector(generateRandomNumberBetween(randomX - maxDistance, randomX + maxDistance), generateRandomNumberBetween(randomY - maxDistance, randomY + maxDistance));

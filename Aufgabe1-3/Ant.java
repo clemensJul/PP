@@ -44,6 +44,7 @@ public class Ant implements Entity {
     private Tile target;
     // current state of ant
     private State state;
+
     private enum State {
         EXPLORE,
         SCAVENGE,
@@ -51,8 +52,6 @@ public class Ant implements Entity {
 
         RETURN
     }
-
-
 
 
     // Counts the successive steps of bad fields
@@ -79,9 +78,9 @@ public class Ant implements Entity {
         //this.knownLocations.add(nest);
 
         Vector left = Vector.orthogonalVector(direction, true);
-        Vector leftFront = direction.sharpVector(direction,left);
+        Vector leftFront = direction.sharpVector(direction, left);
         Vector right = Vector.orthogonalVector(direction, false);
-        Vector rightFront = direction.sharpVector(direction,left);
+        Vector rightFront = direction.sharpVector(direction, left);
         this.lookDirection[0] = left;
         this.lookDirection[1] = leftFront;
         this.lookDirection[2] = direction;
@@ -91,7 +90,7 @@ public class Ant implements Entity {
         this.stinkBias = 15;
         this.directionBias = 15;
         this.targetBias = 5;
-        this.lifetime = 50+(int)(Math.random()*50);
+        this.lifetime = 50 + (int) (Math.random() * 50);
         this.currentLifetime = this.lifetime;
         this.lifeCycle = 3;
         id = ids++;
@@ -138,9 +137,11 @@ public class Ant implements Entity {
     public Vector getDirection() {
         return lookDirection[2];
     }
+
     public void setDirection(Vector direction) {
-         lookDirection[2] = direction;
+        lookDirection[2] = direction;
     }
+
     //determines the next chosen tile
     private void makeMove() {
 
@@ -151,7 +152,7 @@ public class Ant implements Entity {
         //System.out.print("pos "+position+" dir "+getDirection()+" norm tar "+normalizedTarget+" [");
         for (int i = 0; i < availableNeighbours.length; i++) {
 
-            int directionBias = i == 2 ? targetBias*2/3 : modifiedBias[i]; // Penalties for changing direction.
+            int directionBias = i == 2 ? targetBias * 2 / 3 : modifiedBias[i]; // Penalties for changing direction.
 
             int targetDirectionBias = 0;
             if (target != null) {
@@ -160,24 +161,24 @@ public class Ant implements Entity {
 
             int stinkDirectionBias = 0;
             Tile currentTile = availableNeighbours[i];
-            switch (state){
+            switch (state) {
                 case EXPLORE -> {
-                    stinkDirectionBias -= currentTile.getCurrentStink(this.nest)*stinkBias;
+                    stinkDirectionBias -= currentTile.getCurrentStink(this.nest) * stinkBias;
                     if (currentTile instanceof FoodSource) stinkDirectionBias = 1000;
                 }
                 case SCAVENGE -> {
-                    stinkDirectionBias += currentTile.getCurrentStink(this.nest)*stinkBias;
+                    stinkDirectionBias += currentTile.getCurrentStink(this.nest) * stinkBias;
                     if (currentTile instanceof FoodSource) stinkDirectionBias = 1000;
 
                 }
-                case COLLECT,RETURN -> {
-                    stinkDirectionBias += currentTile.getCurrentStink(this.nest)*stinkBias;
+                case COLLECT, RETURN -> {
+                    stinkDirectionBias += currentTile.getCurrentStink(this.nest) * stinkBias;
                     if (currentTile instanceof Nest) stinkDirectionBias = 1000;
 
                 }
             }
 
-            stinkDirectionBias -= currentTile.totalOtherSmell(this.nest)*stinkBias;
+            stinkDirectionBias -= currentTile.totalOtherSmell(this.nest) * stinkBias;
             if (currentTile instanceof Obstacle) stinkDirectionBias = -1000;
 
 
@@ -195,34 +196,35 @@ public class Ant implements Entity {
         position = availableNeighbours[bestDirection].getPosition();
 
     }
+
     //acts on the current tile and changes states of the ants
-    private void doThing(){
+    private void doThing() {
         Tile current = grid.getTile(this.position);
-        current.addStink(nest,state == State.COLLECT);
-        if (current instanceof Nest){
+        current.addStink(nest, state == State.COLLECT);
+        if (current instanceof Nest) {
             currentLifetime = lifetime;
             //nest.updateKnownLocations(knownLocations);
             //knownLocations.addAll(nest.getKnownLocations());
             target = nest.getRandomLocation();
-            if (target == null){
+            if (target == null) {
                 state = State.EXPLORE;
-            }  else {
+            } else {
                 state = State.SCAVENGE;
                 setDirection(getDirection().invert());
             }
 
         } else if (current instanceof FoodSource) {
             if (!nest.containsLocation(current)) nest.addLocation(current);
-            if (!((FoodSource) current).decreaseFoodAmount()){
+            if (!((FoodSource) current).decreaseFoodAmount()) {
                 grid.removeTile(current);
-               nest.removeLocation(current);
+                nest.removeLocation(current);
             }
             target = getNest();
             state = State.COLLECT;
             setDirection(getDirection().invert());
         }
         this.currentLifetime--;
-        if (currentLifetime == 0){
+        if (currentLifetime == 0) {
             /*lifeCycle --;
             if (lifeCycle <0){
                 System.out.println("one ant of nest died "+nest.toString());
@@ -231,26 +233,30 @@ public class Ant implements Entity {
             state = State.RETURN;
             target = getNest();
             setDirection(getDirection().invert());
-        };
+        }
+        ;
     }
+
     public Nest getNest() {
         return nest;
     }
+
     //randomize biases - make move tries to keep it's path
-    private void randomizeBias(){
+    private void randomizeBias() {
         for (int i = 0; i < modifiedBias.length; i++) {
-            modifiedBias[i] = (int)(Math.random()*directionBias);
+            modifiedBias[i] = (int) (Math.random() * directionBias);
         }
     }
+
     // update neighbours gathered
-    private void updateAvailableNeighbours(){
+    private void updateAvailableNeighbours() {
         //generate left hand side vectors
         lookDirection[0] = Vector.orthogonalVector(lookDirection[2], true);
-        lookDirection[1] = lookDirection[2].sharpVector(lookDirection[2],lookDirection[0]);
+        lookDirection[1] = Vector.sharpVector(lookDirection[2], lookDirection[0]);
 
         //generate right hand side vectors
         lookDirection[4] = Vector.orthogonalVector(lookDirection[2], false);
-        lookDirection[3] = lookDirection[2].sharpVector(lookDirection[2],lookDirection[4]);
+        lookDirection[3] = Vector.sharpVector(lookDirection[2], lookDirection[4]);
 
         this.availableNeighbours[0] = this.grid.getTile(this.position.add(lookDirection[0]));
         this.availableNeighbours[1] = this.grid.getTile(this.position.add(lookDirection[1]));

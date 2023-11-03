@@ -38,10 +38,15 @@ public class Vector {
 
         return new Vector(vector.y, -vector.x);
     }
+
+    //ERROR : der orthogonal Vektor sollte nicht übergeben, sondern direkt berechnet werden
+    // derzeit könnte jeder beliebige Vektor übergeben werden
     /**
      * Calculates the vector between an orthogonal vector and its main vector
      *
-     * @param orthogonal Orthogonal vector from vector
+     * @param orthogonal needs to be the orthogonal vector of position
+     *
+     * @param position is the origional vector
      *
      * @return vector between orthogonal vector and this instance
      */

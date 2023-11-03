@@ -6,6 +6,8 @@ import java.awt.*;
 // An entity is an object that lives on a Grid and needs a position.
 public interface Entity {
 
+    //GOOD: jede Entity speichert ihre Position als Vektor - eine Version mit
+    //geringem Klassenzusammenhang wäre es, die Position als x,y Variablen zu speichern.
     /**
      * Returns a Vector object that represents the current position of the Entity.
      *
@@ -15,8 +17,8 @@ public interface Entity {
 
     /**
      * Returns the Color of the Entity.
-     *
-     * @return Color of entity
+     * @ensures Color != null
+     * @return Color of Entity
      */
     Color getColor();
 

@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.function.Function;
 // Modularisierungseinheit: Klasse
 
 // handles the entire logic that depends on grid operations
@@ -87,8 +88,9 @@ public class Grid {
             }
         });
         return entities;
-    }
 
+
+    }
     /**
      * Return all ants in grid
      *

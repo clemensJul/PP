@@ -56,8 +56,6 @@ public class Grid {
 //        ants.forEach(Ant::update);
 
         // GOOD: Durch die Verwendung von dynamischen Binden werden von allen Entities die update Methoden aufgerufen
-        map.entrySet().removeIf(entry -> entry.getValue().update());
-
         Thread[] threads = getNests().stream().map(Thread::new).toArray(Thread[]::new);
 
         // start threads
@@ -75,7 +73,14 @@ public class Grid {
         }
 
 
-        System.out.println("All threads finished");
+        map.entrySet().removeIf(entry -> {
+            if(entry.getValue() instanceof Nest) {
+                return false;
+            }
+            return entry.getValue().update();
+        });
+
+//        System.out.println("All threads finished");
         generateNewChunks();
     }
 

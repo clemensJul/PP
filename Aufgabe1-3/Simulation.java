@@ -72,8 +72,12 @@ public class Simulation {
             offset = offset.add(updateOffset(input ));
 
             grid.queue().forEach(entry -> {
-                Vector position = entry.getPosition().add(this.offset);
+                Vector position = entry.getPosition();
                 Color tileColor = entry.getColor();
+                if(tileColor == null) {
+                    System.out.println("null");
+                }
+
                 cd.setColor(tileColor);
                 cd.fillRectangle(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
             });

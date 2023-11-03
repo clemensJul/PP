@@ -98,19 +98,19 @@ public class Nest extends Tile implements Runnable {
     @Override
     public void run() {
 // do run things here
-        System.out.println("thread started");
-
-        Random random = new Random();
-
-        int randomWaitTime = random.nextInt(5000); // Zufällige Wartezeit zwischen 0 und 5 Sekunden
-        System.out.println("Warte " + randomWaitTime + " Millisekunden...");
-
-        try {
-            Thread.sleep(randomWaitTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Thread finished.");
+//        System.out.println("thread started");
+        getAnts().forEach(Ant::update);
+//        System.out.println("thread finished");
+//        Random random = new Random();
+//
+//        int randomWaitTime = random.nextInt(5000); // Zufällige Wartezeit zwischen 0 und 5 Sekunden
+//        System.out.println("Warte " + randomWaitTime + " Millisekunden...");
+//
+//        try {
+//            Thread.sleep(randomWaitTime);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println("Thread finished.");
     }
 }

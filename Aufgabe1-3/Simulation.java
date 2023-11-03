@@ -33,7 +33,7 @@ public class Simulation {
         //simulation parameters
         cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
         cd.setAlwaysOnTop(true);
-        grid = new Grid();
+        grid = new Grid(maxX, maxY);
 
         //movement
         input = cd.getEventScanner();
@@ -106,6 +106,7 @@ public class Simulation {
                 case PLUS, ADD -> cellSize *= (double) 3 / 2;
                 case MINUS, SUBTRACT -> cellSize *= (double) 2 / 3;
                 case F -> grid.generateFoodSources();
+                case N -> grid.generateNests();
             }
             offset = offset.add(new Vector(x * offsetByStep, y * offsetByStep));
             drawWindow();

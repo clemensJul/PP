@@ -15,7 +15,9 @@ public class Grid {
      * Initializes the Grid.
      * Generates basic entities in the Grid.
      */
-    public Grid() {
+    public Grid(int width, int height) {
+        startPoint = new Vector(-1* width/2, -1 * height / 2);
+        endPoint = new Vector(width/2, height / 2);
         this.map = new ConcurrentHashMap<>();
 
         int nestCounter = (int) (Math.random() * 2) + 4;
@@ -237,6 +239,11 @@ public class Grid {
     }
     public void generateFoodSources() {
         Generator generator = new Generator(this, 0, 15, 0, 0);
+        generator.generateTilesForChunk(startPoint, endPoint);
+    }
+
+    public void generateNests() {
+        Generator generator = new Generator(this, 1, 0, 200, 0);
         generator.generateTilesForChunk(startPoint, endPoint);
     }
 }

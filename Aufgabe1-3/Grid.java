@@ -52,10 +52,14 @@ public class Grid {
         // GOOD: Durch die Verwendung von dynamischen Binden werden von allen Entities die update Methoden aufgerufen
         List<Vector> removingItems = new CopyOnWriteArrayList<>();
         map.entrySet().parallelStream().forEach(entry -> {
-            if (!(entry.getValue() instanceof Nest)) {
-                return;
+            if (entry.getValue() instanceof Nest nest) {
+                nest.update();
+
+                if(nest.getAnts().isEmpty()) {
+                    removingItems.add(nest.getPosition());
+                    System.out.println("total farmed food of nest"+nest +"  was "+nest.getTotalfarmedFood()+" with a total amout of ants of "+nest.getTotalAntsCreated());
+                }
             }
-            entry.getValue().update();
         });
 
         map.entrySet().parallelStream().forEach(entry -> {
@@ -74,7 +78,7 @@ public class Grid {
 
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
-        System.out.println(duration / 1_000_000 + "ms");
+        //System.out.println(duration / 1_000_000 + "ms");
     }
 
     public ArrayList<Nest> getNests() {
@@ -230,5 +234,9 @@ public class Grid {
 
             generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
+    }
+    public void generateFoodSources() {
+        Generator generator = new Generator(this, 0, 15, 0, 0);
+        generator.generateTilesForChunk(startPoint, endPoint);
     }
 }

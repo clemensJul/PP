@@ -11,6 +11,8 @@ public class Nest extends Tile {
     private final Color color;
     private final LinkedList<Tile> knownLocations;
     private final CopyOnWriteArrayList<Ant> ants = new CopyOnWriteArrayList<>();
+    private int totalfarmedFood;
+    private int totalAntsCreated;
 
     public List<Ant> getAnts() {
         return ants;
@@ -24,6 +26,7 @@ public class Nest extends Tile {
     }
     public void addAnt(Ant ant){
         ants.add(ant.copy());
+        totalAntsCreated++;
     }
     /**
      * Return nestColor.
@@ -33,6 +36,9 @@ public class Nest extends Tile {
     @Override
     public Color getColor() {
         return color;
+    }
+    public void addFood(){
+        totalfarmedFood++;
     }
 
     /**
@@ -44,7 +50,7 @@ public class Nest extends Tile {
         super(position);
         this.color = nestColor;
         this.knownLocations = new LinkedList<>();
-
+        this.totalAntsCreated = antsAmount;
         for (int i = 0; i < antsAmount; i++) {
             ants.add(new Ant(grid, this, 100, position));
         }
@@ -63,6 +69,10 @@ public class Nest extends Tile {
         return 100;
     }
 
+    public int getTotalfarmedFood() {
+        return totalfarmedFood;
+    }
+
     /**
      * Nest needs no updates because it does not change colors.
      *
@@ -72,6 +82,10 @@ public class Nest extends Tile {
     public boolean update() {
         ants.forEach(Ant::update);
         return false;
+    }
+
+    public int getTotalAntsCreated() {
+        return totalAntsCreated;
     }
 
     public void addLocation(Tile tile) {

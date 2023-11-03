@@ -189,7 +189,8 @@ public class Ant implements Entity {
             // dublicates ant if it has food and is at the nest
             if (state == State.COLLECT) {
                 nest.addAnt(this);
-                System.out.println(nest +" ant created");
+                nest.addFood();
+                //System.out.println(nest +" ant created");
             }
 
             currentLifetime = lifetime;
@@ -214,7 +215,7 @@ public class Ant implements Entity {
             setDirection(getDirection().invert());
         }else if (current.totalOtherSmell(this.nest) > 0.9f) {
             this.nest.killAnt(this);
-            System.out.println(nest + " ant killed");
+            //System.out.println(nest + " ant killed");
         }
         this.currentLifetime--;
         this.totalLifetime--;

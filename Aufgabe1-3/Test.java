@@ -22,8 +22,7 @@ public class Test {
             try {
                 Simulation sim = new Simulation(cellSize, maxX, maxY, bias, updatesPerCircle);
                 sim.start();
-            }
-            catch (RuntimeException e) {
+            } catch (RuntimeException e) {
                 System.out.println(e.getMessage());
                 System.out.println("closed window");
             }

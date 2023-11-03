@@ -1,7 +1,7 @@
 import java.awt.*;
 
 public class Obstacle extends Tile {
-    private static Color color = Color.red;
+    private static Color color = new Color(74, 44, 18);
 
     /**
      * Initializes the Nest at the given position

@@ -7,22 +7,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 // handles the entire logic that depends on grid operations
 public class Grid {
-    private final int[] bias;
     private final Map<Vector, Tile> map;
-
     private Vector startPoint = new Vector(0, 0);
     private Vector endPoint = new Vector(200, 250);
-    //colors
-    private static final Color emptyCellColor = new Color(224, 224, 224);
 
     /**
      * Initializes the Grid.
      * Generates basic entities in the Grid.
-     *
-     * @param bias Biases for ants on directions
      */
-    public Grid(int[] bias) {
-        this.bias = bias;
+    public Grid() {
         this.map = new ConcurrentHashMap<>();
 
         int nestCounter = (int) (Math.random() * 2) + 4;
@@ -32,7 +25,7 @@ public class Grid {
 
         // STYLE: objektorientierte Programmierung
         // hohe Objektkopplung. Generator braucht unbedingt eine Grid-Instanz.
-        Generator generator = new Generator(this, nestCounter, foodCounter, antsPerNest, obstacleCounter, bias);
+        Generator generator = new Generator(this, nestCounter, foodCounter, antsPerNest, obstacleCounter);
         generator.generateTilesForChunk(startPoint, endPoint);
         System.out.println("created everything!");
     }
@@ -152,21 +145,7 @@ public class Grid {
     }
 
     public void removeTile(Tile tile) {
-//        if(tile instanceof FoodSource) {
-//            ants.forEach(ant -> ant.removeLocation(tile));
-//        }
         map.remove(tile.getPosition());
-    }
-
-    /**
-     * Returns a tile at a given position
-     *
-     * @param x x position
-     * @param y y position
-     * @return Tile
-     */
-    public Tile getTile(int x, int y) {
-        return getTile(new Vector(x, y));
     }
 
     /**
@@ -178,43 +157,6 @@ public class Grid {
      */
     private Tile putTile(Tile tile) {
         return map.put(tile.getPosition(), tile);
-    }
-
-    /**
-     * Puts a tile into the map.
-     * The key is directly specified.
-     *
-     * @param tile     tile
-     * @param position Position
-     * @return Tile
-     */
-    private Tile putTileAt(Tile tile, Vector position) {
-        return map.put(position, tile);
-    }
-
-    /**
-     * Returns the color for a tile.
-     * If tile is empty, there is a specific color.
-     * Otherwise, the overwritten methods getColor() are getting called.
-     *
-     * @param tile tile
-     * @return Color
-     */
-    public Color getColor(Tile tile) {
-        if (tile == null) {
-            return emptyCellColor;
-        }
-        return tile.getColor();
-    }
-
-
-    /**
-     * Returns the biases.
-     *
-     * @return Bias
-     */
-    public int[] getBias() {
-        return Arrays.copyOf(bias, bias.length);
     }
 
     /**
@@ -237,7 +179,7 @@ public class Grid {
             return;
         }
 
-        Generator generator = new Generator(this, 0, 7, 0, 12, bias);
+        Generator generator = new Generator(this, 0, 7, 0, 12);
         Vector newStartPoint, newChunkStartPoint, newEndPoint, newChunkEndPoint;
         if (extendSides[0]) {
             // extend left

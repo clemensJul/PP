@@ -14,6 +14,7 @@ public class Vector {
 
     /**
      * Returns a Vector object that represents the current position of the ant.
+     *
      * @param x X coordinate
      * @param y Y coordinate
      */
@@ -27,7 +28,6 @@ public class Vector {
      *
      * @param vector Vector to calculate the orthogonal from
      * @param isLeft true means the top orthogonal, false is the bottom orthogonal vector
-     *
      * @return Orthogonal vector
      */
     //
@@ -41,16 +41,15 @@ public class Vector {
 
     //ERROR : der orthogonal Vektor sollte nicht übergeben, sondern direkt berechnet werden
     // derzeit könnte jeder beliebige Vektor übergeben werden
+
     /**
      * Calculates the vector between an orthogonal vector and its main vector
      *
      * @param orthogonal needs to be the orthogonal vector of position
-     *
-     * @param position is the origional vector
-     *
+     * @param position   is the origional vector
      * @return vector between orthogonal vector and this instance
      */
-    public static Vector sharpVector(Vector position,Vector orthogonal) {
+    public static Vector sharpVector(Vector position, Vector orthogonal) {
         int x = position.x + orthogonal.x;
         int y = position.y + orthogonal.y;
 
@@ -59,19 +58,19 @@ public class Vector {
 
         return new Vector(x, y);
     }
+
     /**
      * Calculates dotproduct of 2 vectors
      *
      * @param a,b Vectors for dot product calculation
-     *
      * @return dot product
      */
-    public static int dotProduct(Vector a, Vector b){
+    public static int dotProduct(Vector a, Vector b) {
         return a.x * b.x + a.y * b.y;
     }
+
     /**
      * normalizes vector
-     *
      *
      * @return Direction to secondPos vector
      */
@@ -80,33 +79,13 @@ public class Vector {
         int dy = this.y - position.y;
         double length = Math.sqrt(dx * dx + dy * dx);
         if (length != 0) {
-            int normalizedX = (int)Math.round(dx / length);
-            int normalizedY = (int)Math.round(dy/ length);
+            int normalizedX = (int) Math.round(dx / length);
+            int normalizedY = (int) Math.round(dy / length);
             return new Vector(normalizedX, normalizedY);
         } else {
             // Handle the case where the vector has zero length (avoid division by zero).
             return new Vector(0, 0); // Or you can choose another appropriate default value.
         }
-    }
-
-    /**
-     * Calculates a direction even over the border pixels
-     *
-     * @param secondPos Vector to calculate the direction
-     *
-     * @return Direction to secondPos vector
-     */
-    public Vector calculateDirection(Vector secondPos) {
-        int dx = secondPos.x - this.x;
-        int dy = secondPos.y - this.y;
-
-
-        if (dx > 1) dx = 1;
-        if (dx < -1) dx = -1;
-        if (dy > 1) dy = 1;
-        if (dy < -1) dy = -1;
-
-        return new Vector(dx, dy);
     }
 
     /**
@@ -123,15 +102,15 @@ public class Vector {
         }
         return new Vector(x, y);
     }
-    public Vector invert(){
-        return new Vector(-x,-y);
+
+    public Vector invert() {
+        return new Vector(-x, -y);
     }
 
     /**
      * Add a vector to this instance coordinate wise.
      *
      * @param vector Vector to add
-     *
      * @return Vector with added coordinates.
      */
     public Vector add(Vector vector) {

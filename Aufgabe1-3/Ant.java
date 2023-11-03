@@ -15,9 +15,6 @@ public class Ant implements Entity {
     //grid
     private final Grid grid;
 
-    //strength of offsprings mutations
-    private final float mutationStrength;
-
     //lifetime for each ant - maybe i
     private int lifetime;
 
@@ -27,18 +24,14 @@ public class Ant implements Entity {
 
     private final int targetBias;
 
-    private static int ids = 0;
-    private int id;
-
     // Current position of ant
     private Vector position;
     // both modifiedBias and neighbours are fixed arrays for each ant to increase performance
-    private int[] modifiedBias;
+    private final int[] modifiedBias;
     //direction vectors
-    private Vector[] lookDirection;
-    private Tile[] availableNeighbours;
+    private final Vector[] lookDirection;
+    private final Tile[] availableNeighbours;
     private int currentLifetime;
-    private int lifeCycle;
     private Tile target;
     // current state of ant
     private State state;
@@ -51,18 +44,11 @@ public class Ant implements Entity {
         RETURN
     }
 
-
-    // Counts the successive steps of bad fields
-    private int badScentsCounter = 0;
-
-    // Defines what counts as a badScent tile
-    private final float badScent = 0.75f;
     private final Nest nest;
 
-    public Ant(Grid grid, Nest nest, float mutationStrength, int lifetime, Vector position) {
+    public Ant(Grid grid, Nest nest, int lifetime, Vector position) {
         this.grid = grid;
         this.nest = nest;
-        this.mutationStrength = mutationStrength;
         this.lifetime = lifetime;
         this.position = position;
         this.state = State.EXPLORE;
@@ -89,21 +75,16 @@ public class Ant implements Entity {
         this.targetBias = 5;
         this.lifetime = 50 + (int) (Math.random() * 50);
         this.currentLifetime = this.lifetime;
-        this.lifeCycle = 3;
-        id = ids++;
     }
 
     @Override
     public boolean update() {
-
         // new neighbours are found
         updateAvailableNeighbours();
         //act on tile
         doThing();
         //find new tile
         makeMove();
-
-
         return true;
     }
 
@@ -116,10 +97,6 @@ public class Ant implements Entity {
     public Vector getPosition() {
         return position;
     }
-
-//    public void removeLocation(Tile tile) {
-//        knownLocations.remove(tile);
-//    }
 
     @Override
     public Color getColor() {
@@ -141,7 +118,6 @@ public class Ant implements Entity {
 
     //determines the next chosen tile
     private void makeMove() {
-
         int bestDirection = 2;
         int maxBias = 0;
         randomizeBias();
@@ -191,13 +167,12 @@ public class Ant implements Entity {
         // Return the tile in the best direction.
         lookDirection[2] = lookDirection[bestDirection];
         position = availableNeighbours[bestDirection].getPosition();
-
     }
 
     //acts on the current tile and changes states of the ants
     private void doThing() {
         Tile current = grid.getTile(this.position);
-        current.addStink(nest, state == State.COLLECT);
+        current.addStink(nest);
         if (current instanceof Nest) {
             currentLifetime = lifetime;
             //nest.updateKnownLocations(knownLocations);
@@ -231,7 +206,6 @@ public class Ant implements Entity {
             target = getNest();
             setDirection(getDirection().invert());
         }
-        ;
     }
 
     public Nest getNest() {

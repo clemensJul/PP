@@ -11,11 +11,8 @@ import java.util.Objects;
 // it's heavily oop
 public class Tile implements Entity {
     private final Vector position;
-
     private static final float stinkDeletionRate = 0.99f;
-
-    private Map<Nest, Float> stinkMap = new HashMap<>();
-
+    private final Map<Nest, Float> stinkMap = new HashMap<>();
     private final float antStink = .2f;
 
     /**
@@ -44,13 +41,13 @@ public class Tile implements Entity {
      */
     @Override
     public Color getColor() {
-        if(stinkMap.isEmpty()) {
+        if (stinkMap.isEmpty()) {
             return Color.BLACK;
         }
         // should return the foodScent of the nest with the highest scent
-        Map.Entry<Nest,Float> pair =  Collections.max(stinkMap.entrySet(), Map.Entry.comparingByValue());
+        Map.Entry<Nest, Float> pair = Collections.max(stinkMap.entrySet(), Map.Entry.comparingByValue());
         Color base = pair.getKey().getColor().brighter();
-        return new Color(base.getRed(),base.getGreen(),base.getBlue(),(int)(pair.getValue()*255));
+        return new Color(base.getRed(), base.getGreen(), base.getBlue(), (int) (pair.getValue() * 255));
     }
 
     /**
@@ -64,7 +61,7 @@ public class Tile implements Entity {
         stinkMap.replaceAll((nest, stink) -> stink * stinkDeletionRate);
 
         // if there is a stink > 0.05f, we need to remove it from the map.
-        return !stinkMap.entrySet().stream().anyMatch(entry-> entry.getValue() > 0.05f);
+        return !stinkMap.entrySet().stream().anyMatch(entry -> entry.getValue() > 0.05f);
     }
 
     /**
@@ -76,20 +73,21 @@ public class Tile implements Entity {
      */
     public float getCurrentStink(Nest nest) {
         // we want to return the max stink for checking if there is a stink (needed in grid)
-        if(nest == null) {
-            if(stinkMap.isEmpty()) {
+        if (nest == null) {
+            if (stinkMap.isEmpty()) {
                 return 0f;
             }
             return Collections.max(stinkMap.entrySet(), Map.Entry.comparingByValue()).getValue();
         }
 
         Float currentStink = stinkMap.get(nest);
-        if(currentStink == null) {
+        if (currentStink == null) {
             return 0f;
         }
-        return currentStink.floatValue();
+        return currentStink;
     }
-    public float totalOtherSmell(Nest nest){
+
+    public float totalOtherSmell(Nest nest) {
         float sum = 0;
 
         for (Map.Entry<Nest, Float> entry : stinkMap.entrySet()) {
@@ -105,23 +103,22 @@ public class Tile implements Entity {
         return sum;
     }
 
-
     /**
      * Adds a stink to the corresponding scent.
      *
      * @param nest Corresponding nest
      * @return true.
      */
-    public void addStink(Nest nest,boolean hasFood) {
-        if(nest == null) {
+    public void addStink(Nest nest) {
+        if (nest == null) {
             return;
         }
 
         Float currentStink = stinkMap.get(nest);
-        if(currentStink == null) {
+        if (currentStink == null) {
             currentStink = 0f;
         }
-        currentStink = Math.min(currentStink + antStink*3, 1);
+        currentStink = Math.min(currentStink + antStink * 3, 1);
         stinkMap.put(nest, currentStink);
     }
 

@@ -8,6 +8,7 @@ public interface Entity {
 
     //GOOD: jede Entity speichert ihre Position als Vektor - eine Version mit
     //geringem Klassenzusammenhang wäre es, die Position als x,y Variablen zu speichern.
+
     /**
      * Returns a Vector object that represents the current position of the Entity.
      *
@@ -17,8 +18,9 @@ public interface Entity {
 
     /**
      * Returns the Color of the Entity.
-     * @ensures Color != null
+     *
      * @return Color of Entity
+     * @ensures Color != null
      */
     Color getColor();
 

@@ -47,13 +47,6 @@ public class FoodSource extends Tile {
     }
 
     /**
-     * Return left foodAmount.
-     */
-    public int getFoodAmount() {
-        return foodAmount;
-    }
-
-    /**
      * There is no need to update a FoodSource
      *
      * @return always true

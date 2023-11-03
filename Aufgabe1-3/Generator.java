@@ -1,31 +1,29 @@
 import java.awt.*;
 
 public class Generator {
-    private int nestCounter = 3;
-    private int foodCounter = 3;
-    private int antsPerNest = 100;
-    private int obstacleCounter = 100;
-    private final int[] antBias;
+    private int nestCounter;
+    private int foodCounter;
+    private int antsPerNest;
+    private int obstacleCounter;
 
     private final Grid grid;
 
     /**
      * Initializes the Generator.
      *
-     * @param grid Grid
-     * @param nestCounter Amount of nests which are getting generated
-     * @param foodCounter Amount of foodSources which are getting generated
-     * @param antsPerNest Amount of ants which are getting generated per nest
+     * @param grid            Grid
+     * @param nestCounter     Amount of nests which are getting generated
+     * @param foodCounter     Amount of foodSources which are getting generated
+     * @param antsPerNest     Amount of ants which are getting generated per nest
      * @param obstacleCounter Amount of ants which are getting generated per nest
-     * @param antBias Biases for ants on directions
+     * @param antBias         Biases for ants on directions
      */
-    public Generator(Grid grid, int nestCounter, int foodCounter, int antsPerNest, int obstacleCounter, int[] antBias) {
+    public Generator(Grid grid, int nestCounter, int foodCounter, int antsPerNest, int obstacleCounter) {
         this.grid = grid;
         this.nestCounter = nestCounter;
         this.foodCounter = foodCounter;
         this.antsPerNest = antsPerNest;
         this.obstacleCounter = obstacleCounter;
-        this.antBias = antBias;
     }
 
     /**
@@ -34,9 +32,8 @@ public class Generator {
      * @param point1 Point1
      * @param point2 Point2
      * @param point3 Point3
-     * @param x X value of given Point
-     * @param y Y value of given Point
-     *
+     * @param x      X value of given Point
+     * @param y      Y value of given Point
      * @return isInside of triangle
      */
     private static boolean isInside(Vector point1, Vector point2, Vector point3, int x, int y) {
@@ -67,7 +64,7 @@ public class Generator {
      * Obstacles are generated in a triangle form.
      *
      * @param startPoint Start Point of a rectangle.
-     * @param endPoint End Point of a rectangle.
+     * @param endPoint   End Point of a rectangle.
      */
     private void generateObstacles(Vector startPoint, Vector endPoint) {
         for (int i = 0; i < obstacleCounter; i++) {
@@ -111,7 +108,7 @@ public class Generator {
      * Generates foodSources in a given area.
      *
      * @param startPoint Start Point of a rectangle.
-     * @param endPoint End Point of a rectangle.
+     * @param endPoint   End Point of a rectangle.
      */
     private void generateFoodSources(Vector startPoint, Vector endPoint) {
         for (int i = 0; i < foodCounter; i++) {
@@ -125,7 +122,7 @@ public class Generator {
             }
 
             int foodSourceHeight = 1;//(int) (Math.random() * 5) + 1;
-            int foodSourceWidth =1;// (int) (Math.random() * 5) + 1;
+            int foodSourceWidth = 1;// (int) (Math.random() * 5) + 1;
 
             for (int x = 0; x < foodSourceWidth; x++) {
                 for (int y = 0; y < foodSourceHeight; y++) {
@@ -140,7 +137,7 @@ public class Generator {
      * Generates nests in a given area.
      *
      * @param startPoint Start Point of a rectangle.
-     * @param endPoint End Point of a rectangle.
+     * @param endPoint   End Point of a rectangle.
      */
     private void generateNests(Vector startPoint, Vector endPoint) {
         // STYLE: prozeduale Programmierung + objektorientierte Programmierung
@@ -157,7 +154,7 @@ public class Generator {
             }
 
             Color nestColor = new Color(generateRandomNumberBetween(0, 255), generateRandomNumberBetween(0, 255), generateRandomNumberBetween(0, 255));
-            Nest nest = new Nest(new Vector(randomX, randomY), nestColor,antsPerNest,grid);
+            Nest nest = new Nest(new Vector(randomX, randomY), nestColor, antsPerNest, grid);
 
             grid.getMap().put(new Vector(randomX, randomY), nest);
 
@@ -169,9 +166,8 @@ public class Generator {
                 int randomYDelta = (int) (Math.random() * maxSpawnDistance * 2) - maxSpawnDistance;
 
                 Vector spawnPos = new Vector(nest.getPosition().getX() + randomXDelta, nest.getPosition().getY() + randomYDelta);
-                nest.getAnts().add(new Ant(grid, nest, 0, 100, spawnPos));
+                nest.getAnts().add(new Ant(grid, nest, 100, spawnPos));
             }
-
         }
     }
 
@@ -179,7 +175,7 @@ public class Generator {
      * Generates obstacles, nests and foodsources in a given area.
      *
      * @param startPoint Start Point of a rectangle.
-     * @param endPoint End Point of a rectangle.
+     * @param endPoint   End Point of a rectangle.
      */
     public void generateTilesForChunk(Vector startPoint, Vector endPoint) {
         generateObstacles(startPoint, endPoint);

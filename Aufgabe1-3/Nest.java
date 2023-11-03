@@ -5,9 +5,9 @@ import java.util.List;
 // Eine Erweiterung der Tile-Klasse, die ein Untertyp von Entity ist.
 
 //extends Tiles with custom methodes
-public class Nest extends Tile implements Runnable {
+public class Nest extends Tile {
 
-    private Color color;
+    private final Color color;
     private final LinkedList<Tile> knownLocations;
     private final ArrayList<Ant> ants;
 
@@ -38,9 +38,8 @@ public class Nest extends Tile implements Runnable {
         this.ants = new ArrayList<>();
 
         for (int i = 0; i < antsAmount; i++) {
-            ants.add(new Ant(grid, this, 100, 100, position));
+            ants.add(new Ant(grid, this, 100, position));
         }
-        //knownLocations.add(this);
     }
 
     /**
@@ -85,32 +84,5 @@ public class Nest extends Tile implements Runnable {
 
     public boolean removeLocation(Tile tile) {
         return knownLocations.remove(tile);
-    }
-
-    public void updateKnownLocations(List<Tile> list) {
-        knownLocations.addAll(list);
-    }
-
-    public LinkedList<Tile> getKnownLocations() {
-        return knownLocations;
-    }
-
-    @Override
-    public void run() {
-// do run things here
-        System.out.println("thread started");
-
-        Random random = new Random();
-
-        int randomWaitTime = random.nextInt(5000); // Zufällige Wartezeit zwischen 0 und 5 Sekunden
-        System.out.println("Warte " + randomWaitTime + " Millisekunden...");
-
-        try {
-            Thread.sleep(randomWaitTime);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Thread finished.");
     }
 }

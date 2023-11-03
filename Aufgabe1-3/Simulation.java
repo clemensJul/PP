@@ -11,13 +11,11 @@ import java.util.Scanner;
 
 // combines visuals from CodeDraw with the logic found in Grid
 public class Simulation {
-    private final int cellSize;
-    private final int maxX;
-    private final int maxY;
+    private int cellSize;
     private final int updatesPerCircle;
     private final CodeDraw cd;
     private final Grid grid;
-    private EventScanner input;
+    private final EventScanner input;
     private Vector offset;
 
     /**
@@ -31,27 +29,16 @@ public class Simulation {
      */
     public Simulation(int cellSize, int maxX, int maxY, int[] bias, int updatesPerCircle) {
         this.cellSize = cellSize;
-        this.maxX = maxX;
-        this.maxY = maxY;
         this.updatesPerCircle = updatesPerCircle;
 
         //simulation parameters
         cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
         cd.setAlwaysOnTop(true);
-        grid = new Grid(bias);
+        grid = new Grid();
 
         //movement
         input = cd.getEventScanner();
         offset = new Vector(0, 0);
-    }
-
-    /**
-     * Checks if the CodeDraw window is closed.
-     *
-     * @return if simulation window is closed
-     */
-    public boolean isClosed() {
-        return cd.isClosed();
     }
 
     /**
@@ -71,10 +58,12 @@ public class Simulation {
         }
     }
 
+    /**
+     * Handles the logic of drawing the entities on the window.
+     */
     private void drawWindow() {
         cd.setColor(Color.gray);
-        cd.fillRectangle(0, 0, maxX * cellSize, maxY * cellSize);
-
+        cd.fillRectangle(0, 0, cd.getWidth(), cd.getHeight());
 
         grid.queue().forEach(entry -> {
             Vector position = entry.getPosition().add(this.offset);
@@ -95,7 +84,12 @@ public class Simulation {
         }
     }
 
-    //STYLE: 
+    /**
+     * Handles the keyboard input.
+     * Redraws the visible part of the map.
+     * Mouse-Arrays
+     */
+    //STYLE: OOP???
     private void updateOffset(EventScanner input) {
         int x = 0, y = 0;
         int offsetByStep = 20;
@@ -105,21 +99,19 @@ public class Simulation {
 
         while (input.hasEventNow() && input.hasKeyDownEvent()) {
             Key key = input.nextKeyDownEvent().getKey();
-            switch (key){
-                case W,UP -> {
-                    y++;
-                }
-                case S,DOWN -> {
-                    y--;
-                }
-                case D,RIGHT -> {
-                    x--;
-                }
-                case A,LEFT -> {
-                    x++;
+            switch (key) {
+                case W, UP -> y++;
+                case S, DOWN -> y--;
+                case D, RIGHT -> x--;
+                case A, LEFT -> x++;
+                case PLUS -> cellSize++;
+                case MINUS -> {
+                    if (cellSize > 1) {
+                        cellSize--;
+                    }
                 }
             }
-            offset = offset.add(new Vector(x*offsetByStep, y*offsetByStep));
+            offset = offset.add(new Vector(x * offsetByStep, y * offsetByStep));
             drawWindow();
         }
     }

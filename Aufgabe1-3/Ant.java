@@ -70,7 +70,7 @@ public class Ant implements Entity {
         this.lookDirection[3] = right;
         this.lookDirection[4] = rightFront;
 
-        this.stinkBias = 15;
+        this.stinkBias = 10;
         this.directionBias = 15;
         this.targetBias = 5;
         this.lifetime = 50 + (int) (Math.random() * 50);
@@ -118,6 +118,12 @@ public class Ant implements Entity {
 
     //determines the next chosen tile
     private void makeMove() {
+        boolean allObstacles = Arrays.stream(availableNeighbours).toList().stream().allMatch(neighbor -> neighbor instanceof Obstacle);
+        if (allObstacles) {
+            setDirection(getDirection().invert());
+            return;
+        }
+
         int bestDirection = 2;
         int maxBias = 0;
         randomizeBias();
@@ -125,37 +131,39 @@ public class Ant implements Entity {
         //System.out.print("pos "+position+" dir "+getDirection()+" norm tar "+normalizedTarget+" [");
         for (int i = 0; i < availableNeighbours.length; i++) {
 
-            int directionBias = i == 2 ? targetBias * 2 / 3 : modifiedBias[i]; // Penalties for changing direction.
+            int directionBias = i == 2 ? this.directionBias * 2 / 3 : modifiedBias[i]; // Penalties for changing direction.
 
             int targetDirectionBias = 0;
             if (target != null) {
-                targetDirectionBias = Vector.dotProduct(normalizedTarget, lookDirection[i]) * targetBias;
+                if (target instanceof Nest) targetDirectionBias = Vector.dotProduct(normalizedTarget, lookDirection[i]) * targetBias*3;
+                else targetDirectionBias = Vector.dotProduct(normalizedTarget, lookDirection[i]) * targetBias;
             }
 
             int stinkDirectionBias = 0;
             Tile currentTile = availableNeighbours[i];
             switch (state) {
                 case EXPLORE -> {
-                    stinkDirectionBias -= currentTile.getCurrentStink(this.nest) * stinkBias;
+                    stinkDirectionBias -= (int) (currentTile.getCurrentStink(this.nest) * stinkBias);
                     if (currentTile instanceof FoodSource) stinkDirectionBias = 1000;
                 }
                 case SCAVENGE -> {
-                    stinkDirectionBias += currentTile.getCurrentStink(this.nest) * stinkBias;
+                    stinkDirectionBias += (int) (currentTile.getCurrentStink(this.nest) * stinkBias);
                     if (currentTile instanceof FoodSource) stinkDirectionBias = 1000;
 
                 }
                 case COLLECT, RETURN -> {
-                    stinkDirectionBias += currentTile.getCurrentStink(this.nest) * stinkBias;
+                    stinkDirectionBias += (int) (currentTile.getCurrentStink(this.nest) * stinkBias);
                     if (currentTile instanceof Nest) stinkDirectionBias = 1000;
 
                 }
             }
 
-            stinkDirectionBias -= currentTile.totalOtherSmell(this.nest) * stinkBias;
-            if (currentTile instanceof Obstacle) stinkDirectionBias = -1000;
+            stinkDirectionBias -= (int) (currentTile.totalOtherSmell(this.nest) * stinkBias);
+
 
 
             int totalDirectionBias = stinkDirectionBias + directionBias + targetDirectionBias;
+            if (currentTile instanceof Obstacle) totalDirectionBias = -1000;
             //System.out.print("["+stinkDirectionBias+","+directionBias+","+targetDirectionBias+"]");
             // Update the best direction if this direction has a higher bias.
             if (totalDirectionBias > maxBias) {
@@ -173,6 +181,7 @@ public class Ant implements Entity {
     private void doThing() {
         Tile current = grid.getTile(this.position);
         current.addStink(nest);
+
         if (current instanceof Nest) {
             currentLifetime = lifetime;
             //nest.updateKnownLocations(knownLocations);
@@ -194,6 +203,9 @@ public class Ant implements Entity {
             target = getNest();
             state = State.COLLECT;
             setDirection(getDirection().invert());
+        }else if (current.totalOtherSmell(this.nest) > 0.75f) {
+            this.nest.killAnt(this);
+            System.out.println("ant killed");
         }
         this.currentLifetime--;
         if (currentLifetime == 0) {

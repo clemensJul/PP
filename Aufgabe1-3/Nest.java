@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 // Modularisierungseinheit: Klasse
 // Eine Erweiterung der Tile-Klasse, die ein Untertyp von Entity ist.
 
@@ -9,12 +10,17 @@ public class Nest extends Tile {
 
     private final Color color;
     private final LinkedList<Tile> knownLocations;
-    private final ArrayList<Ant> ants;
+    private final CopyOnWriteArrayList<Ant> ants = new CopyOnWriteArrayList<>();
 
-    public ArrayList<Ant> getAnts() {
+    public List<Ant> getAnts() {
         return ants;
     }
 
+
+    public void killAnt(Ant ant) {
+        ants.remove(ant);
+
+    }
     /**
      * Return nestColor.
      *
@@ -34,8 +40,6 @@ public class Nest extends Tile {
         super(position);
         this.color = nestColor;
         this.knownLocations = new LinkedList<>();
-
-        this.ants = new ArrayList<>();
 
         for (int i = 0; i < antsAmount; i++) {
             ants.add(new Ant(grid, this, 100, position));

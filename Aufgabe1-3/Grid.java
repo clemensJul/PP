@@ -52,11 +52,14 @@ public class Grid {
     public void update() {
         // update all entities
 
+        long startTime = System.nanoTime();
         // BAD: ants sind zwar Entities, werden aber durch unserem Design vom Grid extra gespeichert, deshalb müssen wir die Update Methode von denen extra aufrufen
 //        ants.forEach(Ant::update);
 
         // GOOD: Durch die Verwendung von dynamischen Binden werden von allen Entities die update Methoden aufgerufen
         Thread[] threads = getNests().stream().map(Thread::new).toArray(Thread[]::new);
+
+
 
         // start threads
         for (Thread thread : threads) {
@@ -82,6 +85,10 @@ public class Grid {
 
 //        System.out.println("All threads finished");
         generateNewChunks();
+
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println(duration / 1_000_000 + "ms");
     }
 
     public ArrayList<Nest> getNests() {

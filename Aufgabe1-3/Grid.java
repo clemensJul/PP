@@ -1,7 +1,8 @@
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.function.Function;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 // Modularisierungseinheit: Klasse
 
 // handles the entire logic that depends on grid operations
@@ -22,11 +23,11 @@ public class Grid {
      */
     public Grid(int[] bias) {
         this.bias = bias;
-        this.map = new HashMap<>();
+        this.map = new ConcurrentHashMap<>();
 
         int nestCounter = (int) (Math.random() * 2) + 4;
         int foodCounter = (int) (Math.random() * 20) + 12;
-        int antsPerNest = (int) (Math.random() * 100) + 75;
+        int antsPerNest = 500;
         int obstacleCounter = (int) (Math.random() * 15) + 5;
 
         // STYLE: objektorientierte Programmierung
@@ -52,31 +53,35 @@ public class Grid {
     public void update() {
         // update all entities
 
+        long startTime = System.nanoTime();
         // BAD: ants sind zwar Entities, werden aber durch unserem Design vom Grid extra gespeichert, deshalb müssen wir die Update Methode von denen extra aufrufen
-//        ants.forEach(Ant::update);
 
         // GOOD: Durch die Verwendung von dynamischen Binden werden von allen Entities die update Methoden aufgerufen
-        map.entrySet().removeIf(entry -> entry.getValue().update());
-
-        Thread[] threads = getNests().stream().map(Thread::new).toArray(Thread[]::new);
-
-        // start threads
-        for (Thread thread : threads) {
-            thread.start();
-        }
-
-        // wait for threads to finish
-        for (int i = 0; i < threads.length; i++) {
-            try {
-                threads[i].join();
-            } catch (InterruptedException e) {
-                System.out.println("Thread " + i + " wurde unterbrochen.");
+        List<Vector> removingItems = new CopyOnWriteArrayList<>();
+        map.entrySet().parallelStream().forEach(entry -> {
+            if (!(entry.getValue() instanceof Nest)) {
+                return;
             }
-        }
+            entry.getValue().update();
+        });
 
+        map.entrySet().parallelStream().forEach(entry -> {
+            if (entry.getValue() instanceof Nest) {
+                return;
+            }
 
-        System.out.println("All threads finished");
+            if (entry.getValue().update()) {
+                removingItems.add(entry.getKey());
+            }
+        });
+
+        removingItems.forEach(map::remove);
+//        map.entrySet().removeIf(entry -> deletionMap.get(entry.getKey()) != null);
         generateNewChunks();
+
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println(duration / 1_000_000 + "ms");
     }
 
     public ArrayList<Nest> getNests() {
@@ -145,7 +150,8 @@ public class Grid {
         }
         return tile;
     }
-    public void removeTile(Tile tile){
+
+    public void removeTile(Tile tile) {
 //        if(tile instanceof FoodSource) {
 //            ants.forEach(ant -> ant.removeLocation(tile));
 //        }

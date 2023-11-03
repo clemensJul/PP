@@ -63,7 +63,7 @@ public class Nest extends Tile implements Runnable {
      */
     @Override
     public boolean update() {
-
+        ants.forEach(Ant::update);
         return false;
     }
 

@@ -45,7 +45,7 @@ public class Tile implements Entity {
     @Override
     public Color getColor() {
         if(stinkMap.isEmpty()) {
-            return null;
+            return Color.BLACK;
         }
         // should return the foodScent of the nest with the highest scent
         Map.Entry<Nest,Float> pair =  Collections.max(stinkMap.entrySet(), Map.Entry.comparingByValue());

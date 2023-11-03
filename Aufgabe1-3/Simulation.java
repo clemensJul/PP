@@ -90,6 +90,8 @@ public class Simulation {
             run();
         }
     }
+
+    //STYLE: 
     private Vector updateOffset(EventScanner input){
         int x = 0 ,y = 0;
         while (input.hasKeyDownEvent()){

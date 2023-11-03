@@ -10,7 +10,9 @@ import java.util.Objects;
 public class Nest extends Tile {
 
     private Color color;
-    LinkedList<Tile> knownLocations;
+    private final LinkedList<Tile> knownLocations;
+    private final ArrayList<Ant> ants;
+
 
     /**
      * Return nestColor.

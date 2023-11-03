@@ -19,7 +19,11 @@ public class Nest extends Tile {
 
     public void killAnt(Ant ant) {
         ants.remove(ant);
+        if (ants.size() == 0) System.out.println("nest deleted");
 
+    }
+    public void addAnt(Ant ant){
+        ants.add(ant.copy());
     }
     /**
      * Return nestColor.
@@ -88,5 +92,12 @@ public class Nest extends Tile {
 
     public boolean removeLocation(Tile tile) {
         return knownLocations.remove(tile);
+    }
+
+    @Override
+    public String toString() {
+        return "Nest{" +
+                "color=" + color +
+                '}';
     }
 }

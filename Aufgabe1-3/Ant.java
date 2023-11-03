@@ -32,6 +32,8 @@ public class Ant implements Entity {
     private final Vector[] lookDirection;
     private final Tile[] availableNeighbours;
     private int currentLifetime;
+
+    private int totalLifetime;
     private Tile target;
     // current state of ant
     private State state;
@@ -73,8 +75,9 @@ public class Ant implements Entity {
         this.stinkBias = 10;
         this.directionBias = 15;
         this.targetBias = 5;
-        this.lifetime = 50 + (int) (Math.random() * 50);
+        this.lifetime = 100 + (int) (Math.random() * 50);
         this.currentLifetime = this.lifetime;
+        this.totalLifetime = currentLifetime*(int)(Math.random()*5+5);
     }
 
     @Override
@@ -183,6 +186,12 @@ public class Ant implements Entity {
         current.addStink(nest);
 
         if (current instanceof Nest) {
+            // dublicates ant if it has food and is at the nest
+            if (state == State.COLLECT) {
+                nest.addAnt(this);
+                System.out.println(nest +" ant created");
+            }
+
             currentLifetime = lifetime;
             //nest.updateKnownLocations(knownLocations);
             //knownLocations.addAll(nest.getKnownLocations());
@@ -203,11 +212,15 @@ public class Ant implements Entity {
             target = getNest();
             state = State.COLLECT;
             setDirection(getDirection().invert());
-        }else if (current.totalOtherSmell(this.nest) > 0.75f) {
+        }else if (current.totalOtherSmell(this.nest) > 0.9f) {
             this.nest.killAnt(this);
-            System.out.println("ant killed");
+            System.out.println(nest + " ant killed");
         }
         this.currentLifetime--;
+        this.totalLifetime--;
+        if (totalLifetime < 0) {
+            nest.killAnt(this);
+        }
         if (currentLifetime == 0) {
             /*lifeCycle --;
             if (lifeCycle <0){
@@ -246,5 +259,8 @@ public class Ant implements Entity {
         this.availableNeighbours[2] = this.grid.getTile(this.position.add(lookDirection[2]));
         this.availableNeighbours[3] = this.grid.getTile(this.position.add(lookDirection[3]));
         this.availableNeighbours[4] = this.grid.getTile(this.position.add(lookDirection[4]));
+    }
+    public Ant copy(){
+        return new Ant(this.grid,this.nest,this.lifetime,this.position);
     }
 }

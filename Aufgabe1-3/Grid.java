@@ -19,7 +19,7 @@ public class Grid {
         this.map = new ConcurrentHashMap<>();
 
         int nestCounter = (int) (Math.random() * 2) + 4;
-        int foodCounter = (int) (Math.random() * 20) + 12;
+        int foodCounter = (int) (Math.random() * 30) + 20;
         int antsPerNest = 500;
         int obstacleCounter = (int) (Math.random() * 15) + 5;
 

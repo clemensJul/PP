@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 // combines visuals from CodeDraw with the logic found in Grid
 public class Simulation {
-    private int cellSize;
+    private double cellSize;
     private final int updatesPerCircle;
     private final CodeDraw cd;
     private final Grid grid;
@@ -63,7 +63,7 @@ public class Simulation {
     private void drawWindow() {
         cd.setColor(Color.gray);
         cd.fillRectangle(0, 0, cd.getWidth(), cd.getHeight());
-        Vector actualVector = this.offset.add(new Vector((cd.getWidth() / cellSize) / 2, (cd.getHeight() / cellSize) / 2));
+        Vector actualVector = this.offset.add(new Vector((int) ((cd.getWidth() / cellSize) / 2), (int) ((cd.getHeight() / cellSize) / 2)));
         grid.queue().forEach(entry -> {
             Vector position = entry.getPosition().add(actualVector);
             Color tileColor = entry.getColor();
@@ -99,20 +99,12 @@ public class Simulation {
         while (input.hasEventNow() && input.hasKeyDownEvent()) {
             Key key = input.nextKeyDownEvent().getKey();
             switch (key) {
-                case W, UP -> y++;
-                case S, DOWN -> y--;
-                case D, RIGHT -> x--;
-                case A, LEFT -> x++;
-                case PLUS -> {
-                    //offset = offset.add(new Vector((cd.getWidth() / 2) + offset.getX() / 2, cd.getHeight() / 2 + offset.getY() / 2));
-                    cellSize++;
-                }
-                case MINUS -> {
-                    if (cellSize > 1) {
-                        cellSize--;
-                        //offset = offset.add(new Vector((cd.getWidth() / 2) / cellSize, (cd.getHeight() / 2) / cellSize));
-                    }
-                }
+                case W, UP, NUMPAD_UP -> y++;
+                case S, DOWN, NUMPAD_DOWN -> y--;
+                case D, RIGHT, NUMPAD_RIGHT -> x--;
+                case A, LEFT, NUMPAD_LEFT -> x++;
+                case PLUS, ADD -> cellSize *= (double) 3 / 2;
+                case MINUS, SUBTRACT -> cellSize *= (double) 2 / 3;
             }
             offset = offset.add(new Vector(x * offsetByStep, y * offsetByStep));
             drawWindow();

@@ -58,7 +58,7 @@ public class Grid {
         // GOOD: Durch die Verwendung von dynamischen Binden werden von allen Entities die update Methoden aufgerufen
         map.entrySet().removeIf(entry -> entry.getValue().update());
 
-        Thread[] threads = getNests().stream().map(Thread::new).toArray(Thread[]::new);
+        Thread[] threads = getNests().stream().map(Nest::getThread).toArray(Thread[]::new);
 
         // start threads
         for (Thread thread : threads) {

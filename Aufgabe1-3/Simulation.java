@@ -1,4 +1,5 @@
 import codedraw.CodeDraw;
+import codedraw.Event;
 import codedraw.EventScanner;
 import codedraw.Key;
 
@@ -22,10 +23,10 @@ public class Simulation {
     /**
      * Initializes a Simulation.
      *
-     * @param cellSize cellSize for Grid
-     * @param maxX width of Grid
-     * @param maxY height of Grid
-     * @param bias Biases for ants on directions
+     * @param cellSize         cellSize for Grid
+     * @param maxX             width of Grid
+     * @param maxY             height of Grid
+     * @param bias             Biases for ants on directions
      * @param updatesPerCircle how many iterations are made before visual update
      */
     public Simulation(int cellSize, int maxX, int maxY, int[] bias, int updatesPerCircle) {
@@ -41,7 +42,7 @@ public class Simulation {
 
         //movement
         input = cd.getEventScanner();
-        offset = new Vector(0,0);
+        offset = new Vector(0, 0);
     }
 
     /**
@@ -69,7 +70,7 @@ public class Simulation {
             cd.setColor(Color.gray);
             cd.fillRectangle(0, 0, maxX * cellSize, maxY * cellSize);
 
-            offset = offset.add(updateOffset(input ));
+            offset = offset.add(updateOffset(input));
 
             grid.queue().forEach(entry -> {
                 Vector position = entry.getPosition().add(this.offset);
@@ -86,31 +87,35 @@ public class Simulation {
      * Starts the simulation.
      */
     public void start() {
-        while(!cd.isClosed()) {
+        while (!cd.isClosed()) {
             run();
         }
     }
 
     //STYLE: 
-    private Vector updateOffset(EventScanner input){
-        int x = 0 ,y = 0;
-        while (input.hasKeyDownEvent()){
+    private Vector updateOffset(EventScanner input) {
+        int x = 0, y = 0;
+        int offsetByStep = 20;
+        while (input.hasEventNow() && !input.hasKeyDownEvent()){
+            input.nextEvent();
+        }
+        while (input.hasKeyDownEvent()) {
             Key key = input.nextKeyDownEvent().getKey();
             switch (key){
-                case W -> {
-                    x--;
+                case W,UP -> {
+                    y++;
                 }
-                case S -> {
-                    x++;
-                }
-                case D -> {
+                case S,DOWN -> {
                     y--;
                 }
-                case A -> {
-                    y++;
+                case D,RIGHT -> {
+                    x--;
+                }
+                case A,LEFT -> {
+                    x++;
                 }
             }
         }
-        return new Vector(x,y);
+        return new Vector(x*offsetByStep, y*offsetByStep);
     }
 }

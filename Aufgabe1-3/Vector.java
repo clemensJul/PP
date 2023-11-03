@@ -116,6 +116,13 @@ public class Vector {
     public Vector add(Vector vector) {
         return new Vector(this.x + vector.x, this.y + vector.y);
     }
+    public Vector subtract(Vector vector) {
+        return new Vector(this.x - vector.x, this.y - vector.y);
+    }
+    public Vector multiplyWithScalar(int scalar){return new Vector(this.x*scalar,this.y*scalar);}
+    public Vector divideWithScalar(int scalar){return new Vector(this.x/scalar,this.y/scalar);}
+
+
 
     /**
      * X coordinate of vector

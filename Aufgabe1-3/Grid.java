@@ -8,8 +8,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 // handles the entire logic that depends on grid operations
 public class Grid {
     private final Map<Vector, Tile> map;
-    private Vector startPoint = new Vector(0, 0);
-    private Vector endPoint = new Vector(200, 250);
+    private Vector startPoint = new Vector(-100, -125);
+    private Vector endPoint = new Vector(100, 125);
 
     /**
      * Initializes the Grid.
@@ -124,8 +124,6 @@ public class Grid {
             }
         });
         return entities;
-
-
     }
 
     /**

@@ -24,10 +24,9 @@ public class Simulation {
      * @param cellSize         cellSize for Grid
      * @param maxX             width of Grid
      * @param maxY             height of Grid
-     * @param bias             Biases for ants on directions
      * @param updatesPerCircle how many iterations are made before visual update
      */
-    public Simulation(int cellSize, int maxX, int maxY, int[] bias, int updatesPerCircle) {
+    public Simulation(int cellSize, int maxX, int maxY, int updatesPerCircle) {
         this.cellSize = cellSize;
         this.updatesPerCircle = updatesPerCircle;
 
@@ -64,9 +63,9 @@ public class Simulation {
     private void drawWindow() {
         cd.setColor(Color.gray);
         cd.fillRectangle(0, 0, cd.getWidth(), cd.getHeight());
-
+        Vector actualVector = this.offset.add(new Vector((cd.getWidth() / cellSize) / 2, (cd.getHeight() / cellSize) / 2));
         grid.queue().forEach(entry -> {
-            Vector position = entry.getPosition().add(this.offset);
+            Vector position = entry.getPosition().add(actualVector);
             Color tileColor = entry.getColor();
             cd.setColor(tileColor);
             cd.fillRectangle(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
@@ -104,10 +103,14 @@ public class Simulation {
                 case S, DOWN -> y--;
                 case D, RIGHT -> x--;
                 case A, LEFT -> x++;
-                case PLUS -> cellSize++;
+                case PLUS -> {
+                    //offset = offset.add(new Vector((cd.getWidth() / 2) + offset.getX() / 2, cd.getHeight() / 2 + offset.getY() / 2));
+                    cellSize++;
+                }
                 case MINUS -> {
                     if (cellSize > 1) {
                         cellSize--;
+                        //offset = offset.add(new Vector((cd.getWidth() / 2) / cellSize, (cd.getHeight() / 2) / cellSize));
                     }
                 }
             }

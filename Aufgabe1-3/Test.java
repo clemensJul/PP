@@ -15,12 +15,11 @@ public class Test {
         int cellSize = 3;
         int maxX = 250;
         int maxY = 200;
-        int[] bias = new int[]{1, 3, 15, 3, 1};
         int updatesPerCircle = 1;
 
         for (int i = 0; i < numberOfSims; i++) {
             try {
-                Simulation sim = new Simulation(cellSize, maxX, maxY, bias, updatesPerCircle);
+                Simulation sim = new Simulation(cellSize, maxX, maxY, updatesPerCircle);
                 sim.start();
             } catch (RuntimeException e) {
                 System.out.println(e.getMessage());

@@ -12,6 +12,7 @@ import java.util.Scanner;
 // combines visuals from CodeDraw with the logic found in Grid
 public class Simulation {
     private double cellSize;
+    private double initialCellSize;
     private final int updatesPerCircle;
     private final CodeDraw cd;
     private final Grid grid;
@@ -27,6 +28,7 @@ public class Simulation {
      * @param updatesPerCircle how many iterations are made before visual update
      */
     public Simulation(int cellSize, int maxX, int maxY, int updatesPerCircle) {
+        this.initialCellSize = cellSize;
         this.cellSize = cellSize;
         this.updatesPerCircle = updatesPerCircle;
 
@@ -107,6 +109,10 @@ public class Simulation {
                 case MINUS, SUBTRACT -> cellSize *= (double) 2 / 3;
                 case F -> grid.generateFoodSources();
                 case N -> grid.generateNests();
+                case R -> {
+                    offset = new Vector(0, 0);
+                    cellSize = initialCellSize;
+                }
             }
             offset = offset.add(new Vector(x * offsetByStep, y * offsetByStep));
             drawWindow();

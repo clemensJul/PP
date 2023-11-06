@@ -149,6 +149,11 @@ public class Vector {
                 ", y=" + y +
                 '}';
     }
+    /**
+     *
+     *
+     * @return Vectors are equal if each x and each y is equal
+     */
 
     @Override
     public boolean equals(Object o) {

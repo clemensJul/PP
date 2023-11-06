@@ -14,16 +14,28 @@ public class Nest extends Tile {
     private int totalfarmedFood;
     private int totalAntsCreated;
 
+    /**
+     *
+     * @returns list of ants
+     */
     public List<Ant> getAnts() {
         return ants;
     }
 
-
+    /**
+     *
+     * @param ant is killed - needs to be non null and from the nest
+     */
     public void killAnt(Ant ant) {
         ants.remove(ant);
         if (ants.size() == 0) System.out.println("nest deleted");
 
     }
+
+    /**
+     *
+     * @param ant is added to nest
+     */
     public void addAnt(Ant ant){
         ants.add(ant.copy());
         totalAntsCreated++;
@@ -69,6 +81,10 @@ public class Nest extends Tile {
         return 100;
     }
 
+    /**
+     *
+     * @return every food that is brought back to the nest
+     */
     public int getTotalfarmedFood() {
         return totalfarmedFood;
     }
@@ -84,13 +100,27 @@ public class Nest extends Tile {
         return false;
     }
 
+    /**
+     *
+     * @return total amount of ants that were in the nest
+     */
     public int getTotalAntsCreated() {
         return totalAntsCreated;
     }
 
+    /**
+     *adds a tile to the know locations tile != null and tile is a element of grid
+     *
+     *
+     */
     public void addLocation(Tile tile) {
         knownLocations.add(tile);
     }
+    /**
+     *
+     *
+     * @return random Tile from knownlocations. if no location is found return null
+     */
 
     public Tile getRandomLocation() {
         int length = knownLocations.size();
@@ -99,11 +129,21 @@ public class Nest extends Tile {
         // if (index == 0 ) return knownLocations.get(1).getPosition();
         return knownLocations.get(index);
     }
+    /**
+     *
+     *
+     * @return boolean if tile is known or not already
+     */
 
     public boolean containsLocation(Tile tile) {
         return knownLocations.contains(tile);
     }
 
+    /**
+     * @param tile should not be null
+     * removes tile from the list of known locations
+     * @return returns boolean of if tile is removed or not
+     */
     public boolean removeLocation(Tile tile) {
         return knownLocations.remove(tile);
     }

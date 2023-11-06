@@ -86,6 +86,12 @@ public class Tile implements Entity {
         }
         return currentStink;
     }
+    /**
+     * @param nest is a nest from the nests of the grid
+     *returns every smell that is not from the nest
+     *
+     * @return returns float >=0f of smells from every other ant species
+     */
 
     public float totalOtherSmell(Nest nest) {
         float sum = 0;
@@ -128,6 +134,11 @@ public class Tile implements Entity {
                 "position=" + position +
                 '}';
     }
+    /**
+     *
+     *
+     * @return tiles are equal if they are from the same class and their position is equal
+     */
 
     @Override
     public boolean equals(Object o) {

@@ -79,8 +79,11 @@ public class Ant implements Entity {
         this.currentLifetime = this.lifetime;
         this.totalLifetime = currentLifetime*(int)(Math.random()*5+5);
     }
-
-    @Override
+    /**
+     *
+     *
+     * @return state of ant - always active
+     */    @Override
     public boolean update() {
         // new neighbours are found
         updateAvailableNeighbours();
@@ -115,11 +118,20 @@ public class Ant implements Entity {
         return lookDirection[2];
     }
 
+    /**
+     * @param direction is always a Vector with -1 <= x&y <= 1
+     *
+     *
+     */
     public void setDirection(Vector direction) {
         lookDirection[2] = direction;
     }
 
-    //determines the next chosen tile
+    /**
+     *
+     *determines the next move on the grid
+     *
+     */
     private void makeMove() {
         boolean allObstacles = Arrays.stream(availableNeighbours).toList().stream().allMatch(neighbor -> neighbor instanceof Obstacle);
         if (allObstacles) {
@@ -234,6 +246,12 @@ public class Ant implements Entity {
         }
     }
 
+    /**
+     *
+     *
+     * @return non-null object of type Nest
+     */
+
     public Nest getNest() {
         return nest;
     }
@@ -261,6 +279,11 @@ public class Ant implements Entity {
         this.availableNeighbours[3] = this.grid.getTile(this.position.add(lookDirection[3]));
         this.availableNeighbours[4] = this.grid.getTile(this.position.add(lookDirection[4]));
     }
+    /**
+     *
+     *
+     * @returns a copy of the ant with the same parameters
+     */
     public Ant copy(){
         return new Ant(this.grid,this.nest,this.lifetime,this.position);
     }

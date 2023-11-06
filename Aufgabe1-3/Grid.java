@@ -237,11 +237,21 @@ public class Grid {
             generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
     }
+    /**
+     * a function that generates random food sources on the grid
+     *
+     *
+     */
     public void generateFoodSources() {
         Generator generator = new Generator(this, 0, 15, 0, 0);
         generator.generateTilesForChunk(startPoint, endPoint);
     }
 
+    /**
+     * a function that generates random nests on the grid
+     *
+     *
+     */
     public void generateNests() {
         Generator generator = new Generator(this, 1, 0, 200, 0);
         generator.generateTilesForChunk(startPoint, endPoint);

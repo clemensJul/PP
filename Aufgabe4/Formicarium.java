@@ -7,4 +7,9 @@ public class Formicarium implements FormicariumPart {
         this.formicariumParts = new ArrayList<>();
         this.formicariumParts.addAll(formicariumParts);
     }
+
+    @Override
+    public boolean compatibleWith(Compatibility compare) {
+        return false;
+    }
 }

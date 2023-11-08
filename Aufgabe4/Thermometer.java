@@ -1,2 +1,2 @@
-public class Thermometer implements Instrument {
+public class Thermometer implements CompatibleInstrument {
 }

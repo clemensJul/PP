@@ -1,2 +1,2 @@
-public interface CompatibleInstrument {
+public interface CompatibleInstrument extends Instrument, FormicariumPart {
 }

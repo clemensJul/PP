@@ -6,7 +6,7 @@ public class AntFarm implements FormicariumPart {
     }
 
     @Override
-    public boolean compatibleWith(Compatibility compare) {
+    public boolean compatibility(Compatible compare) {
         return false;
     }
 }

@@ -1,4 +1,5 @@
 public enum ESubstrat {
-    TEST,
-    NUR
+    SAND,
+    DIRT,
+    GRAVEL,
 }

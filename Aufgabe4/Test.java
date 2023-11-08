@@ -4,22 +4,24 @@ public class Test {
     public static void main(String[] args) {
         ESubstrat s = ESubstrat.TEST;
 
+        ArrayList<FormicariumPart> emptyList = new ArrayList<>();
+
         // compositeFormicarium
-        FormicariumItem fi_compositeFormicarium = new CompositeFormicarium();
-        FormicariumPart fp_compositeFormicarium = new CompositeFormicarium();
-        Formicarium f_compositeFormicarium = new CompositeFormicarium();
+        FormicariumItem fi_compositeFormicarium = new CompositeFormicarium(emptyList);
+        FormicariumPart fp_compositeFormicarium = new CompositeFormicarium(emptyList);
+        Formicarium f_compositeFormicarium = new CompositeFormicarium(emptyList);
 
         // formicarium
-        FormicariumItem fi_formicarium = new Formicarium();
-        FormicariumPart fp_formicarium = new Formicarium();
+        FormicariumItem fi_formicarium = new Formicarium(emptyList);
+        FormicariumPart fp_formicarium = new Formicarium(emptyList);
 
         // nest
         FormicariumPart fp_nest = new Nest();
         FormicariumItem fi_nest = new Nest();
 
         // antfarm
-        FormicariumPart fp_antFarm = new AntFarm();
-        FormicariumItem fi_antFarm = new AntFarm();
+        FormicariumPart fp_antFarm = new AntFarm(ESubstrat.GRAVEL);
+        FormicariumItem fi_antFarm = new AntFarm(ESubstrat.GRAVEL);
 
         // arena
         FormicariumPart fp_arena = new Arena();

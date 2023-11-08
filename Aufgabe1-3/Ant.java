@@ -79,11 +79,14 @@ public class Ant implements Entity {
         this.currentLifetime = this.lifetime;
         this.totalLifetime = currentLifetime*(int)(Math.random()*5+5);
     }
+
     /**
+     * Handles the update process for an Ant.
+     * Acts based on biases and on different Ant states.
      *
-     *
-     * @return state of ant - always active
-     */    @Override
+     * @return always true, because in each step an Ant makes definitely a move to another tile.
+     */
+    @Override
     public boolean update() {
         // new neighbours are found
         updateAvailableNeighbours();
@@ -104,6 +107,12 @@ public class Ant implements Entity {
         return position;
     }
 
+    /**
+     * Returns the Color of the Ant.
+     * Uses a darkened nest color as a basis
+     *
+     * @return Color of Ant
+     */
     @Override
     public Color getColor() {
         return nest.getColor().darker();
@@ -119,9 +128,9 @@ public class Ant implements Entity {
     }
 
     /**
-     * @param direction is always a Vector with -1 <= x&y <= 1
+     * Sets the looking direction of the Ant.
      *
-     *
+     * @param direction Must be a Vector with x and y coordinates in [-1;1]
      */
     public void setDirection(Vector direction) {
         lookDirection[2] = direction;

@@ -40,6 +40,8 @@ public class FoodSource extends Tile {
 
     /**
      * Decreases the amount of left food.
+     *
+     * @return  true if the foodAmount is larger than 0.
      */
     public boolean decreaseFoodAmount() {
         foodAmount--;

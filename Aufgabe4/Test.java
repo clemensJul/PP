@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Test {
     public static void main(String[] args) {
         ESubstrat s = ESubstrat.TEST;
@@ -32,5 +34,24 @@ public class Test {
         // forceps
         FormicariumItem fi_forceps = new Forceps();
         Instrument i_forceps = new Forceps();
+
+        ArrayList<FormicariumItem> items = new ArrayList<>();
+        items.add(fi_compositeFormicarium);
+        items.add(fp_compositeFormicarium);
+        items.add(f_compositeFormicarium);
+        items.add(fi_formicarium);
+        items.add(fp_formicarium);
+        items.add(fp_nest);
+        items.add(fi_nest);
+        items.add(fi_antFarm);
+        items.add(fp_antFarm);
+        items.add(fi_arena);
+        items.add(fp_arena);
+        items.add(ci_thermometer);
+        items.add(i_thermometer);
+        items.add(fp_thermometer);
+        items.add(fi_thermometer);
+        items.add(fi_forceps);
+        items.add(i_forceps);
     }
 }

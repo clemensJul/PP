@@ -1,11 +1,57 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class FormicariumSet {
-    private List<FormicariumItem> formicariumItems;
+public class FormicariumSet implements Iterable {
+    private ArrayList<FormicariumItem> formicariumItems;
+
+    // index of the last returned element of iterator
+    private int lastReturned = -1;
 
     public FormicariumSet(List<FormicariumItem> formicariumItems) {
         this.formicariumItems = new ArrayList<>();
         this.formicariumItems.addAll(formicariumItems);
+    }
+
+    @Override
+    public Iterator iterator() {
+        return new FormicarSetIterator(formicariumItems);
+    }
+
+    private class FormicarSetIterator implements Iterator {
+        int counter = 0;
+        ArrayList<FormicariumItem> items;
+
+        public FormicarSetIterator(ArrayList<FormicariumItem> items) {
+            this.items = items;
+        }
+
+        // Returns true if the iteration has more elements.
+        @Override
+        public boolean hasNext() {
+            return counter != items.size();
+        }
+
+        // Returns the next element in the iteration.
+        // Throws: NoSuchElementException – if the iteration has no more elements
+        @Override
+        public Object next () throws NoSuchElementException {
+            if(!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            lastReturned = counter;
+            return items.get(counter++);
+        }
+
+        // Removes from the underlying collection the last element
+        // returned by this iterator (optional operation).
+        // This method can be called only once per call to next.
+        @Override
+        public void remove() {
+            if (lastReturned == -1) {
+                throw new IllegalStateException("No element to remove");
+            }
+            items.remove(lastReturned);
+            counter = lastReturned; // Adjust counter
+            lastReturned = -1; // Reset lastReturned after removal
+        }
     }
 }

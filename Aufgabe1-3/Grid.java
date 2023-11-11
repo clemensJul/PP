@@ -196,7 +196,7 @@ public class Grid {
             return;
         }
 
-        Generator generator = new Generator(this, 0, 7, 0, 12);
+        Generator generator = new Generator(this, 0, 7, 0, 2);
         Vector newStartPoint, newChunkStartPoint, newEndPoint, newChunkEndPoint;
         if (extendSides[0]) {
             // extend left

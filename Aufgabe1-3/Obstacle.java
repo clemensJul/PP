@@ -12,6 +12,11 @@ public class Obstacle extends Tile {
         super(position);
     }
 
+    // ERROR: die getCurrentStink-Methode wird eigentlich nur von Tile an sich gebraucht,
+    // jedoch nicht von Obtacles, FoodSources oder Nesten. Wir haben die Methode eigentlich so gedacht,
+    // dass ein Tile entfernt wird, wenn der stink von dem Tile < 0.05f ist,
+    // damit die Map sich mit der Zeit wieder verkleinert, damit weniger Berechnungen pro Update-Vorgang
+    // durchgeführt werden müssen. Deswegen wird bei diesen Klassen einfach ein fixer Wert > 0.05f retourniert, damit sie nicht aus der Map gelöscht werden.
     /**
      * Returns 100.
      * Nest is not taken into account.

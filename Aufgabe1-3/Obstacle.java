@@ -6,7 +6,7 @@ public class Obstacle extends Tile {
     /**
      * Initializes the Nest at the given position
      *
-     * @param position Position where Nest is located.
+     * @param position Position where Nest is located, must be != null.
      */
     public Obstacle(Vector position) {
         super(position);
@@ -28,7 +28,7 @@ public class Obstacle extends Tile {
     /**
      * Return obstacleColor.
      *
-     * @return Color
+     * @return Color, is != null
      */
     @Override
     public Color getColor() {

@@ -6,7 +6,7 @@ import java.awt.*;
 // This class extends from Tile
 // It describes the FoodSources
 public class FoodSource extends Tile {
-    private static Color color = Color.GREEN;
+    private static final Color color = Color.GREEN;
     private int foodAmount = 200;
 
     /**
@@ -29,9 +29,9 @@ public class FoodSource extends Tile {
     }
 
     /**
-     * Returns the color of a foodsource, where the remaining amount is indicated by the opacity.
+     * Returns the color of a FoodSource.
      *
-     * @return Color
+     * @return Color.GREEN
      */
     @Override
     public Color getColor() {
@@ -41,7 +41,7 @@ public class FoodSource extends Tile {
     /**
      * Decreases the amount of left food.
      *
-     * @return  true if the foodAmount is larger than 0.
+     * @return true if the foodAmount is larger than 0.
      */
     public boolean decreaseFoodAmount() {
         foodAmount--;
@@ -49,9 +49,9 @@ public class FoodSource extends Tile {
     }
 
     /**
-     * There is no need to update a FoodSource
+     * Update function for a FoodSource.
      *
-     * @return always true
+     * @return True if there is foodAmount left.
      */
     @Override
     public boolean update() {

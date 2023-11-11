@@ -18,7 +18,7 @@ public class Tile implements Entity {
     /**
      * Initializes a Tile at the given position.
      *
-     * @param position Position of Tile
+     * @param position Position of Tile, must be != null
      */
     public Tile(Vector position) {
         this.position = position;
@@ -27,7 +27,7 @@ public class Tile implements Entity {
     /**
      * Returns the tile´s position.
      *
-     * @return Position of Tile
+     * @return Position of Tile, is != null
      */
     @Override
     public Vector getPosition() {
@@ -36,8 +36,9 @@ public class Tile implements Entity {
 
     /**
      * Returns the nest color with the highest scent.
+     * If there is no nest in the stinkMap, Color.Black is returned.
      *
-     * @return Color
+     * @return Color, is != null
      */
     @Override
     public Color getColor() {
@@ -51,9 +52,9 @@ public class Tile implements Entity {
     }
 
     /**
-     * Reduces every stink on this tile.
+     * Reduces every value in the stinkMap on this tile by stinkDeletionRate.
      *
-     * @return true.
+     * @return true, if one value in the stinkMap is greater than 0.05f.
      */
     @Override
     public boolean update() {
@@ -61,7 +62,7 @@ public class Tile implements Entity {
         stinkMap.replaceAll((nest, stink) -> stink * stinkDeletionRate);
 
         // if there is a stink > 0.05f, we need to remove it from the map.
-        return !stinkMap.entrySet().stream().anyMatch(entry -> entry.getValue() > 0.05f);
+        return stinkMap.entrySet().stream().noneMatch(entry -> entry.getValue() > 0.05f);
     }
 
     /**
@@ -69,7 +70,7 @@ public class Tile implements Entity {
      * If nest is null, the scent with of the highest scent nest is returned
      *
      * @param nest Corresponding nest
-     * @return true.
+     * @return stink of the given nest, is >= 0.
      */
     public float getCurrentStink(Nest nest) {
         // we want to return the max stink for checking if there is a stink (needed in grid)
@@ -86,13 +87,13 @@ public class Tile implements Entity {
         }
         return currentStink;
     }
+
     /**
-     * @param nest is a nest from the nests of the grid
-     *returns every smell that is not from the nest
+     * Returns the sum of every smell that is not from the nest
      *
+     * @param nest Corresponding nest, must be != null
      * @return returns float >=0f of smells from every other ant species
      */
-
     public float totalOtherSmell(Nest nest) {
         float sum = 0;
 
@@ -110,10 +111,11 @@ public class Tile implements Entity {
     }
 
     /**
-     * Adds a stink to the corresponding scent.
+     * Adds one antStink to the corresponding nest.
+     * The maximal ant stink of a nest can be 1.
+     * Add the given nest to the stinkMap if it is not already there.
      *
-     * @param nest Corresponding nest
-     * @return true.
+     * @param nest Corresponding nest, must be != null
      */
     public void addStink(Nest nest) {
         if (nest == null) {
@@ -128,18 +130,23 @@ public class Tile implements Entity {
         stinkMap.put(nest, currentStink);
     }
 
+    /**
+     * Converts Tile toString
+     * @return String repentation of Tile
+     */
     @Override
     public String toString() {
         return "Tile{" +
                 "position=" + position +
                 '}';
     }
+
     /**
-     *
+     * Checks if a given object is equal to this.
+     * A tile is considered equal if they have the same position.
      *
      * @return tiles are equal if they are from the same class and their position is equal
      */
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

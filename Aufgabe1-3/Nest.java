@@ -7,56 +7,28 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 //extends Tiles with custom methodes
 public class Nest extends Tile {
-
+    // color of the nest
     private final Color color;
+
+    // List of all relevant locations
     private final LinkedList<Tile> knownLocations;
+
+    // List of Ants which belong to this nest
     private final CopyOnWriteArrayList<Ant> ants = new CopyOnWriteArrayList<>();
-    private int totalfarmedFood;
+
+    // counter for retrieved food
+    private int totalFarmedFood;
+
+    // counter for ants
     private int totalAntsCreated;
 
     /**
+     * Initializes the Nest.
      *
-     * @returns list of ants
-     */
-    public List<Ant> getAnts() {
-        return ants;
-    }
-
-    /**
-     *
-     * @param ant is killed - needs to be non null and from the nest
-     */
-    public void killAnt(Ant ant) {
-        ants.remove(ant);
-        if (ants.size() == 0) System.out.println("nest deleted");
-
-    }
-
-    /**
-     *
-     * @param ant is added to nest
-     */
-    public void addAnt(Ant ant){
-        ants.add(ant.copy());
-        totalAntsCreated++;
-    }
-    /**
-     * Return nestColor.
-     *
-     * @return Color
-     */
-    @Override
-    public Color getColor() {
-        return color;
-    }
-    public void addFood(){
-        totalfarmedFood++;
-    }
-
-    /**
-     * Initializes the Nest at the given position
-     *
-     * @param position Position where Nest is located.
+     * @param position   Position where Nest is located. Must be != null
+     * @param nestColor  Color of the nest. Must be != null
+     * @param antsAmount Initial amount of ants. Must be > 0
+     * @param grid       Reference to Grid where the Nest lives. Must be != null
      */
     public Nest(Vector position, Color nestColor, int antsAmount, Grid grid) {
         super(position);
@@ -66,6 +38,54 @@ public class Nest extends Tile {
         for (int i = 0; i < antsAmount; i++) {
             ants.add(new Ant(grid, this, 100, position));
         }
+    }
+
+
+    /**
+     * @return List of Ants != null
+     */
+    public List<Ant> getAnts() {
+        return ants;
+    }
+
+    /**
+     * Kills an Ant.
+     * It gets removed from the Ants list.
+     *
+     * @param ant Ant, must be != null
+     */
+    public void killAnt(Ant ant) {
+        ants.remove(ant);
+        if (ants.isEmpty()) {
+            System.out.println("nest deleted");
+        }
+    }
+
+    /**
+     * Adds an Ant to the Nest.
+     *
+     * @param ant Ant, must be != null
+     */
+    public void addAnt(Ant ant) {
+        ants.add(ant.copy());
+        totalAntsCreated++;
+    }
+
+    /**
+     * Return nestColor.
+     *
+     * @return Color, is != null
+     */
+    @Override
+    public Color getColor() {
+        return color;
+    }
+
+    /**
+     * Increases the counter for farmed food by one
+     */
+    public void addFood() {
+        totalFarmedFood++;
     }
 
     /**
@@ -82,15 +102,14 @@ public class Nest extends Tile {
     }
 
     /**
-     *
      * @return every food that is brought back to the nest
      */
-    public int getTotalfarmedFood() {
-        return totalfarmedFood;
+    public int getTotalFarmedFood() {
+        return totalFarmedFood;
     }
 
     /**
-     * Nest needs no updates because it does not change colors.
+     * Nest does not need visual updates.
      *
      * @return false
      */
@@ -101,53 +120,60 @@ public class Nest extends Tile {
     }
 
     /**
-     *
-     * @return total amount of ants that were in the nest
+     * @return total amount of ants that were in the nest. Is >= 0.
      */
     public int getTotalAntsCreated() {
         return totalAntsCreated;
     }
 
     /**
-     *adds a tile to the know locations tile != null and tile is a element of grid
+     * Adds a tile to the know locations
      *
-     *
+     * @param tile Tile to add to locations, must be!= null
      */
     public void addLocation(Tile tile) {
         knownLocations.add(tile);
     }
-    /**
-     *
-     *
-     * @return random Tile from knownlocations. if no location is found return null
-     */
 
+    /**
+     * Returns a random Location from knownLocations.
+     *
+     * @return random Tile from knownLocations. If there are no knownLocation, null is returned.
+     */
     public Tile getRandomLocation() {
         int length = knownLocations.size();
-        if (length == 0) return null;
+        if (length == 0) {
+            return null;
+        }
         int index = (int) (Math.random() * length);
-        // if (index == 0 ) return knownLocations.get(1).getPosition();
         return knownLocations.get(index);
     }
+
     /**
+     * Checks if a given Tile is in knownLocations.
      *
-     *
+     * @param tile Tile to check, must be != null
      * @return boolean if tile is known or not already
      */
-
     public boolean containsLocation(Tile tile) {
         return knownLocations.contains(tile);
     }
 
     /**
-     * @param tile should not be null
-     * removes tile from the list of known locations
-     * @return returns boolean of if tile is removed or not
+     * Removes a given Tile from knownLocations.
+     *
+     * @param tile Tile to remove, must be != null
+     * @return true if the remove was successful
      */
     public boolean removeLocation(Tile tile) {
         return knownLocations.remove(tile);
     }
 
+    /**
+     * Converts tile toString
+     *
+     * @return String repentation of Tile
+     */
     @Override
     public String toString() {
         return "Nest{" +

@@ -11,12 +11,11 @@ public class Generator {
     /**
      * Initializes the Generator.
      *
-     * @param grid            Grid
-     * @param nestCounter     Amount of nests which are getting generated
-     * @param foodCounter     Amount of foodSources which are getting generated
-     * @param antsPerNest     Amount of ants which are getting generated per nest
-     * @param obstacleCounter Amount of ants which are getting generated per nest
-     * @param antBias         Biases for ants on directions
+     * @param grid            Grid, Grid != null
+     * @param nestCounter     Amount of nests which are getting generated. Must be >= 0
+     * @param foodCounter     Amount of foodSources which are getting generated. Must be >= 0
+     * @param antsPerNest     Amount of ants which are getting generated per nest. Must be >= 0
+     * @param obstacleCounter Amount of ants which are getting generated per nest. Must be >= 0
      */
     public Generator(Grid grid, int nestCounter, int foodCounter, int antsPerNest, int obstacleCounter) {
         this.grid = grid;
@@ -29,9 +28,9 @@ public class Generator {
     /**
      * Checks if a given point is in between a triangle.
      *
-     * @param point1 Point1
-     * @param point2 Point2
-     * @param point3 Point3
+     * @param point1 Point1, Point1 != null
+     * @param point2 Point2, Point2 != null
+     * @param point3 Point3, Point3 != null
      * @param x      X value of given Point
      * @param y      Y value of given Point
      * @return isInside of triangle
@@ -50,9 +49,9 @@ public class Generator {
     /**
      * Calculates the point's orientation with respect to an edge.
      *
-     * @param p1 First edge point.
-     * @param p2 Second edge point.
-     * @param p3 The point to check.
+     * @param p1 First edge point, must be != null
+     * @param p2 Second edge point, must be != null
+     * @param p3 The point to check, must be != null
      * @return The point's orientation.
      */
     private static double sign(Vector p1, Vector p2, Vector p3) {
@@ -63,8 +62,8 @@ public class Generator {
      * Generates obstacles in a given area.
      * Obstacles are generated in a triangle form.
      *
-     * @param startPoint Start Point of a rectangle.
-     * @param endPoint   End Point of a rectangle.
+     * @param startPoint Start Point of a rectangle, must be != null
+     * @param endPoint   End Point of a rectangle, must be != nulll
      */
     private void generateObstacles(Vector startPoint, Vector endPoint) {
         for (int i = 0; i < obstacleCounter; i++) {
@@ -83,13 +82,13 @@ public class Generator {
                 continue;
             }
 
-            // Finde die Begrenzungen des Rechtecks, das das Dreieck umschließt
+            // Find the boundaries of the rectangle that encloses the triangle
             int minX = Math.min(point1.getX(), Math.min(point2.getX(), point3.getX()));
             int maxX = Math.max(point1.getX(), Math.max(point2.getX(), point3.getX()));
             int minY = Math.min(point1.getY(), Math.min(point2.getY(), point3.getY()));
             int maxY = Math.max(point1.getY(), Math.max(point2.getY(), point3.getY()));
 
-            // Iteriere über jedes Gitterpunkt im umschließenden Rechteck
+            // Iterate over each grid point in the enclosing rectangle
             for (int x = minX; x <= maxX; x++) {
                 for (int y = minY; y <= maxY; y++) {
                     Vector position = new Vector(x, y);
@@ -107,8 +106,8 @@ public class Generator {
     /**
      * Generates foodSources in a given area.
      *
-     * @param startPoint Start Point of a rectangle.
-     * @param endPoint   End Point of a rectangle.
+     * @param startPoint Start Point of a rectangle, must be != null
+     * @param endPoint   End Point of a rectangle, must be != null
      */
     private void generateFoodSources(Vector startPoint, Vector endPoint) {
         for (int i = 0; i < foodCounter; i++) {
@@ -136,8 +135,8 @@ public class Generator {
     /**
      * Generates nests in a given area.
      *
-     * @param startPoint Start Point of a rectangle.
-     * @param endPoint   End Point of a rectangle.
+     * @param startPoint Start Point of a rectangle, must be != null
+     * @param endPoint   End Point of a rectangle, must be != null
      */
     private void generateNests(Vector startPoint, Vector endPoint) {
         // STYLE: prozeduale Programmierung + objektorientierte Programmierung
@@ -172,10 +171,10 @@ public class Generator {
     }
 
     /**
-     * Generates obstacles, nests and foodsources in a given area.
+     * Generates obstacles, nests and FoodSources in a given area.
      *
-     * @param startPoint Start Point of a rectangle.
-     * @param endPoint   End Point of a rectangle.
+     * @param startPoint Start Point of a rectangle, must be != null
+     * @param endPoint   End Point of a rectangle, must be != null
      */
     public void generateTilesForChunk(Vector startPoint, Vector endPoint) {
         generateObstacles(startPoint, endPoint);
@@ -185,6 +184,7 @@ public class Generator {
 
     /**
      * Returns a random number in a given range.
+     * Min value must be equal or lower than max value.
      *
      * @param min Lower bound
      * @param max Lower bound

@@ -9,8 +9,12 @@ import java.util.Objects;
 // STYLE: Klasse ist eine Mischung aus OOP und funktionaler Programmierung
 // es gibt Methoden die static sind und auch welche, die auf der Instanz arbeiten.
 public class Vector {
-    private final int x;
+
+    // X-coordinate of Vector
     private final int y;
+
+    // Y-coordinate of Vector
+    private final int x;
 
     /**
      * Returns a Vector object that represents the current position of the ant.
@@ -26,11 +30,10 @@ public class Vector {
     /**
      * Calculates orthogonal vectors of a given vector
      *
-     * @param vector Vector to calculate the orthogonal from
+     * @param vector Vector to calculate the orthogonal from, must be != null.
      * @param isLeft true means the top orthogonal, false is the bottom orthogonal vector
-     * @return Orthogonal vector
+     * @return Orthogonal vector ofthe given Vector
      */
-    //
     public static Vector orthogonalVector(Vector vector, boolean isLeft) {
         if (isLeft) {
             return new Vector(-vector.y, vector.x);
@@ -45,9 +48,9 @@ public class Vector {
     /**
      * Calculates the vector between an orthogonal vector and its main vector
      *
-     * @param orthogonal needs to be the orthogonal vector of position
-     * @param position   is the origional vector
-     * @return vector between orthogonal vector and this instance
+     * @param orthogonal needs to be the orthogonal vector of position and != null
+     * @param position   is the origional vector, must be != null
+     * @return vector between orthogonal vector and this instance, which is != null
      */
     public static Vector sharpVector(Vector position, Vector orthogonal) {
         int x = position.x + orthogonal.x;
@@ -60,19 +63,21 @@ public class Vector {
     }
 
     /**
-     * Calculates dotproduct of 2 vectors
+     * Calculates dot-product of two vectors
      *
-     * @param a,b Vectors for dot product calculation
-     * @return dot product
+     * @param a First Vector for dot product calculation, must be != null
+     * @param b Second Vector for dot product calculation, must be != null
+     * @return Dot-product of the given Vectors
      */
     public static int dotProduct(Vector a, Vector b) {
         return a.x * b.x + a.y * b.y;
     }
 
     /**
-     * normalizes vector
+     * Normalizes a Vector.
      *
-     * @return Direction to secondPos vector
+     * @param position Vector to normalize, must be != null.
+     * @return Normalized Vector
      */
     public Vector normalizedVector(Vector position) {
         int dx = this.x - position.x;
@@ -89,9 +94,9 @@ public class Vector {
     }
 
     /**
-     * Creates a random direction vector that will always point somewhere
+     * Creates a random direction Vector that will always point somewhere
      *
-     * @return Random direction vector
+     * @return Random direction Vector, which is != null
      */
     public static Vector RandomDirection() {
         int x = 0;
@@ -103,6 +108,11 @@ public class Vector {
         return new Vector(x, y);
     }
 
+    /**
+     * Returns a new Vector with this Vector´s inverted coordinates.
+     *
+     * @return Inversed Vector, != null
+     */
     public Vector invert() {
         return new Vector(-x, -y);
     }
@@ -110,19 +120,42 @@ public class Vector {
     /**
      * Add a vector to this instance coordinate wise.
      *
-     * @param vector Vector to add
+     * @param vector Vector to add, must be != null
      * @return Vector with added coordinates.
      */
     public Vector add(Vector vector) {
         return new Vector(this.x + vector.x, this.y + vector.y);
     }
+
+    /**
+     * Subtract a vector from this instance coordinate wise.
+     *
+     * @param vector Vector to substract, must be != null
+     * @return Vector with substracted coordinates.
+     */
     public Vector subtract(Vector vector) {
         return new Vector(this.x - vector.x, this.y - vector.y);
     }
-    public Vector multiplyWithScalar(int scalar){return new Vector(this.x*scalar,this.y*scalar);}
-    public Vector divideWithScalar(int scalar){return new Vector(this.x/scalar,this.y/scalar);}
 
+    /**
+     * Multiplies a scalar with this instance coordinate wise.
+     *
+     * @param scalar Scalar to multiply
+     * @return Vector with multiplied coordinates.
+     */
+    public Vector multiplyWithScalar(int scalar) {
+        return new Vector(this.x * scalar, this.y * scalar);
+    }
 
+    /**
+     * Divides a scalar with this instance coordinate wise.
+     *
+     * @param scalar Scalar to divide
+     * @return Vector with adjusted coordinates.
+     */
+    public Vector divideWithScalar(int scalar) {
+        return new Vector(this.x / scalar, this.y / scalar);
+    }
 
     /**
      * X coordinate of vector
@@ -142,6 +175,11 @@ public class Vector {
         return y;
     }
 
+    /**
+     * Converts Vecot toString
+     *
+     * @return String repentation of Vector
+     */
     @Override
     public String toString() {
         return "Vector{" +
@@ -149,12 +187,12 @@ public class Vector {
                 ", y=" + y +
                 '}';
     }
+
     /**
-     *
+     * Checks if a given object is equal to this.
      *
      * @return Vectors are equal if each x and each y is equal
      */
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

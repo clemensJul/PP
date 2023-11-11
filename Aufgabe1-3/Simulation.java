@@ -1,18 +1,15 @@
 import codedraw.CodeDraw;
-import codedraw.Event;
 import codedraw.EventScanner;
 import codedraw.Key;
 
 import java.awt.*;
-import java.util.Queue;
-import java.util.Scanner;
 
 // Modularisierungseinheit: Klasse
 
 // combines visuals from CodeDraw with the logic found in Grid
 public class Simulation {
     private double cellSize;
-    private double initialCellSize;
+    private final double initialCellSize;
     private final int updatesPerCircle;
     private final CodeDraw cd;
     private final Grid grid;
@@ -22,10 +19,10 @@ public class Simulation {
     /**
      * Initializes a Simulation.
      *
-     * @param cellSize         cellSize for Grid
-     * @param maxX             width of Grid
-     * @param maxY             height of Grid
-     * @param updatesPerCircle how many iterations are made before visual update
+     * @param cellSize         cellSize for Grid, must be > 0
+     * @param maxX             width of Grid, must be > 0
+     * @param maxY             height of Grid, must be > 0
+     * @param updatesPerCircle how many iterations are made before visual update, must be > 0
      */
     public Simulation(int cellSize, int maxX, int maxY, int updatesPerCircle) {
         this.initialCellSize = cellSize;
@@ -54,7 +51,7 @@ public class Simulation {
             for (int i = 0; i < updatesPerCircle; i++) {
                 grid.update();
             }
-            updateOffset(input);
+            handleKeyboardInput(input);
             drawWindow();
         }
     }
@@ -87,11 +84,15 @@ public class Simulation {
 
     /**
      * Handles the keyboard input.
-     * Redraws the visible part of the map.
-     * Mouse-Arrays
+     * Allows to change the visible part of the window.
+     * With the Keys ASWD, 8462, and arrow keys, you can change in top,left,right or bottom directions.
+     * With + and -, you can zoom in or zoom out
+     * With R, you can reset the window to the initial view
+     * With F, you can generate new FoodSources on the Grid
+     * With N, you can generate a new Nest on the Grid
      */
     //STYLE: OOP???
-    private void updateOffset(EventScanner input) {
+    private void handleKeyboardInput(EventScanner input) {
         int x = 0, y = 0;
         int offsetByStep = 20;
         while (input.hasEventNow() && !input.hasKeyDownEvent()) {

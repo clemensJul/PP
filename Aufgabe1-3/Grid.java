@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,12 +11,16 @@ public class Grid {
     private Vector endPoint = new Vector(100, 125);
 
     /**
-     * Initializes the Grid.
+     * Initializes the Grid with a given size.
      * Generates basic entities in the Grid.
+     * The size of the grid might increase if Ants reach the borders.
+     *
+     * @param width  Width of initial grid, must be > 0
+     * @param height Height of initial grid, must be > 0
      */
     public Grid(int width, int height) {
-        startPoint = new Vector(-1* width/2, -1 * height / 2);
-        endPoint = new Vector(width/2, height / 2);
+        startPoint = new Vector(-1 * width / 2, -1 * height / 2);
+        endPoint = new Vector(width / 2, height / 2);
         this.map = new ConcurrentHashMap<>();
 
         int nestCounter = (int) (Math.random() * 2) + 4;
@@ -35,7 +38,7 @@ public class Grid {
     /**
      * Returns the entities in a map.
      *
-     * @return Entity Map
+     * @return Entity Map. Map != null
      */
     public Map<Vector, Tile> getMap() {
         return map;
@@ -48,7 +51,6 @@ public class Grid {
     public void update() {
         // update all entities
 
-        long startTime = System.nanoTime();
         // BAD: ants sind zwar Entities, werden aber durch unserem Design vom Grid extra gespeichert, deshalb müssen wir die Update Methode von denen extra aufrufen
 
         // GOOD: Durch die Verwendung von dynamischen Binden werden von allen Entities die update Methoden aufgerufen
@@ -57,9 +59,9 @@ public class Grid {
             if (entry.getValue() instanceof Nest nest) {
                 nest.update();
 
-                if(nest.getAnts().isEmpty()) {
+                if (nest.getAnts().isEmpty()) {
                     removingItems.add(nest.getPosition());
-                    System.out.println("total farmed food of nest"+nest +"  was "+nest.getTotalfarmedFood()+" with a total amout of ants of "+nest.getTotalAntsCreated());
+                    System.out.println("total farmed food of nest" + nest + "  was " + nest.getTotalFarmedFood() + " with a total amout of ants of " + nest.getTotalAntsCreated());
                 }
             }
         });
@@ -75,14 +77,14 @@ public class Grid {
         });
 
         removingItems.forEach(map::remove);
-//        map.entrySet().removeIf(entry -> deletionMap.get(entry.getKey()) != null);
         generateNewChunks();
-
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-        //System.out.println(duration / 1_000_000 + "ms");
     }
 
+    /**
+     * Returns a List of all Nests on the Grid.
+     *
+     * @return List of Nests, which is != null
+     */
     public ArrayList<Nest> getNests() {
         ArrayList<Nest> nests = new ArrayList<>();
 
@@ -95,6 +97,11 @@ public class Grid {
         return nests;
     }
 
+    /**
+     * Returns a List of all Ants on the Grid.
+     *
+     * @return List of Ants, which is != null
+     */
     public ArrayList<Ant> getAnts() {
         ArrayList<Ant> ants = new ArrayList<>();
         getNests().forEach(nest -> ants.addAll(nest.getAnts()));
@@ -108,7 +115,7 @@ public class Grid {
      * ants,
      * foodSources, obstacles & nests
      *
-     * @return Entity List
+     * @return Entity List != null
      */
     public ArrayList<Entity> queue() {
         ArrayList<Entity> entities = new ArrayList<>();
@@ -133,10 +140,11 @@ public class Grid {
     }
 
     /**
-     * Returns a tile at a given position
+     * Returns a tile at a given position.
+     * If the Tile at this position is not already in the map, it gets created.
      *
-     * @param position Position
-     * @return Tile
+     * @param position Position, must be != null
+     * @return Tile != null
      */
     public Tile getTile(Vector position) {
         Tile tile = map.get(position);
@@ -148,27 +156,32 @@ public class Grid {
         return tile;
     }
 
+    /**
+     * Removes a Tile from the Map.
+     * If the Tile does not exist, it has no effects.
+     *
+     * @param tile Tile, must be != null
+     */
     public void removeTile(Tile tile) {
         map.remove(tile.getPosition());
     }
 
     /**
-     * Puts a tile into the map.
-     * The key is retrieved from the tile.
+     * Puts a Tile into the Map.
+     * The key is retrieved from the Tile.
      *
-     * @param tile tile
-     * @return Tile
+     * @param tile tile, must be != null
      */
-    private Tile putTile(Tile tile) {
-        return map.put(tile.getPosition(), tile);
+    private void putTile(Tile tile) {
+        map.put(tile.getPosition(), tile);
     }
 
     /**
      * Checks if there is any ant which want to go to unknown territory.
-     * If so, the map increases and new obstacles, nests and foodsources are getting generated.
+     * If so, the map increases and new Obstacles, Nests and FoodSources are getting generated.
      */
     private void generateNewChunks() {
-        int chunkSize = 200;
+        int chunkSize = 20;
 
         Boolean[] extendSides = new Boolean[4];
         ArrayList<Ant> ants = getAnts();
@@ -188,7 +201,7 @@ public class Grid {
         if (extendSides[0]) {
             // extend left
             newStartPoint = new Vector(startPoint.getX() - chunkSize, startPoint.getY());
-//            newEndPoint = endPoint;
+            // newEndPoint = endPoint;
 
             newChunkStartPoint = newStartPoint;
             newChunkEndPoint = new Vector(startPoint.getX(), endPoint.getY());
@@ -200,7 +213,7 @@ public class Grid {
 
         if (extendSides[1]) {
             // extend right
-//            newStartPoint = startPoint;
+            // newStartPoint = startPoint;
             newEndPoint = new Vector(endPoint.getX() + chunkSize, endPoint.getY());
 
             newChunkStartPoint = new Vector(endPoint.getX(), startPoint.getY());
@@ -214,7 +227,7 @@ public class Grid {
         if (extendSides[2]) {
             // extend bottom
             newStartPoint = new Vector(startPoint.getX(), startPoint.getY() - chunkSize);
-//            newEndPoint = endPoint;
+            // newEndPoint = endPoint;
 
             newChunkStartPoint = newStartPoint;
             newChunkEndPoint = new Vector(endPoint.getX(), startPoint.getY());
@@ -226,7 +239,7 @@ public class Grid {
 
         if (extendSides[3]) {
             // extend top
-//            newStartPoint = startPoint;
+            // newStartPoint = startPoint;
             newEndPoint = new Vector(endPoint.getX(), endPoint.getY() + chunkSize);
 
             newChunkStartPoint = new Vector(startPoint.getX(), endPoint.getY());
@@ -237,10 +250,9 @@ public class Grid {
             generator.generateTilesForChunk(newChunkStartPoint, newChunkEndPoint);
         }
     }
+
     /**
-     * a function that generates random food sources on the grid
-     *
-     *
+     * Generates 15 random FoodSources on the Grid.
      */
     public void generateFoodSources() {
         Generator generator = new Generator(this, 0, 15, 0, 0);
@@ -248,9 +260,7 @@ public class Grid {
     }
 
     /**
-     * a function that generates random nests on the grid
-     *
-     *
+     * Generates a random Nests on the Grid.
      */
     public void generateNests() {
         Generator generator = new Generator(this, 1, 0, 200, 0);

@@ -44,6 +44,7 @@ public class Simulation {
      * Multiple updates can happen in each circle
      */
     // GOOD: prozeduale Programmierung: Kontrollfluss leicht erkennbar
+    // Hat eine enge Kopplung mit Grid
     private void run() {
         if (!cd.isClosed()) {
             // STYLE: prozedulale Programmierung + objektorientierte Programmierung
@@ -60,6 +61,8 @@ public class Simulation {
     /**
      * Handles the logic of drawing the entities on the window.
      */
+    // GOOD: objektorientierte Programmierung:
+    // nutzt dynamisches Binden der Entities um die Farben und Positionen zu bekommen.
     private void drawWindow() {
         cd.setColor(Color.gray);
         cd.fillRectangle(0, 0, cd.getWidth(), cd.getHeight());

@@ -91,7 +91,7 @@ public class Simulation {
      * With F, you can generate new FoodSources on the Grid
      * With N, you can generate a new Nest on the Grid
      */
-    //STYLE: OOP???
+    //STYLE: neuer funktionaler Teil
     private void handleKeyboardInput(EventScanner input) {
         int x = 0, y = 0;
         int offsetByStep = 20;

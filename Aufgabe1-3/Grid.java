@@ -48,24 +48,25 @@ public class Grid {
      * Handles the update process of the Grid.
      * Tiles which are not needed anymore are removed from the map.
      */
+    //STYLE: wir haben die update Funktion vom Grid refactored als parallelem Teil.
+    // Ziel dahinter ist, die Berechnung der ganzen Simulation zu beschleunigen.
     public void update() {
         // update all entities
 
-        // BAD: ants sind zwar Entities, werden aber durch unserem Design vom Grid extra gespeichert, deshalb müssen wir die Update Methode von denen extra aufrufen
 
-        // GOOD: Durch die Verwendung von dynamischen Binden werden von allen Entities die update Methoden aufgerufen
+        // BAD: Wir müssen die Nests extra behandeln. Das hat den Grund, dass die Nests die Updates ihrer Ants triggert.
+        // Da alle Entities in der Map durcheinander gespeichert sind, könnte es sein dass ein Tile vor den Ants das Update macht und es deswegen zu Inkonsistenzen kommt.
+        // Dadurch dass wir zuerst die Nests updaten, werden am Anfang die Ants geupdated und dann erst der Rest.
+
         List<Vector> removingItems = new CopyOnWriteArrayList<>();
-        map.entrySet().parallelStream().forEach(entry -> {
-            if (entry.getValue() instanceof Nest nest) {
-                nest.update();
-
-                if (nest.getAnts().isEmpty()) {
-                    removingItems.add(nest.getPosition());
-                    System.out.println("total farmed food of nest" + nest + "  was " + nest.getTotalFarmedFood() + " with a total amout of ants of " + nest.getTotalAntsCreated());
-                }
+        getNests().parallelStream().forEach(nest -> {
+            if (nest.update()) {
+                removingItems.add(nest.getPosition());
+                System.out.println("total farmed food of nest" + nest + "  was " + nest.getTotalFarmedFood() + " with a total amout of ants of " + nest.getTotalAntsCreated());
             }
         });
 
+        // GOOD: Durch die Verwendung von dynamischen Binden werden von allen Entities die update Methoden aufgerufen
         map.entrySet().parallelStream().forEach(entry -> {
             if (entry.getValue() instanceof Nest) {
                 return;
@@ -180,6 +181,7 @@ public class Grid {
      * Checks if there is any ant which want to go to unknown territory.
      * If so, the map increases and new Obstacles, Nests and FoodSources are getting generated.
      */
+
     private void generateNewChunks() {
         int chunkSize = 20;
 
@@ -254,6 +256,7 @@ public class Grid {
     /**
      * Generates 15 random FoodSources on the Grid.
      */
+    //STYLE: neue Funktion für funktionalem Teil von Simulation
     public void generateFoodSources() {
         Generator generator = new Generator(this, 0, 15, 0, 0);
         generator.generateTilesForChunk(startPoint, endPoint);
@@ -262,6 +265,7 @@ public class Grid {
     /**
      * Generates a random Nests on the Grid.
      */
+    //STYLE: neue Funktion für funktionalem Teil von Simulation
     public void generateNests() {
         Generator generator = new Generator(this, 1, 0, 200, 0);
         generator.generateTilesForChunk(startPoint, endPoint);

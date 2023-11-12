@@ -109,14 +109,14 @@ public class Nest extends Tile {
     }
 
     /**
-     * Nest does not need visual updates.
+     * Updates all Ants in the Nest.
      *
-     * @return false
+     * @return true, if there are no Ants in the Nest.
      */
     @Override
     public boolean update() {
         ants.forEach(Ant::update);
-        return false;
+        return ants.isEmpty();
     }
 
     /**

@@ -1,13 +1,15 @@
 import java.awt.*;
 
 public class Generator {
-    private int nestCounter;
-    private int foodCounter;
-    private int antsPerNest;
-    private int obstacleCounter;
+    private final int nestCounter;
+    private final int foodCounter;
+    private final int antsPerNest;
+    private final int obstacleCounter;
 
     private final Grid grid;
 
+
+    // GOOD: Generator hat einen hohen Klassenzusammenhalt mit Grid aber eine schwache Objektkopplung.
     /**
      * Initializes the Generator.
      *

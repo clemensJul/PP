@@ -45,6 +45,10 @@ public class Ant implements Entity {
     // current state of ant
     private State state;
 
+    // BAD: objektorientierte Programmierung:
+    // Dynamisches Binden für verbesserte Wartbarkeit: z.B. in der Methode update wird basierend vom aktuellen Zustand eine andere Aktion ausgeführt
+    // Das könnte man durch dynamisches Binden verbessern.
+    // Mögliche Verbesserung: Ein eigenes Interface erstellen und für jeden der Zustände eine Klasse, die das Interface implementiert.
     private enum State {
         EXPLORE,
         SCAVENGE,
@@ -215,6 +219,10 @@ public class Ant implements Entity {
      * If the ant is going to be on an enemy Tile (with a scent higher than 0.9f), the Ant gets killed.
      * If the lifetime of the ant is <= 0, the Ant gets also killed.
      */
+    // BAD: objektorientierte Programmierung:
+    // Schwache Objektkopplung: es gibt verschiedene Verzweigungen, abhängig von der konkreten Tile-Type,
+    // und die Ameise reagiert unterschiedlich darauf. DAs führt zu einer schwachen Objektkopplung, da die Ant-Klasse eine hohe Anzahl von
+    // Abhängigkeiten von den konkreten Klassen der Tiles aufweist. Man könnte in den Tiles eine Methode implementieren, die festlegt, wie der Move der Ants aussieht.
     private void doThing() {
         Tile current = grid.getTile(this.position);
         current.addStink(nest);
@@ -283,6 +291,13 @@ public class Ant implements Entity {
     /**
      * Updates the availableNeighbours array
      */
+    // BAD: Starke Objektkopplung zwischen Ant und Grid:
+    // Es wird direkt das Grid verwendet um Informationen über die Nachbarn der Ant zu bekommen um die Entscheidung für den nächsten Zug zu treffen.
+    // Das führt zu einer starken Kopplung zwischen Ant und Grid.
+    //
+    // Verbesserung: Um die Kopplung zu reduzieren, könnten man die Logik für die Nachbarn in die Grid-Klasse auslagern.
+    // Diese Methode könnte auch Basis der Position und der lookingDirection der Ant alle möglichen Nachbarn zurückgeben.
+    // Das würde den Klassenzusammenhalt verbessern und die Objektkopplung lockern.
     private void updateAvailableNeighbours() {
         //generate left hand side vectors
         lookDirection[0] = Vector.orthogonalVector(lookDirection[2], true);

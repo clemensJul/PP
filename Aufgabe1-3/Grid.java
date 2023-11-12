@@ -6,9 +6,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 // handles the entire logic that depends on grid operations
 public class Grid {
+
+    // GOOD: objektorientierter Teil: hoher Zusammenhang zwischen Grid und Tiles.
+    // Enge Verbindung der beiden Klassen um die Verwaltung von Tiles für den Zustands des Grids zu speichern
     private final Map<Vector, Tile> map;
-    private Vector startPoint = new Vector(-100, -125);
-    private Vector endPoint = new Vector(100, 125);
+    private Vector startPoint;
+    private Vector endPoint;
 
     /**
      * Initializes the Grid with a given size.
@@ -53,11 +56,10 @@ public class Grid {
     public void update() {
         // update all entities
 
-
         // BAD: Wir müssen die Nests extra behandeln. Das hat den Grund, dass die Nests die Updates ihrer Ants triggert.
         // Da alle Entities in der Map durcheinander gespeichert sind, könnte es sein dass ein Tile vor den Ants das Update macht und es deswegen zu Inkonsistenzen kommt.
         // Dadurch dass wir zuerst die Nests updaten, werden am Anfang die Ants geupdated und dann erst der Rest.
-
+        // Man sollte versuchen, alle Tiles mit einem Schleiendurchlauf und ohne extra Bedingung für Nests zu updaten.
         List<Vector> removingItems = new CopyOnWriteArrayList<>();
         getNests().parallelStream().forEach(nest -> {
             if (nest.update()) {
@@ -120,23 +122,22 @@ public class Grid {
      */
     public ArrayList<Entity> queue() {
         ArrayList<Entity> entities = new ArrayList<>();
+        ArrayList<Entity> tilesWithScent = new ArrayList<>();
+        ArrayList<Entity> otherTiles = new ArrayList<>(); // Nests, FoodSources, Obstacles
 
-        // first add tiles with scent (scent is always <= 1f)
         map.forEach((key, value) -> {
             if (value.getCurrentStink(null) <= 1f) {
-                entities.add(value);
+                tilesWithScent.add(value);
+            } else {
+                otherTiles.add(value);
             }
         });
 
-        // ants
+        // add all entities in a specific order
+        entities.addAll(tilesWithScent);
         entities.addAll(getAnts());
+        entities.addAll(otherTiles);
 
-        // then obstacles, food, and nest. (scent is fixed to 100)
-        map.forEach((key, value) -> {
-            if (value.getCurrentStink(null) > 1f) {
-                entities.add(value);
-            }
-        });
         return entities;
     }
 
@@ -258,6 +259,7 @@ public class Grid {
      */
     //STYLE: neue Funktion für funktionalem Teil von Simulation
     public void generateFoodSources() {
+        // GOOD: objektorientierter Teil: hoher Zusammenhang zwischen Grid und Generator, da der Generator eine Instanz eines Grids benötigt.
         Generator generator = new Generator(this, 0, 15, 0, 0);
         generator.generateTilesForChunk(startPoint, endPoint);
     }

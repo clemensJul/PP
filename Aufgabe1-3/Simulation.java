@@ -43,6 +43,7 @@ public class Simulation {
      * Runs one circle of the simulation.
      * Multiple updates can happen in each circle
      */
+    // GOOD: prozeduale Programmierung: Kontrollfluss leicht erkennbar
     private void run() {
         if (!cd.isClosed()) {
             // STYLE: prozedulale Programmierung + objektorientierte Programmierung
@@ -91,7 +92,8 @@ public class Simulation {
      * With F, you can generate new FoodSources on the Grid
      * With N, you can generate a new Nest on the Grid
      */
-    //STYLE: neuer funktionaler Teil
+    //STYLE: neuer funktionaler Teil.
+    // GOOD: prozeduale Programmierung: Kontrollfluss leicht erkennbar
     private void handleKeyboardInput(EventScanner input) {
         int x = 0, y = 0;
         int offsetByStep = 20;

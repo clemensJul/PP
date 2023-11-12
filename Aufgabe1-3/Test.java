@@ -11,7 +11,7 @@ public class Test {
      */
     public static void main(String[] args) {
         //simulation parameters
-        int numberOfSims = 1;
+        int numberOfSims = 3;
         int cellSize = 3;
         int maxX = 250;
         int maxY = 200;

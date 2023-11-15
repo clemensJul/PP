@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 public class AntFarm extends Nest {
     int substrat;
 
-    public AntFarm(ESubstrat substrat) {
+    public AntFarm(int substrat) {
         this.substrat = substrat;
     }
 

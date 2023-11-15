@@ -1,12 +1,29 @@
 public class Forceps implements Instrument {
-    @Override
-    public boolean compatibility(Compatible compare) {
-        return false;
+    private final int quality;
+
+    public Forceps(int quality) {
+        this.quality = quality;
     }
 
     @Override
-    public EUsage quality() {
-        // do calculatiions for evaluating which value to return
-        return EUsage.PRO;
+    public int quality() {
+        return quality;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Compatibility compatibility() {
+        int[] size = new int[2];
+        size[0] = quality;
+        size[1] = 2 + (quality * 2);
+
+        int[] temperature = new int[2];
+        temperature[1] = Integer.MAX_VALUE;
+
+        int[] humidity = new int[2];
+        humidity[1] = Integer.MAX_VALUE;
+        return new Compatibility(size, temperature, humidity);
     }
 }

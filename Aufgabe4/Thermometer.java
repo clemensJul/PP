@@ -1,11 +1,30 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Thermometer implements CompatibleInstrument {
+public class Thermometer implements Instrument, FormicariumPart {
+    private final int quality;
+
+    public Thermometer(int quality) {
+        this.quality = quality;
+    }
 
     @Override
-    public boolean compatibility(Compatible compare) {
-        return false;
+    public Compatibility compatibility() {
+        int[] size = new int[2];
+        size[1] = Integer.MAX_VALUE;
+
+        int[] temperature = new int[2];
+        temperature[0] = -100 + (quality * 10);
+        temperature[1] = 150 - (quality * 10);
+
+        int[] humidity = new int[2];
+        humidity[1] = Integer.MAX_VALUE;
+        return new Compatibility(size, temperature, humidity);
+    }
+
+    @Override
+    public int quality() {
+        return quality;
     }
 
     /**

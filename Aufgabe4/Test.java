@@ -3,8 +3,6 @@ import java.util.Iterator;
 
 public class Test {
     public static void main(String[] args) {
-        ESubstrat s = ESubstrat.SAND;
-
         ArrayList<FormicariumPart> emptyList = new ArrayList<>();
 
         // compositeFormicarium
@@ -25,18 +23,18 @@ public class Test {
         FormicariumItem fi_antFarm = new AntFarm(ESubstrat.GRAVEL);
 
         // arena
-        FormicariumPart fp_arena = new Arena();
-        FormicariumItem fi_arena = new Arena();
+        FormicariumPart fp_arena = new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC);
+        FormicariumItem fi_arena = new Arena(ESubstrat);
 
         // thermometer
-        CompatibleInstrument ci_thermometer = new Thermometer();
-        Instrument i_thermometer = new Thermometer();
-        FormicariumPart fp_thermometer = new Thermometer();
-        FormicariumItem fi_thermometer = new Thermometer();
+        Thermometer ci_thermometer = new Thermometer(EUsage.SEMI);
+        Instrument i_thermometer = new Thermometer(EUsage.PRO);
+        FormicariumPart fp_thermometer = new Thermometer(EUsage.BEGINNER);
+        FormicariumItem fi_thermometer = new Thermometer(EUsage.SEMI);
 
         // forceps
-        FormicariumItem fi_forceps = new Forceps();
-        Instrument i_forceps = new Forceps();
+        FormicariumItem fi_forceps = new Forceps(EUsage.BEGINNER);
+        Instrument i_forceps = new Forceps(EUsage.PRO);
 
         ArrayList<FormicariumItem> items = new ArrayList<>();
         items.add(fi_compositeFormicarium);

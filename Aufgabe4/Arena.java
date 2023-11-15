@@ -1,7 +1,13 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class Arena implements FormicariumPart {
-    @Override
-    public Compatibility compatible() {
-        return null;
+    int substrat;
+    int material;
+
+    public Arena(int substrat, int material) {
+        this.substrat = substrat;
+        this.material = material;
     }
 
     @Override
@@ -68,7 +74,4 @@ public class Arena implements FormicariumPart {
             return item;
         }
     }
-}
-class ArenaCompatablilty implements Compatability{
-
 }

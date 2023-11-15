@@ -18,10 +18,11 @@ public class FormicariumSet implements Iterable {
 
     private class FormicarSetIterator implements java.util.Iterator<FormicariumItem> {
         int counter = 0;
-        ArrayList<FormicariumItem> items;
+        List<FormicariumItem> items;
 
         public FormicarSetIterator(ArrayList<FormicariumItem> items) {
-            this.items = items;
+            // create a set from the list to avoid listing similar items multiple times
+            this.items = (new HashSet<>(items)).stream().toList();
         }
 
         // Returns true if the iteration has more elements.
@@ -33,7 +34,7 @@ public class FormicariumSet implements Iterable {
         // Returns the next element in the iteration.
         // Throws: NoSuchElementException – if the iteration has no more elements
         @Override
-        public Object next () throws NoSuchElementException {
+        public FormicariumItem next () throws NoSuchElementException {
             if(!hasNext()) {
                 throw new NoSuchElementException();
             }

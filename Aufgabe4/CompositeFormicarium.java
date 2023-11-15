@@ -5,14 +5,22 @@ public class CompositeFormicarium extends Formicarium {
         super(formicariumParts);
     }
 
-    public boolean add(FormicariumPart item) {
-        if(formicariumParts.contains(item)) {
-            return false;
-        }
+    public boolean add(FormicariumPart item) throws CompatibilityException{
+        try {
+            // check if item with same identity is already in List
+            for (FormicariumPart part : formicariumParts) {
+                if(part == item) {
+                    return false;
+                }
+            }
 
-        // check for compability otherwise throw exception
-        formicariumParts.add(item);
-        return true;
+            // check for compatibility otherwise throw exception
+            this.compatibility().compatible(item.compatibility());
+            formicariumParts.add(item);
+            return true;
+        }catch (CompatibilityException e){
+            throw e;
+        }
     }
 
     public boolean remove(FormicariumPart item) {

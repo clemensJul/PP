@@ -58,7 +58,9 @@ public class Nest implements FormicariumPart {
          */
         @Override
         public FormicariumPart next() throws NoSuchElementException{
-            if (!hasNext) throw new NoSuchElementException();
+            if (!hasNext) {
+                throw new NoSuchElementException();
+            }
             hasNext = false;
             return item;
         }

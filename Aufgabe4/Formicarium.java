@@ -17,13 +17,13 @@ public class Formicarium implements FormicariumPart {
      */
     @Override
     public Iterator<FormicariumPart> iterator() {
-        return new FormicariumIterator(this);    }
+        return new FormicariumIterator();    }
 
     private class FormicariumIterator implements Iterator<FormicariumPart> {
         private Iterator<FormicariumPart> listIter;
         private Iterator<FormicariumPart> subIter;
 
-        public FormicariumIterator(FormicariumPart item) {
+        public FormicariumIterator( ) {
             this.listIter = formicariumParts.iterator();
 
             // if listIter has next subIter will always get an iterator
@@ -41,6 +41,7 @@ public class Formicarium implements FormicariumPart {
          */
         @Override
         public boolean hasNext(){
+            if (subIter == null) return false;
             return subIter.hasNext() || listIter.hasNext();
         }
 

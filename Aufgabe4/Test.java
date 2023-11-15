@@ -24,7 +24,7 @@ public class Test {
 
         // arena
         FormicariumPart fp_arena = new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC);
-        FormicariumItem fi_arena = new Arena(ESubstrat);
+        FormicariumItem fi_arena = new Arena(ESubstrat.GRAVEL,EContainerMaterial.GLAS);
 
         // thermometer
         Thermometer ci_thermometer = new Thermometer(EUsage.SEMI);
@@ -62,12 +62,34 @@ public class Test {
         fp_list.add(new AntFarm(ESubstrat.GRAVEL));
         fp_list.add(new Arena(ESubstrat.DIRT,EContainerMaterial.PLASTIC));
 
+        ArrayList<FormicariumPart> fp_sublist = new ArrayList<>();
+        fp_sublist.add(new AntFarm(ESubstrat.GRAVEL));
+        fp_sublist.add(new Arena(ESubstrat.DIRT,EContainerMaterial.PLASTIC));
+        fp_sublist.add(new Arena(ESubstrat.DIRT,EContainerMaterial.PLASTIC));
+
+        fp_list.add(new Formicarium(fp_sublist));
+
         Formicarium f_iteratorTest = new Formicarium(fp_list);
+
         Iterator<FormicariumPart> f_iterator = f_iteratorTest.iterator();
 
-        while (f_iterator.hasNext()){
 
+        // test iterator of Formicarium
+        ArrayList<FormicariumPart> test_empty_formicarium = new ArrayList<>();
+        test_empty_formicarium.add(new Formicarium(emptyList));
+        Iterator<FormicariumPart> i = test_empty_formicarium.iterator();
+
+        int count = 0;
+        while (i.hasNext()){
+            i.next();
+            count++;
         }
-        assert f_iterator.hasNext();
+
+        count = 0;
+        while (f_iterator.hasNext()){
+            f_iterator.next();
+            count++;
+        }
+        System.out.println(count);
     }
 }

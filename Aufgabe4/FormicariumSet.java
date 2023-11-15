@@ -12,11 +12,11 @@ public class FormicariumSet implements Iterable {
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<FormicariumItem> iterator() {
         return new FormicarSetIterator(formicariumItems);
     }
 
-    private class FormicarSetIterator implements Iterator {
+    private class FormicarSetIterator implements java.util.Iterator<FormicariumItem> {
         int counter = 0;
         ArrayList<FormicariumItem> items;
 

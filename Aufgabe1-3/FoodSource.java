@@ -14,8 +14,8 @@ public class FoodSource extends Tile {
      *
      * @param position Position of FoodSource
      */
-    public FoodSource(Vector position) {
-        super(position);
+    public FoodSource(Vector position, Grid grid) {
+        super(position,grid);
     }
 
     /**

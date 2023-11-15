@@ -98,7 +98,7 @@ public class Generator {
                         if (grid.getMap().get(position) != null) {
                             continue;
                         }
-                        grid.getMap().put(position, new Obstacle(position));
+                        grid.getMap().put(position, new Obstacle(position,grid));
                     }
                 }
             }
@@ -128,7 +128,7 @@ public class Generator {
             for (int x = 0; x < foodSourceWidth; x++) {
                 for (int y = 0; y < foodSourceHeight; y++) {
                     Vector position = new Vector(randomX + x, randomY + y);
-                    grid.getMap().put(position, new FoodSource(position));
+                    grid.getMap().put(position, new FoodSource(position,grid));
                 }
             }
         }

@@ -1,3 +1,8 @@
 public interface Instrument extends FormicariumItem {
-    EUsage quality();
+
+    /**
+     *
+     * @returns an enum-state of type EUsage quality.
+     */
+    int quality();
 }

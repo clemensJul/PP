@@ -1,11 +1,8 @@
 public interface Compatible {
+    /**
+     *
+     * @returns an object of class Compatibility.
+     */
 
-//    boolean compatibility(Compatible compare);
-//
-//    int time();
-//    int maxTime();
-//
-//    void setTime(int time);
-
-    Compatibility compatible();
+    Compatibility compatibility();
 }

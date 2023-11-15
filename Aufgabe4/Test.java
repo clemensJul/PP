@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Test {
     public static void main(String[] args) {
@@ -55,5 +56,20 @@ public class Test {
         items.add(fi_thermometer);
         items.add(fi_forceps);
         items.add(i_forceps);
+
+        //iterator test
+        ArrayList<FormicariumPart> fp_list = new ArrayList<>();
+        fp_list.add(new Formicarium(emptyList));
+        fp_list.add(new Nest());
+        fp_list.add(new AntFarm(ESubstrat.GRAVEL));
+        fp_list.add(new Arena(ESubstrat.DIRT,EContainerMaterial.PLASTIC));
+
+        Formicarium f_iteratorTest = new Formicarium(fp_list);
+        Iterator<FormicariumPart> f_iterator = f_iteratorTest.iterator();
+
+        for (int i = 0; i < 3; i++) {
+            f_iterator.next();
+        }
+        assert f_iterator.hasNext();
     }
 }

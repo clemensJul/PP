@@ -1,11 +1,66 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class Nest implements FormicariumPart {
     // nest needs an arena
     // for a specified amount of time, it can last without a arena
     Arena arena;
 
-
+    /**
+     * @return 
+     */
     @Override
-    public boolean compatibility(Compatible compare) {
-        return false;
+    public Compatibility compatibility() {
+        return null;
+    }
+
+    /**
+     * @return 
+     */
+    /**
+     * Returns an iterator over elements of type {@code T}.
+     *
+     * @return an Iterator.
+     */
+    @Override
+    public Iterator<FormicariumPart> iterator() {
+        return new NestIterator(this);
+    }
+
+    private class NestIterator implements Iterator<FormicariumPart> {
+
+        private boolean hasNext;
+
+        private FormicariumPart item;
+
+        public NestIterator(FormicariumPart item) {
+            this.hasNext = true;
+            this.item = item;
+        }
+
+        /**
+         * Returns {@code true} if the iteration has more elements.
+         * (In other words, returns {@code true} if {@link #next} would
+         * return an element rather than throwing an exception.)
+         *
+         * @return {@code true} if the iteration has more elements
+         */
+        @Override
+        public boolean hasNext() {
+            return hasNext;
+        }
+
+        /**
+         * Returns the next element in the iteration.
+         *
+         * @return the next element in the iteration
+         * @throws NoSuchElementException if the iteration has no more elements
+         */
+        @Override
+        public FormicariumPart next() throws NoSuchElementException{
+            if (!hasNext) throw new NoSuchElementException();
+            hasNext = false;
+            return item;
+        }
     }
 }

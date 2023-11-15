@@ -65,8 +65,8 @@ public class Test {
         Formicarium f_iteratorTest = new Formicarium(fp_list);
         Iterator<FormicariumPart> f_iterator = f_iteratorTest.iterator();
 
-        for (int i = 0; i < 3; i++) {
-            f_iterator.next();
+        while (f_iterator.hasNext()){
+
         }
         assert f_iterator.hasNext();
     }

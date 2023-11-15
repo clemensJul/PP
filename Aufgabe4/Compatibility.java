@@ -1,4 +1,4 @@
-public interface Compatible {
+public interface Compatibility {
 
 //    boolean compatibility(Compatible compare);
 //

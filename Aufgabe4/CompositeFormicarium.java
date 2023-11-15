@@ -9,6 +9,8 @@ public class CompositeFormicarium extends Formicarium {
         if(formicariumParts.contains(item)) {
             return false;
         }
+
+        // check for compability otherwise throw exception
         formicariumParts.add(item);
         return true;
     }

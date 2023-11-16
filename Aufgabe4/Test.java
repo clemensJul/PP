@@ -80,6 +80,8 @@ public class Test {
         Iterator<FormicariumPart> i = test_empty_formicarium.iterator();
 
         int count = 0;
+
+        
         while (i.hasNext()){
             i.next();
             count++;

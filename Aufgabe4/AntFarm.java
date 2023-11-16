@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class AntFarm extends Nest {
     int substrate;
@@ -33,6 +34,19 @@ public class AntFarm extends Nest {
         temperature[1] = 150;
 
         return new Compatibility(size, temperature, humidity);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AntFarm that)) return false;
+        if (!super.equals(o)) return false;
+        return substrate == that.substrate;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), substrate);
     }
 
     private static class AntFarmIterator implements Iterator<FormicariumPart> {

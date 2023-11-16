@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 public class Formicarium implements FormicariumPart {
     ArrayList<FormicariumPart> formicariumParts;
@@ -93,6 +90,7 @@ public class Formicarium implements FormicariumPart {
      */
     @Override
     public Compatibility compatibility() {
-        return null;
+        Optional<Compatibility> compatibility = formicariumParts.stream().map(Compatible::compatibility).reduce(Compatibility::compatible);
+        return compatibility.orElse(null);
     }
 }

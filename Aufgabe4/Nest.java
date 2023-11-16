@@ -24,7 +24,16 @@ public class Nest implements FormicariumPart {
      */
     @Override
     public Compatibility compatibility() {
-        return null;
+        int[] size = new int[2];
+        size[1] = 20;
+
+        int[] temperature = new int[2];
+        temperature[0] = -100;
+        temperature[1] = 150;
+
+        int[] humidity = new int[2];
+        humidity[1] = Integer.MAX_VALUE;
+        return new Compatibility(size, temperature, humidity);
     }
 
     /**

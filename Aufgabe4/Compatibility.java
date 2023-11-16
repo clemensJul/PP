@@ -56,9 +56,9 @@ public class Compatibility {
     // todo throw exception
     public Compatibility compatible(Compatibility compareTo) {
         int[] size = clamp(size(), compareTo.size());
-        int[] humidity = clamp(size(), compareTo.size());
-        int[] temperature = clamp(size(), compareTo.size());
-        return new Compatibility(size, humidity, temperature);
+        int[] humidity = clamp(humidity(), compareTo.humidity());
+        int[] temperature = clamp(temperature(), compareTo.temperature());
+        return new Compatibility(size, temperature, humidity);
     }
 
     private int[] clamp(int[] compare1, int[] compare2) {

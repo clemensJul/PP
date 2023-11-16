@@ -66,7 +66,7 @@ public class Test {
             Formicarium formicarium = new Formicarium(new ArrayList<>());
             Iterator<FormicariumPart> iterator_formicarium = formicarium.iterator();
             boolean hasNext = iterator_formicarium.hasNext();
-            testBoolean(hasNext, true);
+            testValue(hasNext, true);
             FormicariumPart item = iterator_formicarium.next();
             testIdentity(formicarium, item);
 
@@ -103,19 +103,19 @@ public class Test {
             // first element of iterator should be the thermometer of the sub formicarium
             f_iterator = parent_formicarium.iterator();
             hasNext = f_iterator.hasNext();
-            testBoolean(hasNext, true);
+            testValue(hasNext, true);
             item = f_iterator.next();
             testIdentity(item, nested_list.get(0));
 
             // second element of iterator should be the nest of the sub formicarium
             hasNext = f_iterator.hasNext();
-            testBoolean(hasNext, true);
+            testValue(hasNext, true);
             item = f_iterator.next();
             testIdentity(item, nested_list.get(1));
 
             // third element of iterator should be the second element of main formicarium
             hasNext = f_iterator.hasNext();
-            testBoolean(hasNext, true);
+            testValue(hasNext, true);
             item = f_iterator.next();
             testIdentity(item, fp_list.get(1));
         }
@@ -128,12 +128,14 @@ public class Test {
             items.add(new Thermometer(EUsage.BEGINNER));
             items.add(nest);
             CompositeFormicarium compositeFormicarium = new CompositeFormicarium(items);
-            testBoolean(compositeFormicarium.add(nest), false);
-            testBoolean(compositeFormicarium.add(new Nest()), true);
+            int checkIndex = 0;
             try {
-                testBoolean(compositeFormicarium.add(new Thermometer(3000)), null);
+                testValue(compositeFormicarium.add(nest), false);
+                testValue(compositeFormicarium.add(new Nest()), true);
+                checkIndex = 3;
+                compositeFormicarium.add(new Thermometer(3000));
             } catch (Exception e) {
-                System.out.println("");
+                testValue(checkIndex, 3);
             }
         }
     }
@@ -155,7 +157,15 @@ public class Test {
         }
     }
 
-    public static void testBoolean(boolean given, boolean expected) {
+    public static void testValue(boolean given, boolean expected) {
+        if (given == expected) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
+        }
+    }
+
+    public static void testValue(int given, int expected) {
         if (given == expected) {
             System.out.println("Successful test");
         } else {

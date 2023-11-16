@@ -23,14 +23,23 @@ public class AntFarm extends Nest {
      */
     @Override
     public Compatibility compatibility() {
-        return null;
+        int[] size = new int[2];
+        size[1] = (substrate * 20) + 10;
+
+        int[] humidity = new int[2];
+        humidity[1] = (substrate * 20) + 10;
+
+        int[] temperature = new int[2];
+        temperature[1] = 150;
+
+        return new Compatibility(size, temperature, humidity);
     }
 
     private static class AntFarmIterator implements Iterator<FormicariumPart> {
 
         private boolean hasNext;
 
-        private FormicariumPart item;
+        private final FormicariumPart item;
 
         public AntFarmIterator(FormicariumPart item) {
             this.hasNext = true;

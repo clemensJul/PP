@@ -6,7 +6,7 @@ public class CompositeFormicarium extends Formicarium {
     }
 
     // elements without same identity are allowed
-    public boolean add(FormicariumPart item) {
+    public boolean add(FormicariumPart item) throws Exception {
         if(checkRecursiveIdentity(item)) {
             return false;
         }

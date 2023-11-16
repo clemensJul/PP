@@ -130,6 +130,11 @@ public class Test {
             CompositeFormicarium compositeFormicarium = new CompositeFormicarium(items);
             testBoolean(compositeFormicarium.add(nest), false);
             testBoolean(compositeFormicarium.add(new Nest()), true);
+            try {
+                testBoolean(compositeFormicarium.add(new Thermometer(3000)), null);
+            } catch (Exception e) {
+                System.out.println("");
+            }
         }
     }
 

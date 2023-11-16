@@ -54,14 +54,18 @@ public class Compatibility {
     }
 
     // todo throw exception
-    public Compatibility compatible(Compatibility compareTo) {
+    public Compatibility compatible(Compatibility compareTo) throws Exception {
         int[] size = clamp(size(), compareTo.size());
         int[] humidity = clamp(humidity(), compareTo.humidity());
         int[] temperature = clamp(temperature(), compareTo.temperature());
         return new Compatibility(size, temperature, humidity);
     }
 
-    private int[] clamp(int[] compare1, int[] compare2) {
+    private int[] clamp(int[] compare1, int[] compare2) throws Exception{
+        if(compare1[0] > compare2[1] || compare1[1] < compare2[0]) {
+            throw new Exception("not compatible");
+        }
+
         return new int[]{Math.max(compare1[0], compare2[0]), Math.min(compare1[1], compare2[1])};
     }
 }

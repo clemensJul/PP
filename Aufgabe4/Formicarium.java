@@ -90,7 +90,17 @@ public class Formicarium implements FormicariumPart {
      */
     @Override
     public Compatibility compatibility() {
-        Optional<Compatibility> compatibility = formicariumParts.stream().map(Compatible::compatibility).reduce(Compatibility::compatible);
-        return compatibility.orElse(null);
+        try {
+            List<Compatibility> compatibilities = formicariumParts.stream().map(Compatible::compatibility).toList();
+            Compatibility compatibility = compatibilities.get(0);
+
+            for (int i = 1; i < compatibilities.size(); i++) {
+                compatibility = compatibility.compatible(compatibilities.get(i));
+            }
+
+            return compatibility;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

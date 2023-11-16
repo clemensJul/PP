@@ -17,17 +17,24 @@ public class Formicarium implements FormicariumPart {
      */
     @Override
     public Iterator<FormicariumPart> iterator() {
-        return new FormicariumIterator(this);    }
+        if(formicariumParts.isEmpty()) {
+            ArrayList<FormicariumPart> copy = new ArrayList<>();
+            copy.add(this);
+            return copy.iterator();
+        }
+
+        return new FormicariumIterator();
+    }
 
     private class FormicariumIterator implements Iterator<FormicariumPart> {
         private Iterator<FormicariumPart> listIter;
         private Iterator<FormicariumPart> subIter;
 
-        public FormicariumIterator(FormicariumPart item) {
+        public FormicariumIterator() {
             this.listIter = formicariumParts.iterator();
 
             // if listIter has next subIter will always get an iterator
-            if (listIter.hasNext()){
+            if (listIter.hasNext()) {
                 subIter = listIter.next().iterator();
             }
         }
@@ -40,8 +47,11 @@ public class Formicarium implements FormicariumPart {
          * @return {@code true} if the iteration has more elements
          */
         @Override
-        public boolean hasNext(){
-            return subIter.hasNext() || listIter.hasNext();
+        public boolean hasNext() {
+            if(subIter == null) {
+                return listIter.hasNext();
+            }
+            return listIter.hasNext() || subIter.hasNext();
         }
 
         /**
@@ -51,21 +61,22 @@ public class Formicarium implements FormicariumPart {
          * @throws NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public FormicariumPart next() throws NoSuchElementException{
+        public FormicariumPart next() throws NoSuchElementException {
             FormicariumPart output;
-            if (subIter.hasNext()){
+            if (subIter.hasNext()) {
                 output = subIter.next();
             } else if (listIter.hasNext()) {
                 subIter = listIter.next().iterator();
                 output = subIter.next();
-            }else {
+            } else {
                 throw new NoSuchElementException();
             }
             return output;
         }
     }
+
     /**
-     * @return 
+     * @return
      */
     @Override
     public Compatibility compatibility() {

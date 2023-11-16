@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Compatibility {
     private final int[] size;
     private final int[] temperature;
@@ -6,6 +8,21 @@ public class Compatibility {
     //private final int maxTime;
     //private int time;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Compatibility that)) return false;
+        return Arrays.equals(size, that.size) && Arrays.equals(temperature, that.temperature) && Arrays.equals(humidity, that.humidity);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(size);
+        result = 31 * result + Arrays.hashCode(temperature);
+        result = 31 * result + Arrays.hashCode(humidity);
+        return result;
+    }
 
     public Compatibility(int[] size, int[] temperature, int[] humidity) {
         this.size = size;

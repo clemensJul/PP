@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Formicarium implements FormicariumPart {
     ArrayList<FormicariumPart> formicariumParts;
@@ -8,6 +9,18 @@ public class Formicarium implements FormicariumPart {
     public Formicarium(ArrayList<FormicariumPart> formicariumParts) {
         this.formicariumParts = new ArrayList<>();
         this.formicariumParts.addAll(formicariumParts);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Formicarium that)) return false;
+        return Objects.equals(formicariumParts, that.formicariumParts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(formicariumParts);
     }
 
     /**

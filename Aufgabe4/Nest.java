@@ -1,10 +1,23 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Nest implements FormicariumPart {
     // nest needs an arena
-    // for a specified amount of time, it can last without a arena
+    // for a specified amount of time, it can last without an arena
     Arena arena;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Nest that)) return false;
+        return Objects.equals(arena, that.arena);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(arena);
+    }
 
     /**
      * @return

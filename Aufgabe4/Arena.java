@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Arena implements FormicariumPart {
     int substrate;
@@ -8,6 +9,18 @@ public class Arena implements FormicariumPart {
     public Arena(int substrate, int material) {
         this.substrate = substrate;
         this.material = material;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Arena that)) return false;
+        return substrate == that.substrate && material == that.material;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(substrate, material);
     }
 
     @Override

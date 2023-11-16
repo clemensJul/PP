@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class FormicariumSet implements Iterable {
+public class FormicariumSet implements Iterable<FormicariumItem> {
     private final ArrayList<FormicariumItem> formicariumItems;
 
     // index of the last returned element of iterator
@@ -9,6 +9,18 @@ public class FormicariumSet implements Iterable {
     public FormicariumSet(List<FormicariumItem> formicariumItems) {
         this.formicariumItems = new ArrayList<>();
         this.formicariumItems.addAll(formicariumItems);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FormicariumSet that)) return false;
+        return Objects.equals(formicariumItems, that.formicariumItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(formicariumItems);
     }
 
     @Override

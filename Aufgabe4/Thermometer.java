@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Thermometer implements Instrument, FormicariumPart {
     private final int quality;
@@ -20,6 +21,18 @@ public class Thermometer implements Instrument, FormicariumPart {
         int[] humidity = new int[2];
         humidity[1] = Integer.MAX_VALUE;
         return new Compatibility(size, temperature, humidity);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Thermometer that)) return false;
+        return quality == that.quality;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(quality);
     }
 
     @Override

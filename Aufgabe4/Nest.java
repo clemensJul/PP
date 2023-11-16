@@ -7,7 +7,7 @@ public class Nest implements FormicariumPart {
     Arena arena;
 
     /**
-     * @return 
+     * @return
      */
     @Override
     public Compatibility compatibility() {
@@ -15,7 +15,7 @@ public class Nest implements FormicariumPart {
     }
 
     /**
-     * @return 
+     * @return
      */
     /**
      * Returns an iterator over elements of type {@code T}.
@@ -27,11 +27,11 @@ public class Nest implements FormicariumPart {
         return new NestIterator(this);
     }
 
-    private class NestIterator implements Iterator<FormicariumPart> {
+    private static class NestIterator implements Iterator<FormicariumPart> {
 
         private boolean hasNext;
 
-        private FormicariumPart item;
+        private final FormicariumPart item;
 
         public NestIterator(FormicariumPart item) {
             this.hasNext = true;
@@ -57,8 +57,10 @@ public class Nest implements FormicariumPart {
          * @throws NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public FormicariumPart next() throws NoSuchElementException{
-            if (!hasNext) throw new NoSuchElementException();
+        public FormicariumPart next() throws NoSuchElementException {
+            if (!hasNext) {
+                throw new NoSuchElementException();
+            }
             hasNext = false;
             return item;
         }

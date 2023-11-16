@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class FormicariumSet implements Iterable {
-    private ArrayList<FormicariumItem> formicariumItems;
+    private final ArrayList<FormicariumItem> formicariumItems;
 
     // index of the last returned element of iterator
     private int lastReturned = -1;
@@ -16,7 +16,7 @@ public class FormicariumSet implements Iterable {
         return new FormicarSetIterator(formicariumItems);
     }
 
-    private class FormicarSetIterator implements java.util.Iterator<FormicariumItem> {
+    private class FormicarSetIterator implements Iterator<FormicariumItem> {
         int counter = 0;
         List<FormicariumItem> items;
 
@@ -34,8 +34,8 @@ public class FormicariumSet implements Iterable {
         // Returns the next element in the iteration.
         // Throws: NoSuchElementException – if the iteration has no more elements
         @Override
-        public FormicariumItem next () throws NoSuchElementException {
-            if(!hasNext()) {
+        public FormicariumItem next() throws NoSuchElementException {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
             lastReturned = counter;

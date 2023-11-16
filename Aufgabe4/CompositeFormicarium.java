@@ -6,7 +6,7 @@ public class CompositeFormicarium extends Formicarium {
     }
 
     public boolean add(FormicariumPart item) {
-        if(formicariumParts.contains(item)) {
+        if (formicariumParts.contains(item)) {
             return false;
         }
 

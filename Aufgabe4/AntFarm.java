@@ -2,10 +2,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class AntFarm extends Nest {
-    int substrat;
+    int substrate;
 
-    public AntFarm(int substrat) {
-        this.substrat = substrat;
+    public AntFarm(int substrate) {
+        this.substrate = substrate;
     }
 
     /**
@@ -26,7 +26,7 @@ public class AntFarm extends Nest {
         return null;
     }
 
-    private class AntFarmIterator implements Iterator<FormicariumPart> {
+    private static class AntFarmIterator implements Iterator<FormicariumPart> {
 
         private boolean hasNext;
 
@@ -56,8 +56,10 @@ public class AntFarm extends Nest {
          * @throws NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public FormicariumPart next() throws NoSuchElementException{
-            if (!hasNext) throw new NoSuchElementException();
+        public FormicariumPart next() throws NoSuchElementException {
+            if (!hasNext) {
+                throw new NoSuchElementException();
+            }
             hasNext = false;
             return item;
         }

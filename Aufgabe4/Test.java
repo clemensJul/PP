@@ -79,7 +79,7 @@ public class Test {
         Iterator<FormicariumPart> f_iterator = f_iteratorTest.iterator();
 
         int count = 0;
-        while(f_iterator.hasNext()) {
+        while (f_iterator.hasNext()) {
             item = f_iterator.next();
             testIdentity(item, fp_list.get(count));
             count++;

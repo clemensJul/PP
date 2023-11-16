@@ -40,11 +40,9 @@ public class Thermometer implements Instrument, FormicariumPart {
         return new ThermometerIterator(this);
     }
 
-    private class ThermometerIterator implements Iterator<FormicariumPart> {
-
+    private static class ThermometerIterator implements Iterator<FormicariumPart> {
         private boolean hasNext;
-
-        private FormicariumPart item;
+        private final FormicariumPart item;
 
         public ThermometerIterator(FormicariumPart item) {
             this.hasNext = true;
@@ -70,8 +68,10 @@ public class Thermometer implements Instrument, FormicariumPart {
          * @throws NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public FormicariumPart next() throws NoSuchElementException{
-            if (!hasNext) throw new NoSuchElementException();
+        public FormicariumPart next() throws NoSuchElementException {
+            if (!hasNext) {
+                throw new NoSuchElementException();
+            }
             hasNext = false;
             return item;
         }

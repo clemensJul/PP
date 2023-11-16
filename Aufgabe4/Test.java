@@ -138,6 +138,115 @@ public class Test {
                 testValue(checkIndex, 3);
             }
         }
+
+        {
+            System.out.println("Test 'FormicariumSet iterator':");
+            // create new CompositeFormicarium
+            ArrayList<FormicariumItem> items = new ArrayList<>();
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Nest());
+            items.add(new Nest());
+            items.add(new Nest());
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new Forceps(EUsage.BEGINNER));
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            FormicariumSet formicariumSet = new FormicariumSet(items);
+
+            FormicariumSetIterator iterator = (FormicariumSetIterator) formicariumSet.iterator();
+            while (iterator.hasNext()) {
+                FormicariumItem item = iterator.next();
+                System.out.println(item);
+            }
+        }
+
+        {
+            System.out.println("Test 'FormicariumSet counter':");
+            // create new CompositeFormicarium
+            ArrayList<FormicariumItem> items = new ArrayList<>();
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Nest());
+            items.add(new Nest());
+            items.add(new Nest());
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new Forceps(EUsage.BEGINNER));
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            FormicariumSet formicariumSet = new FormicariumSet(items);
+
+            FormicariumSetIterator iterator = (FormicariumSetIterator) formicariumSet.iterator();
+            while (iterator.hasNext()) {
+                FormicariumItem item = iterator.next();
+                System.out.println(item + " - " + iterator.count());
+            }
+        }
+
+        {
+            System.out.println("Test 'FormicariumSet remove':");
+            // create new CompositeFormicarium
+            ArrayList<FormicariumItem> items = new ArrayList<>();
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Nest());
+            items.add(new Nest());
+            items.add(new Nest());
+            items.add(new Forceps(EUsage.BEGINNER));
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            FormicariumSet formicariumSet = new FormicariumSet(items);
+
+            FormicariumSetIterator iterator = (FormicariumSetIterator) formicariumSet.iterator();
+            while (iterator.hasNext()) {
+                FormicariumItem item = iterator.next();
+                try {
+                   System.out.println(item + " - " + iterator.count() + " elements before remove");
+                   iterator.remove();
+                   System.out.println(item + " - " + iterator.count() + " elements after remove");
+               }
+               catch (Exception e) {
+                   testEquals(item, new Forceps(EUsage.BEGINNER));
+               }
+            }
+        }
+
+        {
+            System.out.println("Test 'FormicariumSet remove n elements':");
+            // create new CompositeFormicarium
+            ArrayList<FormicariumItem> items = new ArrayList<>();
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Thermometer(EUsage.BEGINNER));
+            items.add(new Nest());
+            items.add(new Nest());
+            items.add(new Nest());
+            items.add(new Forceps(EUsage.BEGINNER));
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new Forceps(EUsage.PRO));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            items.add(new AntFarm(ESubstrat.DIRT));
+            FormicariumSet formicariumSet = new FormicariumSet(items);
+
+            FormicariumSetIterator iterator = (FormicariumSetIterator) formicariumSet.iterator();
+            FormicariumItem item = iterator.next();
+            //WIP tests
+        }
     }
 
     public static void testIdentity(Object given, Object expected) {

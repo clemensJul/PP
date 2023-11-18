@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class Formicarium implements FormicariumPart {
     ArrayList<FormicariumPart> formicariumParts;
@@ -10,6 +8,18 @@ public class Formicarium implements FormicariumPart {
         this.formicariumParts.addAll(formicariumParts);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Formicarium that)) return false;
+        return Objects.equals(formicariumParts, that.formicariumParts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(formicariumParts);
+    }
+
     /**
      * Returns an iterator over elements of type {@code T}.
      *
@@ -17,18 +27,25 @@ public class Formicarium implements FormicariumPart {
      */
     @Override
     public Iterator<FormicariumPart> iterator() {
-        return new FormicariumIterator();    }
+        if (formicariumParts.isEmpty()) {
+            ArrayList<FormicariumPart> copy = new ArrayList<>();
+            copy.add(this);
+            return copy.iterator();
+        }
+
+        return new FormicariumIterator();
+    }
 
     private class FormicariumIterator implements Iterator<FormicariumPart> {
-        private Iterator<FormicariumPart> listIter;
-        private Iterator<FormicariumPart> subIter;
+        private final Iterator<FormicariumPart> iterator;
+        private Iterator<FormicariumPart> subIterator;
 
-        public FormicariumIterator( ) {
-            this.listIter = formicariumParts.iterator();
+        public FormicariumIterator() {
+            this.iterator = formicariumParts.iterator();
 
             // if listIter has next subIter will always get an iterator
-            if (listIter.hasNext()){
-                subIter = listIter.next().iterator();
+            if (iterator.hasNext()) {
+                subIterator = iterator.next().iterator();
             }
         }
 
@@ -40,9 +57,11 @@ public class Formicarium implements FormicariumPart {
          * @return {@code true} if the iteration has more elements
          */
         @Override
-        public boolean hasNext(){
-            if (subIter == null) return false;
-            return subIter.hasNext() || listIter.hasNext();
+        public boolean hasNext() {
+            if (subIterator == null) {
+                return iterator.hasNext();
+            }
+            return iterator.hasNext() || subIterator.hasNext();
         }
 
         /**
@@ -52,24 +71,36 @@ public class Formicarium implements FormicariumPart {
          * @throws NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public FormicariumPart next() throws NoSuchElementException{
+        public FormicariumPart next() throws NoSuchElementException {
             FormicariumPart output;
-            if (subIter.hasNext()){
-                output = subIter.next();
-            } else if (listIter.hasNext()) {
-                subIter = listIter.next().iterator();
-                output = subIter.next();
-            }else {
+            if (subIterator.hasNext()) {
+                output = subIterator.next();
+            } else if (iterator.hasNext()) {
+                subIterator = iterator.next().iterator();
+                output = subIterator.next();
+            } else {
                 throw new NoSuchElementException();
             }
             return output;
         }
     }
+
     /**
-     * @return 
+     * @return
      */
     @Override
     public Compatibility compatibility() {
-        return null;
+        try {
+            List<Compatibility> compatibilities = formicariumParts.stream().map(Compatible::compatibility).toList();
+            Compatibility compatibility = compatibilities.get(0);
+
+            for (int i = 1; i < compatibilities.size(); i++) {
+                compatibility = compatibility.compatible(compatibilities.get(i));
+            }
+
+            return compatibility;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

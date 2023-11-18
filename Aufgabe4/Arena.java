@@ -1,23 +1,36 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Arena implements FormicariumPart {
-    int substrat;
+    int substrate;
     int material;
 
-    public Arena(int substrat, int material) {
-        this.substrat = substrat;
+    public Arena(int substrate, int material) {
+        this.substrate = substrate;
         this.material = material;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Arena that)) return false;
+        return substrate == that.substrate && material == that.material;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(substrate, material);
     }
 
     @Override
     public Compatibility compatibility() {
         int[] size = new int[2];
-        size[0] = substrat * 7 + material * 7;
-        size[1] = (substrat * 20 + material * 20) + 10;
+        size[0] = substrate * 7 + material * 7;
+        size[1] = (substrate * 20 + material * 20) + 10;
 
         int[] humidity = new int[2];
-        humidity[1] = (substrat * 20 + material * 20) + 10;
+        humidity[1] = (substrate * 20 + material * 20) + 10;
 
         int[] temperature = new int[2];
         temperature[0] = Integer.MIN_VALUE;
@@ -36,7 +49,7 @@ public class Arena implements FormicariumPart {
         return new ArenaIterator(this);
     }
 
-    private class ArenaIterator implements Iterator<FormicariumPart> {
+    private static class ArenaIterator implements Iterator<FormicariumPart> {
 
         private boolean hasNext;
 
@@ -66,7 +79,7 @@ public class Arena implements FormicariumPart {
          * @throws NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public FormicariumPart next() throws NoSuchElementException{
+        public FormicariumPart next() throws NoSuchElementException {
             if (!hasNext) {
                 throw new NoSuchElementException();
             }

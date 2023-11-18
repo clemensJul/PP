@@ -1,11 +1,12 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class AntFarm extends Nest {
-    int substrat;
+    int substrate;
 
-    public AntFarm(int substrat) {
-        this.substrat = substrat;
+    public AntFarm(int substrate) {
+        this.substrate = substrate;
     }
 
     /**
@@ -23,14 +24,36 @@ public class AntFarm extends Nest {
      */
     @Override
     public Compatibility compatibility() {
-        return null;
+        int[] size = new int[2];
+        size[1] = (substrate * 20) + 10;
+
+        int[] humidity = new int[2];
+        humidity[1] = (substrate * 20) + 10;
+
+        int[] temperature = new int[2];
+        temperature[1] = 150;
+
+        return new Compatibility(size, temperature, humidity);
     }
 
-    private class AntFarmIterator implements Iterator<FormicariumPart> {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AntFarm that)) return false;
+        if (!super.equals(o)) return false;
+        return substrate == that.substrate;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), substrate);
+    }
+
+    private static class AntFarmIterator implements Iterator<FormicariumPart> {
 
         private boolean hasNext;
 
-        private FormicariumPart item;
+        private final FormicariumPart item;
 
         public AntFarmIterator(FormicariumPart item) {
             this.hasNext = true;
@@ -56,8 +79,10 @@ public class AntFarm extends Nest {
          * @throws NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public FormicariumPart next() throws NoSuchElementException{
-            if (!hasNext) throw new NoSuchElementException();
+        public FormicariumPart next() throws NoSuchElementException {
+            if (!hasNext) {
+                throw new NoSuchElementException();
+            }
             hasNext = false;
             return item;
         }

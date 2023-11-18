@@ -5,22 +5,26 @@ public class CompositeFormicarium extends Formicarium {
         super(formicariumParts);
     }
 
-    public boolean add(FormicariumPart item) throws CompatibilityException{
-        try {
-            // check if item with same identity is already in List
-            for (FormicariumPart part : formicariumParts) {
-                if(part == item) {
-                    return false;
-                }
+    // elements without same identity are allowed
+    public boolean add(FormicariumPart item) throws Exception {
+        if(checkRecursiveIdentity(item)) {
+            return false;
+        }
+
+        compatibility().compatible(item.compatibility());
+        // compatibility should throw exception if not compatible
+        formicariumParts.add(item);
+        return true;
+    }
+
+    private boolean checkRecursiveIdentity(FormicariumPart item) {
+        return formicariumParts.stream().anyMatch(part -> {
+            if(part instanceof Formicarium) {
+                return checkRecursiveIdentity(part);
             }
 
-            // check for compatibility otherwise throw exception
-            this.compatibility().compatible(item.compatibility());
-            formicariumParts.add(item);
-            return true;
-        }catch (CompatibilityException e){
-            throw e;
-        }
+            return part == item;
+        });
     }
 
     public boolean remove(FormicariumPart item) {

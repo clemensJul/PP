@@ -1,58 +1,45 @@
 import java.util.*;
 
-public class FormicariumSet implements Iterable {
-    private ArrayList<FormicariumItem> formicariumItems;
+public class FormicariumSet implements Iterable<FormicariumItem> {
+    private final ArrayList<FormicariumItem> formicariumItems;
 
-    // index of the last returned element of iterator
-    private int lastReturned = -1;
-
-    public FormicariumSet(List<FormicariumItem> formicariumItems) {
+    public FormicariumSet(ArrayList<FormicariumItem> formicariumItems) {
         this.formicariumItems = new ArrayList<>();
         this.formicariumItems.addAll(formicariumItems);
     }
 
     @Override
-    public Iterator<FormicariumItem> iterator() {
-        return new FormicarSetIterator(formicariumItems);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FormicariumSet that)) return false;
+        return Objects.equals(formicariumItems, that.formicariumItems);
     }
 
-    private class FormicarSetIterator implements java.util.Iterator<FormicariumItem> {
-        int counter = 0;
-        List<FormicariumItem> items;
+    @Override
+    public int hashCode() {
+        return Objects.hash(formicariumItems);
+    }
 
-        public FormicarSetIterator(ArrayList<FormicariumItem> items) {
-            // create a set from the list to avoid listing similar items multiple times
-            this.items = (new HashSet<>(items)).stream().toList();
+    public void add(FormicariumItem item) {
+        if(checkRecursiveIdentity(item)) {
+            return;
         }
 
-        // Returns true if the iteration has more elements.
-        @Override
-        public boolean hasNext() {
-            return counter != items.size();
-        }
+        formicariumItems.add(item);
+    }
 
-        // Returns the next element in the iteration.
-        // Throws: NoSuchElementException – if the iteration has no more elements
-        @Override
-        public FormicariumItem next () throws NoSuchElementException {
-            if(!hasNext()) {
-                throw new NoSuchElementException();
+    private boolean checkRecursiveIdentity(FormicariumItem item) {
+        return formicariumItems.stream().anyMatch(part -> {
+            if(part instanceof Formicarium) {
+                return checkRecursiveIdentity(part);
             }
-            lastReturned = counter;
-            return items.get(counter++);
-        }
 
-        // Removes from the underlying collection the last element
-        // returned by this iterator (optional operation).
-        // This method can be called only once per call to next.
-        @Override
-        public void remove() {
-            if (lastReturned == -1) {
-                throw new IllegalStateException("No element to remove");
-            }
-            items.remove(lastReturned);
-            counter = lastReturned; // Adjust counter
-            lastReturned = -1; // Reset lastReturned after removal
-        }
+            return part == item;
+        });
+    }
+
+    @Override
+    public Iterator<FormicariumItem> iterator() {
+        return new FormicariumSetIterator(formicariumItems);
     }
 }

@@ -1,21 +1,43 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Nest implements FormicariumPart {
     // nest needs an arena
-    // for a specified amount of time, it can last without a arena
+    // for a specified amount of time, it can last without an arena
     Arena arena;
 
-    /**
-     * @return 
-     */
     @Override
-    public Compatibility compatibility() {
-        return null;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Nest that)) return false;
+        return Objects.equals(arena, that.arena);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(arena);
     }
 
     /**
-     * @return 
+     * @return
+     */
+    @Override
+    public Compatibility compatibility() {
+        int[] size = new int[2];
+        size[1] = 20;
+
+        int[] temperature = new int[2];
+        temperature[0] = -100;
+        temperature[1] = 150;
+
+        int[] humidity = new int[2];
+        humidity[1] = Integer.MAX_VALUE;
+        return new Compatibility(size, temperature, humidity);
+    }
+
+    /**
+     * @return
      */
     /**
      * Returns an iterator over elements of type {@code T}.
@@ -27,11 +49,11 @@ public class Nest implements FormicariumPart {
         return new NestIterator(this);
     }
 
-    private class NestIterator implements Iterator<FormicariumPart> {
+    private static class NestIterator implements Iterator<FormicariumPart> {
 
         private boolean hasNext;
 
-        private FormicariumPart item;
+        private final FormicariumPart item;
 
         public NestIterator(FormicariumPart item) {
             this.hasNext = true;
@@ -57,7 +79,7 @@ public class Nest implements FormicariumPart {
          * @throws NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public FormicariumPart next() throws NoSuchElementException{
+        public FormicariumPart next() throws NoSuchElementException {
             if (!hasNext) {
                 throw new NoSuchElementException();
             }

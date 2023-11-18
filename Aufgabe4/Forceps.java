@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Forceps implements Instrument {
     private final int quality;
 
@@ -8,6 +10,18 @@ public class Forceps implements Instrument {
     @Override
     public int quality() {
         return quality;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Forceps forceps)) return false;
+        return quality == forceps.quality;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(quality);
     }
 
     /**

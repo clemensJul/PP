@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Thermometer implements Instrument, FormicariumPart {
     private final int quality;
@@ -23,6 +24,18 @@ public class Thermometer implements Instrument, FormicariumPart {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Thermometer that)) return false;
+        return quality == that.quality;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(quality);
+    }
+
+    @Override
     public int quality() {
         return quality;
     }
@@ -40,11 +53,9 @@ public class Thermometer implements Instrument, FormicariumPart {
         return new ThermometerIterator(this);
     }
 
-    private class ThermometerIterator implements Iterator<FormicariumPart> {
-
+    private static class ThermometerIterator implements Iterator<FormicariumPart> {
         private boolean hasNext;
-
-        private FormicariumPart item;
+        private final FormicariumPart item;
 
         public ThermometerIterator(FormicariumPart item) {
             this.hasNext = true;
@@ -70,8 +81,10 @@ public class Thermometer implements Instrument, FormicariumPart {
          * @throws NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public FormicariumPart next() throws NoSuchElementException{
-            if (!hasNext) throw new NoSuchElementException();
+        public FormicariumPart next() throws NoSuchElementException {
+            if (!hasNext) {
+                throw new NoSuchElementException();
+            }
             hasNext = false;
             return item;
         }

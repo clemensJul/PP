@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Compatibility {
     private final int[] size;
     private final int[] temperature;
@@ -6,6 +8,21 @@ public class Compatibility {
     //private final int maxTime;
     //private int time;
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Compatibility that)) return false;
+        return Arrays.equals(size, that.size) && Arrays.equals(temperature, that.temperature) && Arrays.equals(humidity, that.humidity);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(size);
+        result = 31 * result + Arrays.hashCode(temperature);
+        result = 31 * result + Arrays.hashCode(humidity);
+        return result;
+    }
 
     public Compatibility(int[] size, int[] temperature, int[] humidity) {
         this.size = size;
@@ -28,28 +45,27 @@ public class Compatibility {
         return temperature;
     }
 
-    public int time(){
+    public int time() {
         return 0;
     }
 
-    public int maxTime(){
+    public int maxTime() {
         return 0;
     }
 
     // todo throw exception
-    public Compatibility compatible(Compatibility compareTo) throws CompatibilityException{
+    public Compatibility compatible(Compatibility compareTo) throws Exception {
         int[] size = clamp(size(), compareTo.size());
-        int[] humidity = clamp(size(), compareTo.size());
-        int[] temperature = clamp(size(), compareTo.size());
-        return new Compatibility(size, humidity, temperature);
+        int[] humidity = clamp(humidity(), compareTo.humidity());
+        int[] temperature = clamp(temperature(), compareTo.temperature());
+        return new Compatibility(size, temperature, humidity);
     }
 
-    private static int[] clamp (int[] compare1, int[] compare2) throws CompatibilityException{
-        int[] output =  new int[] {Math.max(compare1[0], compare2[0]), Math.min(compare1[1], compare2[1])};
-
-        if((output[0] == compare1[0] && output[1] == compare1[1]) || (output[0] == compare2[0] && output[1] == compare2[1])) {
-            throw new CompatibilityException("Compatibility does not overlap");
+    private int[] clamp(int[] compare1, int[] compare2) throws Exception{
+        if(compare1[0] > compare2[1] || compare1[1] < compare2[0]) {
+            throw new Exception("not compatible");
         }
-        return output;
+
+        return new int[]{Math.max(compare1[0], compare2[0]), Math.min(compare1[1], compare2[1])};
     }
 }

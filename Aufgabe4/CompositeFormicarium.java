@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public class CompositeFormicarium implements Formicarium {
     private final ArrayList<FormicariumPart> formicariumParts;
@@ -21,7 +24,7 @@ public class CompositeFormicarium implements Formicarium {
      *
      * @throws CompatibilityException should never occur.
      */
-    public CompositeFormicarium() throws CompatibilityException{
+    public CompositeFormicarium() throws CompatibilityException {
         this.formicariumParts = new ArrayList<>();
         calculateCompatibility();
     }
@@ -31,12 +34,12 @@ public class CompositeFormicarium implements Formicarium {
      * If the identical item is already in the CompositeFormicarium, it does not get added.
      *
      * @param item Item to add
-     * @throws CompatibilityException if item is not compatible with the rest of the CompositeFormicarium
      * @return true, if the insertion was successful.
+     * @throws CompatibilityException if item is not compatible with the rest of the CompositeFormicarium
      */
     public boolean add(FormicariumPart item) throws CompatibilityException {
-        for(FormicariumPart part : item) {
-            if(checkIdentity(part)) {
+        for (FormicariumPart part : item) {
+            if (checkIdentity(part)) {
                 return false;
             }
         }
@@ -53,13 +56,13 @@ public class CompositeFormicarium implements Formicarium {
      * Removes an item from the CompositeFormicarium.
      *
      * @param item item to remove.
-     * @throws CompatibilityException should not occur.
      * @return true, if the removal was successful.
+     * @throws CompatibilityException should not occur.
      */
     public boolean remove(FormicariumPart item) throws CompatibilityException {
         boolean removed = formicariumParts.remove(item);
 
-        if(removed) {
+        if (removed) {
             calculateCompatibility();
         }
 
@@ -73,8 +76,8 @@ public class CompositeFormicarium implements Formicarium {
      * @return true, if identical item is already in list
      */
     private boolean checkIdentity(FormicariumPart itemToCheck) {
-        for(FormicariumPart item : this)  {
-            if(item == itemToCheck) {
+        for (FormicariumPart item : this) {
+            if (item == itemToCheck) {
                 return true;
             }
         }
@@ -89,10 +92,10 @@ public class CompositeFormicarium implements Formicarium {
      */
     private void calculateCompatibility() throws CompatibilityException {
         Compatibility compatibility;
-        if(formicariumParts.isEmpty()) {
-            int[] openRanges = new int[] {0, Integer.MAX_VALUE};
+        if (formicariumParts.isEmpty()) {
+            int[] openRanges = new int[]{0, Integer.MAX_VALUE};
             compatibility = new Compatibility(openRanges, openRanges, openRanges, ETime.UNLIMITED);
-        }else{
+        } else {
             List<Compatibility> compatibilities = formicariumParts.stream().map(Compatible::compatibility).toList();
             compatibility = compatibilities.get(0);
 
@@ -187,12 +190,12 @@ public class CompositeFormicarium implements Formicarium {
             return false;
         }
 
-        if(((CompositeFormicarium) o).formicariumParts.size() != this.formicariumParts.size()) {
+        if (((CompositeFormicarium) o).formicariumParts.size() != this.formicariumParts.size()) {
             return false;
         }
 
         // check all parts if there is in the other object any element which is meant to be equal.
-        return formicariumParts.stream().allMatch(part -> ((CompositeFormicarium)o).formicariumParts.stream().anyMatch(other -> other.equals(part)));
+        return formicariumParts.stream().allMatch(part -> ((CompositeFormicarium) o).formicariumParts.stream().anyMatch(other -> other.equals(part)));
     }
 
     @Override

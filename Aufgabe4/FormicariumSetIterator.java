@@ -26,7 +26,7 @@ public class FormicariumSetIterator implements Iterator<FormicariumItem> {
     /**
      * Returns true if the iteration has more elements.
      *
-     * @return  true, if there are items left.
+     * @return true, if there are items left.
      */
     @Override
     public boolean hasNext() {
@@ -72,7 +72,7 @@ public class FormicariumSetIterator implements Iterator<FormicariumItem> {
      *
      * @param count removes count amount of the same elements as the last returned from the list, as long as count < same element.
      */
-    public void remove(int count) throws NoSuchElementException{
+    public void remove(int count) throws NoSuchElementException {
         if (lastReturned == null) {
             throw new IllegalStateException("No element to remove");
         }

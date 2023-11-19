@@ -11,8 +11,8 @@ public class Arena implements FormicariumPart {
      * Initializes an AntFarm.
      *
      * @param substrate Substrate, should be one of {@link ESubstrat}
-     * @param material Material, should be one of {@link EContainerMaterial}
-     * @param nest Nest, might be null
+     * @param material  Material, should be one of {@link EContainerMaterial}
+     * @param nest      Nest, might be null
      */
     public Arena(int substrate, int material, Nest nest) {
         this.substrate = substrate;
@@ -30,7 +30,7 @@ public class Arena implements FormicariumPart {
         temperature[0] = Integer.MIN_VALUE;
         temperature[1] = Integer.MAX_VALUE;
 
-        compatibility =  new Compatibility(size, temperature, humidity, this.nest == null ? ETime.MONTH : ETime.UNLIMITED);
+        compatibility = new Compatibility(size, temperature, humidity, this.nest == null ? ETime.MONTH : ETime.UNLIMITED);
     }
 
     /**

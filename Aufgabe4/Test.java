@@ -21,8 +21,8 @@ public class Test {
             FormicariumItem fi_antFarm = new AntFarm(ESubstrat.GRAVEL);
 
             // arena
-            FormicariumPart fp_arena = new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC,null);
-            FormicariumItem fi_arena = new Arena(ESubstrat.GRAVEL, EContainerMaterial.GLAS,new Nest());
+            FormicariumPart fp_arena = new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC, null);
+            FormicariumItem fi_arena = new Arena(ESubstrat.GRAVEL, EContainerMaterial.GLAS, new Nest());
 
             // thermometer
             Thermometer ci_thermometer = new Thermometer(EUsage.SEMI);
@@ -63,12 +63,12 @@ public class Test {
             fi_compositeFormicarium.add(fi_antFarm);
             fp_compositeFormicarium.add(ci_thermometer);
             fp_compositeFormicarium.add(fi_compositeFormicarium);
-            testValue(fp_compositeFormicarium.compatibility().minSize(),0);
-            testValue(fp_compositeFormicarium.compatibility().maxSize(),20);
-            testValue(fp_compositeFormicarium.compatibility().minTemperature(),5);
-            testValue(fp_compositeFormicarium.compatibility().maxTemperature(),30);
-            testValue(fp_compositeFormicarium.compatibility().minHumidity(),30);
-            testValue(fp_compositeFormicarium.compatibility().maxHumidity(),70);
+            testValue(fp_compositeFormicarium.compatibility().minSize(), 0);
+            testValue(fp_compositeFormicarium.compatibility().maxSize(), 20);
+            testValue(fp_compositeFormicarium.compatibility().minTemperature(), 5);
+            testValue(fp_compositeFormicarium.compatibility().maxTemperature(), 30);
+            testValue(fp_compositeFormicarium.compatibility().minHumidity(), 30);
+            testValue(fp_compositeFormicarium.compatibility().maxHumidity(), 70);
         }
         {
             // Test, if an empty Formicarium iterator returns the Formicarium itself
@@ -123,7 +123,7 @@ public class Test {
             int counter = 0;
 
             for (FormicariumPart part : formicarium) {
-                if(part == duplicatedNest) {
+                if (part == duplicatedNest) {
                     counterNest++;
                 }
                 counter++;
@@ -142,8 +142,7 @@ public class Test {
             try {
                 formicarium.add(new Thermometer(10000));
                 testValue(false, true);
-            }
-            catch (CompatibilityException exception) {
+            } catch (CompatibilityException exception) {
                 testValue(true, true);
             }
         }
@@ -170,26 +169,26 @@ public class Test {
             while (iterator.hasNext()) {
                 FormicariumItem item = iterator.next();
 
-                if(item instanceof AntFarm) {
+                if (item instanceof AntFarm) {
                     testValue(iterator.count(), 3);
                     continue;
                 }
 
-                if(item instanceof Nest) {
+                if (item instanceof Nest) {
                     testValue(iterator.count(), 3);
                     continue;
                 }
 
-                if(item instanceof Thermometer) {
+                if (item instanceof Thermometer) {
                     testValue(iterator.count(), 3);
                     continue;
                 }
 
-                if(item instanceof Forceps forceps) {
-                    if(forceps.quality() == EUsage.BEGINNER) {
+                if (item instanceof Forceps forceps) {
+                    if (forceps.quality() == EUsage.BEGINNER) {
                         testValue(iterator.count(), 1);
                     }
-                    if(forceps.quality() == EUsage.PRO) {
+                    if (forceps.quality() == EUsage.PRO) {
                         testValue(iterator.count(), 3);
                     }
                 }
@@ -199,23 +198,23 @@ public class Test {
             while (iterator.hasNext()) {
                 FormicariumItem item = iterator.next();
 
-                if(item instanceof AntFarm) {
+                if (item instanceof AntFarm) {
                     iterator.remove();
                     testValue(iterator.count(), 2);
                     continue;
                 }
 
-                if(item instanceof Nest) {
+                if (item instanceof Nest) {
                     iterator.remove(2);
                     testValue(iterator.count(), 1);
                     continue;
                 }
 
-                if(item instanceof Thermometer) {
+                if (item instanceof Thermometer) {
                     try {
                         iterator.remove(5);
                         testValue(true, false);
-                    } catch(NoSuchElementException exception) {
+                    } catch (NoSuchElementException exception) {
                         testValue(true, true);
                     }
                 }
@@ -247,12 +246,13 @@ public class Test {
             System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
         }
     }
-    public static void printValues(FormicariumItem item){
+
+    public static void printValues(FormicariumItem item) {
         Compatibility compatibility = item.compatibility();
-        String output = item + " size = "+compatibility.minSize() +".."+compatibility.maxSize()+
-                " temp = "+compatibility.minTemperature() +".."+compatibility.maxTemperature()+
-                " humidity = "+compatibility.minHumidity() +".."+compatibility.maxHumidity()+
-                " maxtime = "+ compatibility.maxTime();
+        String output = item + " size = " + compatibility.minSize() + ".." + compatibility.maxSize() +
+                " temp = " + compatibility.minTemperature() + ".." + compatibility.maxTemperature() +
+                " humidity = " + compatibility.minHumidity() + ".." + compatibility.maxHumidity() +
+                " maxtime = " + compatibility.maxTime();
         System.out.println(output);
     }
 

@@ -67,7 +67,7 @@ public class Thermometer implements Instrument, FormicariumPart {
         /**
          * Returns true if the iteration has more elements.
          *
-         * @return  true, if there are items left.
+         * @return true, if there are items left.
          */
         @Override
         public boolean hasNext() {
@@ -100,7 +100,7 @@ public class Thermometer implements Instrument, FormicariumPart {
             return false;
         }
 
-         return this.compatibility().equals(that.compatibility());
+        return this.compatibility().equals(that.compatibility());
     }
 
     @Override

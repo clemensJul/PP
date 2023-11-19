@@ -27,7 +27,7 @@ public class Nest implements Formicarium {
      */
     @Override
     public Compatibility compatibility() {
-       return compatibility;
+        return compatibility;
     }
 
     /**
@@ -53,7 +53,7 @@ public class Nest implements Formicarium {
         /**
          * Returns true if the iteration has more elements.
          *
-         * @return  true, if there are items left.
+         * @return true, if there are items left.
          */
         @Override
         public boolean hasNext() {

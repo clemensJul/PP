@@ -4,9 +4,7 @@ import java.util.Iterator;
 public class Test {
     public static void main(String[] args) throws CompatibilityException {
         {
-            //ArrayList<FormicariumPart> emptyList = new ArrayList<>();
-
-            // compositeFormicarium
+            //formicarium
             FormicariumItem fi_compositeFormicarium = new CompositeFormicarium();
             FormicariumPart fp_compositeFormicarium = new CompositeFormicarium();
             Formicarium f_compositeFormicarium = new CompositeFormicarium();
@@ -50,6 +48,42 @@ public class Test {
             items.add(fi_thermometer);
             items.add(fi_forceps);
             items.add(i_forceps);
+
+
+        }
+        {
+
+            System.out.println("Test if compatibility of composite formicarium takes the values from it's subtypes");
+
+
+            CompositeFormicarium fi_compositeFormicarium = new CompositeFormicarium();
+
+
+            CompositeFormicarium fp_compositeFormicarium = new CompositeFormicarium();
+
+            FormicariumPart fp_nest = new Nest();
+
+
+            FormicariumPart fi_antFarm = new AntFarm(ESubstrat.GRAVEL);
+
+
+            FormicariumPart ci_thermometer = new Thermometer(EUsage.SEMI);
+
+
+            fi_compositeFormicarium.add(fp_nest);
+            fi_compositeFormicarium.add(fi_antFarm);
+            fp_compositeFormicarium.add(ci_thermometer);
+
+            fp_compositeFormicarium.add(fi_compositeFormicarium);
+
+
+
+            testValue(fp_compositeFormicarium.compatibility().minSize(),0);
+            testValue(fp_compositeFormicarium.compatibility().maxSize(),20);
+            testValue(fp_compositeFormicarium.compatibility().minTemperature(),5);
+            testValue(fp_compositeFormicarium.compatibility().maxTemperature(),30);
+            testValue(fp_compositeFormicarium.compatibility().minHumidity(),30);
+            testValue(fp_compositeFormicarium.compatibility().maxHumidity(),70);
         }
 
         //iterator test
@@ -267,6 +301,14 @@ public class Test {
         } else {
             System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
         }
+    }
+    public static void printValues(FormicariumItem item){
+        Compatibility compatibility = item.compatibility();
+        String output = item + " size = "+compatibility.minSize() +".."+compatibility.maxSize()+
+                " temp = "+compatibility.minTemperature() +".."+compatibility.maxTemperature()+
+                " humidity = "+compatibility.minHumidity() +".."+compatibility.maxHumidity()+
+                " maxtime = "+ compatibility.maxTime();
+        System.out.println(output);
     }
 
     public static void testValue(int given, int expected) {

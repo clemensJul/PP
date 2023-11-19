@@ -12,11 +12,12 @@ public class Nest implements Formicarium {
         size[1] = 20;
 
         int[] temperature = new int[2];
-        temperature[0] = -100;
-        temperature[1] = 150;
+        temperature[0] = 5;
+        temperature[1] = 30;
 
         int[] humidity = new int[2];
-        humidity[1] = Integer.MAX_VALUE;
+        humidity[0] = 30;
+        humidity[1] = 80;
 
         compatibility = new Compatibility(size, temperature, humidity, ETime.WEEK);
     }

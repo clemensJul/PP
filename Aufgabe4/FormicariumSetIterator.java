@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class FormicariumSetIterator implements Iterator<FormicariumItem> {
-    int counter = 0;
-    HashMap<FormicariumItem, Integer> itemMap;
+    private int counter = 0;
+    private final HashMap<FormicariumItem, Integer> itemMap;
     private final ArrayList<FormicariumItem> formicariumItems;
 
     // index of the last returned element of iterator

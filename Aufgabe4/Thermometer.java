@@ -3,6 +3,7 @@ import java.util.NoSuchElementException;
 
 public class Thermometer implements Instrument, FormicariumPart {
     private final int quality;
+    private final Compatibility compatibility;
 
     /**
      * Initializes a new Thermometer.
@@ -11,13 +12,7 @@ public class Thermometer implements Instrument, FormicariumPart {
      */
     public Thermometer(int quality) {
         this.quality = quality;
-    }
 
-    /**
-     * @return the Compatibility object of this, is != null
-     */
-    @Override
-    public Compatibility compatibility() {
         int[] size = new int[2];
         size[1] = Integer.MAX_VALUE;
 
@@ -27,7 +22,16 @@ public class Thermometer implements Instrument, FormicariumPart {
 
         int[] humidity = new int[2];
         humidity[1] = Integer.MAX_VALUE;
-        return new Compatibility(size, temperature, humidity, ETime.UNLIMITED);
+
+        compatibility = new Compatibility(size, temperature, humidity, ETime.UNLIMITED);
+    }
+
+    /**
+     * @return the Compatibility object of this, is != null
+     */
+    @Override
+    public Compatibility compatibility() {
+        return compatibility;
     }
 
     /**

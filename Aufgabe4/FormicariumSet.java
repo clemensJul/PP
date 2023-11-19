@@ -19,12 +19,12 @@ public class FormicariumSet implements Iterable<FormicariumItem> {
      *
      * @param item Item to add, must be != null
      */
-    public void add(FormicariumItem item) {
+    public boolean add(FormicariumItem item) {
         if(checkIdentity(item)) {
-            return;
+            return false;
         }
 
-        formicariumItems.add(item);
+        return formicariumItems.add(item);
     }
 
     /**

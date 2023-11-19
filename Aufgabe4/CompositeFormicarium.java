@@ -35,8 +35,10 @@ public class CompositeFormicarium implements Formicarium {
      * @return true, if the insertion was successful.
      */
     public boolean add(FormicariumPart item) throws CompatibilityException {
-        if(checkIdentity(item)) {
-            return false;
+        for(FormicariumPart part : item) {
+            if(checkIdentity(part)) {
+                return false;
+            }
         }
 
         // compatibility throws exception if not compatible

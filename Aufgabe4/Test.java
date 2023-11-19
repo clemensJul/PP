@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Test {
     public static void main(String[] args) throws CompatibilityException {
         {
+            // Create object to check which types are allowed.
+
             //formicarium
             FormicariumItem fi_compositeFormicarium = new CompositeFormicarium();
             FormicariumPart fp_compositeFormicarium = new CompositeFormicarium();
@@ -48,36 +51,18 @@ public class Test {
             items.add(fi_thermometer);
             items.add(fi_forceps);
             items.add(i_forceps);
-
-
         }
         {
-
             System.out.println("Test if compatibility of composite formicarium takes the values from it's subtypes");
-
-
             CompositeFormicarium fi_compositeFormicarium = new CompositeFormicarium();
-
-
             CompositeFormicarium fp_compositeFormicarium = new CompositeFormicarium();
-
             FormicariumPart fp_nest = new Nest();
-
-
             FormicariumPart fi_antFarm = new AntFarm(ESubstrat.GRAVEL);
-
-
             FormicariumPart ci_thermometer = new Thermometer(EUsage.SEMI);
-
-
             fi_compositeFormicarium.add(fp_nest);
             fi_compositeFormicarium.add(fi_antFarm);
             fp_compositeFormicarium.add(ci_thermometer);
-
             fp_compositeFormicarium.add(fi_compositeFormicarium);
-
-
-
             testValue(fp_compositeFormicarium.compatibility().minSize(),0);
             testValue(fp_compositeFormicarium.compatibility().maxSize(),20);
             testValue(fp_compositeFormicarium.compatibility().minTemperature(),5);
@@ -85,12 +70,8 @@ public class Test {
             testValue(fp_compositeFormicarium.compatibility().minHumidity(),30);
             testValue(fp_compositeFormicarium.compatibility().maxHumidity(),70);
         }
-
-        //iterator test
-
-
-        // Test, if an empty formicarium iterator return the formicarium itself
         {
+            // Test, if an empty Formicarium iterator returns the Formicarium itself
             System.out.println("Test 'FormicariumIterator':");
             Formicarium formicarium = new CompositeFormicarium(new ArrayList<>());
             Iterator<FormicariumPart> iterator_formicarium = formicarium.iterator();
@@ -99,13 +80,12 @@ public class Test {
             FormicariumPart item = iterator_formicarium.next();
             testIdentity(formicarium, item);
 
-
-            // Test, if a formicarium iterator returns elements
+            // Test, if a Formicarium iterator returns elements
             ArrayList<FormicariumPart> fp_list = new ArrayList<>();
             fp_list.add(new CompositeFormicarium(new ArrayList<>()));
             fp_list.add(new Nest());
             fp_list.add(new AntFarm(ESubstrat.GRAVEL));
-            fp_list.add(new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC,null));
+            fp_list.add(new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC, null));
 
             Formicarium f_iteratorTest = new CompositeFormicarium(fp_list);
             Iterator<FormicariumPart> f_iterator = f_iteratorTest.iterator();
@@ -116,165 +96,130 @@ public class Test {
                 testIdentity(item, fp_list.get(count));
                 count++;
             }
-
-
+        }
+        {
             System.out.println("Test 'Add recursive Formicarium items to Formicarium':");
 
-            // create new formicarium
-            ArrayList<FormicariumPart> nested_list = new ArrayList<>();
-            nested_list.add(new Thermometer(EUsage.PRO));
-            nested_list.add(new Nest());
-            Formicarium nested_formicarium = new CompositeFormicarium(nested_list);
-            fp_list.set(0, nested_formicarium);
+            Nest duplicatedNest = new Nest();
+            ArrayList<FormicariumPart> subItems = new ArrayList<>();
+            subItems.add(duplicatedNest);
+            subItems.add(new Thermometer(EUsage.SEMI));
+            CompositeFormicarium nestedFormicarium = new CompositeFormicarium(subItems);
 
-            Formicarium parent_formicarium = new CompositeFormicarium(fp_list);
+            CompositeFormicarium formicarium = new CompositeFormicarium();
+            testValue(formicarium.add(duplicatedNest), true);
+            testValue(formicarium.add(duplicatedNest), false);
+            testValue(formicarium.add(new AntFarm(ESubstrat.GRAVEL)), true);
+            testValue(formicarium.add(new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC, null)), true);
+            testValue(formicarium.add(nestedFormicarium), false); // because it has duplicatedNest in it
 
-            // first element of iterator should be the thermometer of the sub formicarium
-            f_iterator = parent_formicarium.iterator();
-            hasNext = f_iterator.hasNext();
-            testValue(hasNext, true);
-            item = f_iterator.next();
-            testIdentity(item, nested_list.get(0));
+            // remove duplicatedNest from subItems
+            testValue(nestedFormicarium.remove(duplicatedNest), true);
+            testValue(formicarium.add(nestedFormicarium), true); // because it has duplicatedNest in it
 
-            // second element of iterator should be the nest of the sub formicarium
-            hasNext = f_iterator.hasNext();
-            testValue(hasNext, true);
-            item = f_iterator.next();
-            testIdentity(item, nested_list.get(1));
 
-            // third element of iterator should be the second element of main formicarium
-            hasNext = f_iterator.hasNext();
-            testValue(hasNext, true);
-            item = f_iterator.next();
-            testIdentity(item, fp_list.get(1));
+            // should print 4 items and duplicatedNest should only be there once.
+            int counterNest = 0;
+            int counter = 0;
+
+            for (FormicariumPart part : formicarium) {
+                if(part == duplicatedNest) {
+                    counterNest++;
+                }
+                counter++;
+            }
+
+            testValue(counter, 4);
+            testValue(counterNest, 1);
         }
-
         {
-            System.out.println("Test 'CompositeFormicarium':");
-            // create new CompositeFormicarium
-            ArrayList<FormicariumPart> items = new ArrayList<>();
-            Nest nest = new Nest();
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(nest);
-            CompositeFormicarium compositeFormicarium = new CompositeFormicarium(items);
-            int checkIndex = 0;
+            System.out.println("Test 'CompositeFormicarium CompatibilityException':");
+            CompositeFormicarium formicarium = new CompositeFormicarium();
+            formicarium.add(new Nest());
+            formicarium.add(new AntFarm(ESubstrat.GRAVEL));
+            formicarium.add(new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC, null));
+
             try {
-                testValue(compositeFormicarium.add(nest), false);
-                testValue(compositeFormicarium.add(new Nest()), true);
-                checkIndex = 3;
-                compositeFormicarium.add(new Thermometer(3000));
-            } catch (Exception e) {
-                testValue(checkIndex, 3);
+                formicarium.add(new Thermometer(10000));
+                testValue(false, true);
+            }
+            catch (CompatibilityException exception) {
+                testValue(true, true);
             }
         }
-
         {
             System.out.println("Test 'FormicariumSet iterator':");
             // create new CompositeFormicarium
-            ArrayList<FormicariumItem> items = new ArrayList<>();
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Nest());
-            items.add(new Nest());
-            items.add(new Nest());
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new Forceps(EUsage.BEGINNER));
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            FormicariumSet formicariumSet = new FormicariumSet(items);
+            FormicariumSet formicariumSet = new FormicariumSet(new ArrayList<>());
+
+            testValue(formicariumSet.add(new Thermometer(EUsage.BEGINNER)), true);
+            testValue(formicariumSet.add(new Thermometer(EUsage.BEGINNER)), true);
+            testValue(formicariumSet.add(new Thermometer(EUsage.BEGINNER)), true);
+            testValue(formicariumSet.add(new Nest()), true);
+            testValue(formicariumSet.add(new Nest()), true);
+            testValue(formicariumSet.add(new Nest()), true);
+            testValue(formicariumSet.add(new Forceps(EUsage.PRO)), true);
+            testValue(formicariumSet.add(new Forceps(EUsage.PRO)), true);
+            testValue(formicariumSet.add(new Forceps(EUsage.BEGINNER)), true);
+            testValue(formicariumSet.add(new Forceps(EUsage.PRO)), true);
+            testValue(formicariumSet.add(new AntFarm(ESubstrat.DIRT)), true);
+            testValue(formicariumSet.add(new AntFarm(ESubstrat.DIRT)), true);
+            testValue(formicariumSet.add(new AntFarm(ESubstrat.DIRT)), true);
 
             FormicariumSetIterator iterator = (FormicariumSetIterator) formicariumSet.iterator();
             while (iterator.hasNext()) {
                 FormicariumItem item = iterator.next();
-                System.out.println(item);
+
+                if(item instanceof AntFarm) {
+                    testValue(iterator.count(), 3);
+                    continue;
+                }
+
+                if(item instanceof Nest) {
+                    testValue(iterator.count(), 3);
+                    continue;
+                }
+
+                if(item instanceof Thermometer) {
+                    testValue(iterator.count(), 3);
+                    continue;
+                }
+
+                if(item instanceof Forceps forceps) {
+                    if(forceps.quality() == EUsage.BEGINNER) {
+                        testValue(iterator.count(), 1);
+                    }
+                    if(forceps.quality() == EUsage.PRO) {
+                        testValue(iterator.count(), 3);
+                    }
+                }
             }
-        }
 
-        {
-            System.out.println("Test 'FormicariumSet counter':");
-            // create new CompositeFormicarium
-            ArrayList<FormicariumItem> items = new ArrayList<>();
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Nest());
-            items.add(new Nest());
-            items.add(new Nest());
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new Forceps(EUsage.BEGINNER));
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            FormicariumSet formicariumSet = new FormicariumSet(items);
-
-            FormicariumSetIterator iterator = (FormicariumSetIterator) formicariumSet.iterator();
+            iterator = (FormicariumSetIterator) formicariumSet.iterator();
             while (iterator.hasNext()) {
                 FormicariumItem item = iterator.next();
-                System.out.println(item + " - " + iterator.count());
+
+                if(item instanceof AntFarm) {
+                    iterator.remove();
+                    testValue(iterator.count(), 2);
+                    continue;
+                }
+
+                if(item instanceof Nest) {
+                    iterator.remove(2);
+                    testValue(iterator.count(), 1);
+                    continue;
+                }
+
+                if(item instanceof Thermometer) {
+                    try {
+                        iterator.remove(5);
+                        testValue(true, false);
+                    } catch(NoSuchElementException exception) {
+                        testValue(true, true);
+                    }
+                }
             }
-        }
-
-        {
-            System.out.println("Test 'FormicariumSet remove':");
-            // create new CompositeFormicarium
-            ArrayList<FormicariumItem> items = new ArrayList<>();
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Nest());
-            items.add(new Nest());
-            items.add(new Nest());
-            items.add(new Forceps(EUsage.BEGINNER));
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            FormicariumSet formicariumSet = new FormicariumSet(items);
-
-            FormicariumSetIterator iterator = (FormicariumSetIterator) formicariumSet.iterator();
-            while (iterator.hasNext()) {
-                FormicariumItem item = iterator.next();
-                try {
-                   System.out.println(item + " - " + iterator.count() + " elements before remove");
-                   iterator.remove();
-                   System.out.println(item + " - " + iterator.count() + " elements after remove");
-               }
-               catch (Exception e) {
-                   testEquals(item, new Forceps(EUsage.BEGINNER));
-               }
-            }
-        }
-
-        {
-            System.out.println("Test 'FormicariumSet remove n elements':");
-            // create new CompositeFormicarium
-            ArrayList<FormicariumItem> items = new ArrayList<>();
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Thermometer(EUsage.BEGINNER));
-            items.add(new Nest());
-            items.add(new Nest());
-            items.add(new Nest());
-            items.add(new Forceps(EUsage.BEGINNER));
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new Forceps(EUsage.PRO));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            items.add(new AntFarm(ESubstrat.DIRT));
-            FormicariumSet formicariumSet = new FormicariumSet(items);
-
-            FormicariumSetIterator iterator = (FormicariumSetIterator) formicariumSet.iterator();
-            FormicariumItem item = iterator.next();
-            //WIP tests
         }
     }
 

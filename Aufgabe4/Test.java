@@ -20,8 +20,8 @@ public class Test {
             FormicariumItem fi_antFarm = new AntFarm(ESubstrat.GRAVEL);
 
             // arena
-            FormicariumPart fp_arena = new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC);
-            FormicariumItem fi_arena = new Arena(ESubstrat.GRAVEL, EContainerMaterial.GLAS);
+            FormicariumPart fp_arena = new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC,null);
+            FormicariumItem fi_arena = new Arena(ESubstrat.GRAVEL, EContainerMaterial.GLAS,new Nest());
 
             // thermometer
             Thermometer ci_thermometer = new Thermometer(EUsage.SEMI);
@@ -58,7 +58,7 @@ public class Test {
         // Test, if an empty formicarium iterator return the formicarium itself
         {
             System.out.println("Test 'FormicariumIterator':");
-            Formicarium formicarium = new Formicarium(new ArrayList<>());
+            Formicarium formicarium = new CompositeFormicarium(new ArrayList<>());
             Iterator<FormicariumPart> iterator_formicarium = formicarium.iterator();
             boolean hasNext = iterator_formicarium.hasNext();
             testValue(hasNext, true);
@@ -68,12 +68,12 @@ public class Test {
 
             // Test, if a formicarium iterator returns elements
             ArrayList<FormicariumPart> fp_list = new ArrayList<>();
-            fp_list.add(new Formicarium(new ArrayList<>()));
+            fp_list.add(new CompositeFormicarium(new ArrayList<>()));
             fp_list.add(new Nest());
             fp_list.add(new AntFarm(ESubstrat.GRAVEL));
-            fp_list.add(new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC));
+            fp_list.add(new Arena(ESubstrat.DIRT, EContainerMaterial.PLASTIC,null));
 
-            Formicarium f_iteratorTest = new Formicarium(fp_list);
+            Formicarium f_iteratorTest = new CompositeFormicarium(fp_list);
             Iterator<FormicariumPart> f_iterator = f_iteratorTest.iterator();
 
             int count = 0;
@@ -90,10 +90,10 @@ public class Test {
             ArrayList<FormicariumPart> nested_list = new ArrayList<>();
             nested_list.add(new Thermometer(EUsage.PRO));
             nested_list.add(new Nest());
-            Formicarium nested_formicarium = new Formicarium(nested_list);
+            Formicarium nested_formicarium = new CompositeFormicarium(nested_list);
             fp_list.set(0, nested_formicarium);
 
-            Formicarium parent_formicarium = new Formicarium(fp_list);
+            Formicarium parent_formicarium = new CompositeFormicarium(fp_list);
 
             // first element of iterator should be the thermometer of the sub formicarium
             f_iterator = parent_formicarium.iterator();

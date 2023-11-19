@@ -1,5 +1,3 @@
-import java.util.Objects;
-
 public class Forceps implements Instrument {
     private final int quality;
     private final Compatibility compatibility;
@@ -25,28 +23,34 @@ public class Forceps implements Instrument {
         compatibility = new Compatibility(size, temperature, humidity, ETime.UNLIMITED);
     }
 
+    /**
+     * Returns the quality of thermometer.
+     *
+     * @return quality.
+     */
     @Override
     public int quality() {
         return quality;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Forceps forceps)) return false;
-        return quality == forceps.quality;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(quality);
-    }
 
     /**
-     * @return
+     * @return the Compatibility object of this, is != null
      */
     @Override
     public Compatibility compatibility() {
         return compatibility;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Forceps that)) return false;
+        return this.compatibility().equals(that.compatibility());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.compatibility().hashCode();
     }
 }

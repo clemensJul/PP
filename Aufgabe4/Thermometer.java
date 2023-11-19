@@ -1,14 +1,21 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 public class Thermometer implements Instrument, FormicariumPart {
     private final int quality;
 
+    /**
+     * Initializes a new Thermometer.
+     *
+     * @param quality, must be >= 0, and should be one of {@link EUsage}
+     */
     public Thermometer(int quality) {
         this.quality = quality;
     }
 
+    /**
+     * @return the Compatibility object of this, is != null
+     */
     @Override
     public Compatibility compatibility() {
         int[] size = new int[2];
@@ -23,31 +30,18 @@ public class Thermometer implements Instrument, FormicariumPart {
         return new Compatibility(size, temperature, humidity, ETime.UNLIMITED);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Thermometer that)) {
-            return false;
-        }
-
-        return quality == that.quality;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(quality);
-    }
-
+    /**
+     * Returns the quality of thermometer.
+     *
+     * @return quality.
+     */
     @Override
     public int quality() {
         return quality;
     }
 
     /**
-     * Returns an iterator over elements of type {@code T}.
+     * Returns an iterator over thermometer.
      *
      * @return an Iterator.
      */
@@ -56,6 +50,7 @@ public class Thermometer implements Instrument, FormicariumPart {
         return new ThermometerIterator(this);
     }
 
+    // simple iterator which simply returns the given item once.
     private static class ThermometerIterator implements Iterator<FormicariumPart> {
         private boolean hasNext;
         private final FormicariumPart item;
@@ -66,11 +61,9 @@ public class Thermometer implements Instrument, FormicariumPart {
         }
 
         /**
-         * Returns {@code true} if the iteration has more elements.
-         * (In other words, returns {@code true} if {@link #next} would
-         * return an element rather than throwing an exception.)
+         * Returns true if the iteration has more elements.
          *
-         * @return {@code true} if the iteration has more elements
+         * @return  true, if there are items left.
          */
         @Override
         public boolean hasNext() {
@@ -91,5 +84,23 @@ public class Thermometer implements Instrument, FormicariumPart {
             hasNext = false;
             return item;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Thermometer that)) {
+            return false;
+        }
+
+         return this.compatibility().equals(that.compatibility());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.compatibility().hashCode();
     }
 }

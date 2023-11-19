@@ -1,6 +1,5 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 public class AntFarm extends Nest {
     private final int substrate;
@@ -15,15 +14,15 @@ public class AntFarm extends Nest {
     public AntFarm(int substrate) {
         this.substrate = substrate;
         int[] size = new int[2];
-        size[1] = (substrate * 20) + 10;
+        size[1] = (this.substrate * 20) + 10;
 
         int[] humidity = new int[2];
-        humidity[1] = (substrate * 20) + 10;
+        humidity[1] = (this.substrate * 20) + 10;
 
         int[] temperature = new int[2];
         temperature[1] = 150;
 
-        compatibility = new Compatibility(size, temperature, humidity, ETime.WEEK);
+        compatibility = new Compatibility(size, temperature, humidity, ETime.HALFAYEAR);
     }
 
     /**
@@ -83,7 +82,6 @@ public class AntFarm extends Nest {
         }
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -97,11 +95,12 @@ public class AntFarm extends Nest {
         if (!super.equals(o)) {
             return false;
         }
-        return substrate == that.substrate;
+        return this.compatibility().equals(that.compatibility());
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), substrate);
+        return this.compatibility().hashCode();
     }
 }

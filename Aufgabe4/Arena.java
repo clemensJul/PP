@@ -1,34 +1,36 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 public class Arena implements FormicariumPart {
     private final int substrate;
     private final int material;
+    private final Nest nest;
     private final Compatibility compatibility;
 
     /**
      * Initializes an AntFarm.
-     * Values should be one of ESubstrat
      *
-     * @param substrate Substrate
+     * @param substrate Substrate, should be one of {@link ESubstrat}
+     * @param material Material, should be one of {@link EContainerMaterial}
+     * @param nest Nest, might be null
      */
-    public Arena(int substrate, int material) {
+    public Arena(int substrate, int material, Nest nest) {
         this.substrate = substrate;
         this.material = material;
+        this.nest = nest;
 
         int[] size = new int[2];
-        size[0] = substrate * 7 + material * 7;
-        size[1] = (substrate * 20 + material * 20) + 10;
+        size[0] = this.substrate * 7 + this.material * 7;
+        size[1] = (this.substrate * 20 + this.material * 20) + 10;
 
         int[] humidity = new int[2];
-        humidity[1] = (substrate * 20 + material * 20) + 10;
+        humidity[1] = (this.substrate * 20 + this.material * 20) + 10;
 
         int[] temperature = new int[2];
         temperature[0] = Integer.MIN_VALUE;
         temperature[1] = Integer.MAX_VALUE;
 
-        compatibility =  new Compatibility(size, temperature, humidity, ETime.UNLIMITED);
+        compatibility =  new Compatibility(size, temperature, humidity, this.nest == null ? ETime.MONTH : ETime.UNLIMITED);
     }
 
     /**
@@ -91,11 +93,11 @@ public class Arena implements FormicariumPart {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Arena that)) return false;
-        return substrate == that.substrate && material == that.material;
+        return this.compatibility().equals(that.compatibility());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(substrate, material);
+        return this.compatibility().hashCode();
     }
 }

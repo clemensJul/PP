@@ -25,45 +25,64 @@ public class Compatibility {
     }
 
     /**
-     * Sets the time to the specified value.
+     * Sets the time to the specified value smaller than maxTime
      *
-     * @param time newTime to set, must be >= 0 and should be one of {@link ETime}
+     * @param time newTime to set, must be >= 0 and should be one of {@link ETime} - if time > maxTime current time will be set to maxTime
      */
     public void setTime(int time) {
+        if(time > maxTime) {
+            this.time = maxTime;
+            return;
+        }
         this.time = time;
     }
 
     /**
-     * Returns the minSize and the maxSize in an array with exactly two values.
-     * The first value represents the minSize, the second one the maxSize.
-     * all values are >= 0 and the first value is <= the second one
-     *
-     * @return size range of Compatibility.
+     * Returns  the minSize always >= 0 && minSize <= maxSize() in mm
+     * @return max size of Compatibility.
      */
-    public int[] size() {
-        return size;
+    public int minSize() {
+        return size[0];
     }
 
     /**
-     * Returns the minHumidity and the maxHumidity in an array with exactly two values.
-     * The first value represents the minHumidity, the second one the maxHumidity.
-     * all values are >= 0 and the first value is <= the second one
-     *
-     * @return humidity range of Compatibility.
+     * Returns  the maxSize always >= 0 && maxSize >= minSize() in mm
+     * @return max size of Compatibility.
      */
-    public int[] humidity() {
-        return humidity;
+    public int maxSize() {
+        return size[1];
     }
 
     /**
-     * Returns the minTemperature and the maxTemperature in an array with exactly two values.
-     * The first value represents the minTemperature, the second one the maxTemperature.
-     * all values are >= 0 and the first value is <= the second one
-     *
-     * @return temperature range of Compatibility.
+     * Returns  the minHumidity always >= 0 && minHumidity <= maxHumidity() in mm
+     * @return max size of Compatibility.
      */
-    public int[] temperature() {
-        return temperature;
+    public int minHumidity() {
+        return humidity[0];
+    }
+
+    /**
+     * Returns  the maxHumidity always >= 0 && maxHumidity >= minHumidity() in mm
+     * @return max size of Compatibility.
+     */
+    public int maxHumidity() {
+        return humidity[1];
+    }
+
+    /**
+     * Returns  the minHumidity always >= 0 && minHumidity <= maxHumidity() in mm
+     * @return max size of Compatibility.
+     */
+    public int minTemperature() {
+        return temperature[0];
+    }
+
+    /**
+     * Returns  the maxHumidity always >= 0 && maxHumidity >= minHumidity() in mm
+     * @return max size of Compatibility.
+     */
+    public int maxTemperature() {
+        return temperature[1];
     }
 
     /**
@@ -73,7 +92,7 @@ public class Compatibility {
      * @return time of Compatibility.
      */
     public int time() {
-        return 0;
+        return time;
     }
 
     /**
@@ -83,7 +102,7 @@ public class Compatibility {
      * @return time of Compatibility.
      */
     public int maxTime() {
-        return 0;
+        return maxTime;
     }
 
     /**
@@ -91,12 +110,12 @@ public class Compatibility {
      *
      * @throws CompatibilityException, if the ranges of the two objects don´t overlap
      * @param compareTo Compatibility object to compare with, must be != null
-     * @return time of Compatibility.
+     * @return new Compatibility object with new ranges.
      */
     public Compatibility compatible(Compatibility compareTo) throws CompatibilityException {
-        int[] size = clamp(size(), compareTo.size());
-        int[] humidity = clamp(humidity(), compareTo.humidity());
-        int[] temperature = clamp(temperature(), compareTo.temperature());
+        int[] size = clamp(this.size, compareTo.size);
+        int[] humidity = clamp(this.humidity, compareTo.humidity);
+        int[] temperature = clamp(this.temperature, compareTo.temperature);
         Compatibility compatibility = new Compatibility(size, temperature, humidity, Math.min(this.maxTime, compareTo.maxTime()));
         compatibility.setTime(Math.min(this.time, compareTo.time()));
         return compatibility;
@@ -118,7 +137,6 @@ public class Compatibility {
 
         return new int[]{Math.max(compare1[0], compare2[0]), Math.min(compare1[1], compare2[1])};
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -1,6 +1,5 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 public class Nest implements Formicarium {
     private final Compatibility compatibility;
@@ -19,7 +18,7 @@ public class Nest implements Formicarium {
         int[] humidity = new int[2];
         humidity[1] = Integer.MAX_VALUE;
 
-        compatibility = new Compatibility(size, temperature, humidity, ETime.UNLIMITED);
+        compatibility = new Compatibility(size, temperature, humidity, ETime.WEEK);
     }
 
     /**
@@ -40,6 +39,7 @@ public class Nest implements Formicarium {
         return new NestIterator(this);
     }
 
+    // simple iterator which simply returns the given item once.
     private static class NestIterator implements Iterator<FormicariumPart> {
         private boolean hasNext;
         private final FormicariumPart item;
@@ -50,11 +50,9 @@ public class Nest implements Formicarium {
         }
 
         /**
-         * Returns {@code true} if the iteration has more elements.
-         * (In other words, returns {@code true} if {@link #next} would
-         * return an element rather than throwing an exception.)
+         * Returns true if the iteration has more elements.
          *
-         * @return {@code true} if the iteration has more elements
+         * @return  true, if there are items left.
          */
         @Override
         public boolean hasNext() {
@@ -75,5 +73,18 @@ public class Nest implements Formicarium {
             hasNext = false;
             return item;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Nest that = (Nest) o;
+        return this.compatibility().equals(that.compatibility());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.compatibility().hashCode();
     }
 }

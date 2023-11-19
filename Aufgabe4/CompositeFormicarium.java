@@ -28,25 +28,32 @@ public class CompositeFormicarium implements Formicarium {
 
     /**
      * Adds an item to CompositeFormicarium.
+     * If the identical item is already in the CompositeFormicarium, it does not get added.
      *
      * @param item Item to add
      * @throws CompatibilityException if item is not compatible with the rest of the CompositeFormicarium
-     * @return
+     * @return true, if the insertion was successful.
      */
-    // elements without same identity are allowed
     public boolean add(FormicariumPart item) throws CompatibilityException {
         if(checkIdentity(item)) {
             return false;
         }
 
+        // compatibility throws exception if not compatible
         compatibility.compatible(item.compatibility());
-        // compatibility should throw exception if not compatible
         formicariumParts.add(item);
 
         calculateCompatibility();
         return true;
     }
 
+    /**
+     * Removes an item from the CompositeFormicarium.
+     *
+     * @param item item to remove.
+     * @throws CompatibilityException should not occur.
+     * @return true, if the removal was successful.
+     */
     public boolean remove(FormicariumPart item) throws CompatibilityException {
         boolean removed = formicariumParts.remove(item);
 
@@ -79,16 +86,18 @@ public class CompositeFormicarium implements Formicarium {
      * @throws CompatibilityException if elements in the list don´t overlap
      */
     private void calculateCompatibility() throws CompatibilityException {
+        Compatibility compatibility;
         if(formicariumParts.isEmpty()) {
             int[] openRanges = new int[] {0, Integer.MAX_VALUE};
             compatibility = new Compatibility(openRanges, openRanges, openRanges, ETime.UNLIMITED);
-        }
+        }else{
+            List<Compatibility> compatibilities = formicariumParts.stream().map(Compatible::compatibility).toList();
+            compatibility = compatibilities.get(0);
 
-        List<Compatibility> compatibilities = formicariumParts.stream().map(Compatible::compatibility).toList();
-        Compatibility compatibility = compatibilities.get(0);
+            for (int i = 1; i < compatibilities.size(); i++) {
+                compatibility = compatibility.compatible(compatibilities.get(i));
+            }
 
-        for (int i = 1; i < compatibilities.size(); i++) {
-            compatibility = compatibility.compatible(compatibilities.get(i));
         }
 
         this.compatibility = compatibility;
@@ -120,7 +129,7 @@ public class CompositeFormicarium implements Formicarium {
         return new FormicariumIterator();
     }
 
-
+    // iterator which returns all items in the CompositeFormicarium recursively.
     private class FormicariumIterator implements Iterator<FormicariumPart> {
         private final Iterator<FormicariumPart> iterator;
         private Iterator<FormicariumPart> subIterator;
@@ -135,11 +144,9 @@ public class CompositeFormicarium implements Formicarium {
         }
 
         /**
-         * Returns {@code true} if the iteration has more elements.
-         * (In other words, returns {@code true} if {@link #next} would
-         * return an element rather than throwing an exception.)
+         * Returns true if there is a next element.
          *
-         * @return {@code true} if the iteration has more elements
+         * @return true if there is a next element.
          */
         @Override
         public boolean hasNext() {
@@ -170,13 +177,24 @@ public class CompositeFormicarium implements Formicarium {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CompositeFormicarium that)) return false;
-        return Objects.equals(formicariumParts, that.formicariumParts);
+        if (this == o) {
+            return true;
+        }
+
+        if (this.getClass() != o.getClass()) {
+            return false;
+        }
+
+        if(((CompositeFormicarium) o).formicariumParts.size() != this.formicariumParts.size()) {
+            return false;
+        }
+
+        // check all parts if there is in the other object any element which is meant to be equal.
+        return formicariumParts.stream().allMatch(part -> ((CompositeFormicarium)o).formicariumParts.stream().anyMatch(other -> other.equals(part)));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(formicariumParts);
+        return this.compatibility().hashCode();
     }
 }

@@ -274,6 +274,11 @@ public class Test {
     FormicariumSet hat keine weiteren Untertypbeziehungen mit der Formicariumhierarchie, da es selbst kein konkretes "FormicariumItem" darstellt, sondern eine
     Menge an FormicariumItems ist.
 
+    Arena und Antfarm/Nest stehen in keiner Untertypbeziehung, weil streng zwischen Arenen und Nestern unterschieden wird
+    und eine Arena allein keine Grundlage fürs längere Überleben der Ameisen darstellt.
+
+    Forceps ist kein Untertyp von FormicariumPart, weil ein Untertyp von FormicariumPart Bestandteil eines Formicariums ist und ein Forceps das nicht ist.
+
     Die restlichen Untertypbeziehungen lauten wie folgt:
 
                               FormicariumItem
@@ -288,7 +293,6 @@ public class Test {
 
 
       Arbeitsaufwand:
-
       Raphael: Compatibility; Testfälle, Enums
       Clemens: Iterator, Exceptions
 

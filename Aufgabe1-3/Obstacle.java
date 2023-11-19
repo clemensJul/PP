@@ -8,8 +8,8 @@ public class Obstacle extends Tile {
      *
      * @param position Position where Nest is located, must be != null.
      */
-    public Obstacle(Vector position, Grid grid) {
-        super(position,grid);
+    public Obstacle(Vector position) {
+        super(position);
     }
 
     // ERROR: die getCurrentStink-Methode wird eigentlich nur von Tile an sich gebraucht,
@@ -47,6 +47,6 @@ public class Obstacle extends Tile {
      */
     @Override
     public boolean update() {
-        return true;
+        return false;
     }
 }

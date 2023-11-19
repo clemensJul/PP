@@ -3,28 +3,20 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class Arena implements FormicariumPart {
-    int substrate;
-    int material;
+    private final int substrate;
+    private final int material;
+    private final Compatibility compatibility;
 
+    /**
+     * Initializes an AntFarm.
+     * Values should be one of ESubstrat
+     *
+     * @param substrate Substrate
+     */
     public Arena(int substrate, int material) {
         this.substrate = substrate;
         this.material = material;
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Arena that)) return false;
-        return substrate == that.substrate && material == that.material;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(substrate, material);
-    }
-
-    @Override
-    public Compatibility compatibility() {
         int[] size = new int[2];
         size[0] = substrate * 7 + material * 7;
         size[1] = (substrate * 20 + material * 20) + 10;
@@ -36,11 +28,19 @@ public class Arena implements FormicariumPart {
         temperature[0] = Integer.MIN_VALUE;
         temperature[1] = Integer.MAX_VALUE;
 
-        return new Compatibility(size, temperature, humidity);
+        compatibility =  new Compatibility(size, temperature, humidity, ETime.UNLIMITED);
     }
 
     /**
-     * Returns an iterator over elements of type {@code T}.
+     * @return the Compatibility object of this, is != null
+     */
+    @Override
+    public Compatibility compatibility() {
+        return compatibility;
+    }
+
+    /**
+     * Returns an iterator over arena.
      *
      * @return an Iterator.
      */
@@ -49,10 +49,9 @@ public class Arena implements FormicariumPart {
         return new ArenaIterator(this);
     }
 
+    // simple iterator which simply returns the given item once.
     private static class ArenaIterator implements Iterator<FormicariumPart> {
-
         private boolean hasNext;
-
         private final FormicariumPart item;
 
         public ArenaIterator(FormicariumPart item) {
@@ -86,5 +85,17 @@ public class Arena implements FormicariumPart {
             hasNext = false;
             return item;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Arena that)) return false;
+        return substrate == that.substrate && material == that.material;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(substrate, material);
     }
 }

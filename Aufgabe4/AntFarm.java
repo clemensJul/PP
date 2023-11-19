@@ -3,27 +3,17 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class AntFarm extends Nest {
-    int substrate;
+    private final int substrate;
+    private final Compatibility compatibility;
 
+    /**
+     * Initializes an AntFarm.
+     * Values should be one of ESubstrat
+     *
+     * @param substrate Substrate
+     */
     public AntFarm(int substrate) {
         this.substrate = substrate;
-    }
-
-    /**
-     * Returns an iterator over elements of type {@code T}.
-     *
-     * @return an Iterator.
-     */
-    @Override
-    public Iterator<FormicariumPart> iterator() {
-        return new AntFarmIterator(this);
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public Compatibility compatibility() {
         int[] size = new int[2];
         size[1] = (substrate * 20) + 10;
 
@@ -33,26 +23,31 @@ public class AntFarm extends Nest {
         int[] temperature = new int[2];
         temperature[1] = 150;
 
-        return new Compatibility(size, temperature, humidity);
+        compatibility = new Compatibility(size, temperature, humidity, ETime.WEEK);
     }
 
+    /**
+     * Returns an iterator over elements of AntFarm.
+     * The iterator only contains this.
+     *
+     * @return an Iterator.
+     */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AntFarm that)) return false;
-        if (!super.equals(o)) return false;
-        return substrate == that.substrate;
+    public Iterator<FormicariumPart> iterator() {
+        return new AntFarmIterator(this);
     }
 
+    /**
+     * @return the Compatibility object of this, is != null
+     */
     @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), substrate);
+    public Compatibility compatibility() {
+        return compatibility;
     }
 
+    // simple iterator which simply returns the given item once.
     private static class AntFarmIterator implements Iterator<FormicariumPart> {
-
         private boolean hasNext;
-
         private final FormicariumPart item;
 
         public AntFarmIterator(FormicariumPart item) {
@@ -86,5 +81,27 @@ public class AntFarm extends Nest {
             hasNext = false;
             return item;
         }
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof AntFarm that)) {
+            return false;
+        }
+
+        if (!super.equals(o)) {
+            return false;
+        }
+        return substrate == that.substrate;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), substrate);
     }
 }

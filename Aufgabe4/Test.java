@@ -2,18 +2,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Test {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CompatibilityException {
         {
-            ArrayList<FormicariumPart> emptyList = new ArrayList<>();
+            //ArrayList<FormicariumPart> emptyList = new ArrayList<>();
 
             // compositeFormicarium
-            FormicariumItem fi_compositeFormicarium = new CompositeFormicarium(emptyList);
-            FormicariumPart fp_compositeFormicarium = new CompositeFormicarium(emptyList);
-            Formicarium f_compositeFormicarium = new CompositeFormicarium(emptyList);
-
-            // formicarium
-            FormicariumItem fi_formicarium = new Formicarium(emptyList);
-            FormicariumPart fp_formicarium = new Formicarium(emptyList);
+            FormicariumItem fi_compositeFormicarium = new CompositeFormicarium();
+            FormicariumPart fp_compositeFormicarium = new CompositeFormicarium();
+            Formicarium f_compositeFormicarium = new CompositeFormicarium();
 
             // nest
             FormicariumPart fp_nest = new Nest();
@@ -41,8 +37,7 @@ public class Test {
             items.add(fi_compositeFormicarium);
             items.add(fp_compositeFormicarium);
             items.add(f_compositeFormicarium);
-            items.add(fi_formicarium);
-            items.add(fp_formicarium);
+
             items.add(fp_nest);
             items.add(fi_nest);
             items.add(fi_antFarm);
@@ -282,3 +277,33 @@ public class Test {
         }
     }
 }
+
+/*
+    Untertypbeziehungen:
+
+    Compatibility hat keine weiteren Untertypbeziehungen, weil Compatibility kein konkretes Objekt in der Formicariumhierarchie ist,
+    sondern lediglich die Ameisenhaltungseigenschaften jedes Objekts einfängt.
+
+    FormicariumSet hat keine weiteren Untertypbeziehungen mit der Formicariumhierarchie, da es selbst kein konkretes "FormicariumItem" darstellt, sondern eine
+    Menge an FormicariumItems ist.
+
+    Die restlichen Untertypbeziehungen lauten wie folgt:
+
+                              FormicariumItem
+                              |              |
+                    FormicariumPart       Instrument
+                    |       |     |          |     |
+         Formicarium      Arena   Thermometer       Forceps
+         |          |
+        Nest        CompositeFormicarium
+         |
+      Antfarm
+
+
+      Arbeitsaufwand:
+
+      Raphael: Compatibility; Testfälle, Enums
+      Clemens: Iterator, Exceptions
+
+      Klassenstruktur wurde gemeinsam erarbeitet
+ */

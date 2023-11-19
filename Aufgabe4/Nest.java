@@ -2,28 +2,13 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class Nest implements FormicariumPart {
-    // nest needs an arena
-    // for a specified amount of time, it can last without an arena
-    Arena arena;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Nest that)) return false;
-        return Objects.equals(arena, that.arena);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(arena);
-    }
+public class Nest implements Formicarium {
+    private final Compatibility compatibility;
 
     /**
-     * @return
+     * Initializes a Nest.
      */
-    @Override
-    public Compatibility compatibility() {
+    public Nest() {
         int[] size = new int[2];
         size[1] = 20;
 
@@ -33,12 +18,18 @@ public class Nest implements FormicariumPart {
 
         int[] humidity = new int[2];
         humidity[1] = Integer.MAX_VALUE;
-        return new Compatibility(size, temperature, humidity);
+
+        compatibility = new Compatibility(size, temperature, humidity, ETime.UNLIMITED);
     }
 
     /**
-     * @return
+     * @return the Compatibility object of this
      */
+    @Override
+    public Compatibility compatibility() {
+       return compatibility;
+    }
+
     /**
      * Returns an iterator over elements of type {@code T}.
      *
@@ -50,9 +41,7 @@ public class Nest implements FormicariumPart {
     }
 
     private static class NestIterator implements Iterator<FormicariumPart> {
-
         private boolean hasNext;
-
         private final FormicariumPart item;
 
         public NestIterator(FormicariumPart item) {

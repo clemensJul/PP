@@ -1,7 +1,6 @@
 public interface Compatible {
     /**
-     * @returns an object of class Compatibility.
+     * @return an object of class Compatibility, is != null
      */
-
     Compatibility compatibility();
 }

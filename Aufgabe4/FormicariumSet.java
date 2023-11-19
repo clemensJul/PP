@@ -8,18 +8,6 @@ public class FormicariumSet implements Iterable<FormicariumItem> {
         this.formicariumItems.addAll(formicariumItems);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FormicariumSet that)) return false;
-        return Objects.equals(formicariumItems, that.formicariumItems);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(formicariumItems);
-    }
-
     public void add(FormicariumItem item) {
         if(checkRecursiveIdentity(item)) {
             return;

@@ -1,13 +1,13 @@
 import java.util.*;
 
 public class StatSet<X extends Rated<P, R>, P, R extends Calc<R>> implements RatedSet<X, P, R> {
-    ArrayList<X> items;
-    ArrayList<P> criteria;
-    private Map<String, Integer> methodCalls;
+    GenericList<X> items;
+    GenericList<P> criteria;
+    private GenericMap<String, Integer> methodCalls;
 
     public StatSet() {
-        items = new ArrayList<>();
-        criteria = new ArrayList<>();
+        items = new GenericList<>();
+        criteria = new GenericList<>();
     }
 
     /**
@@ -49,13 +49,21 @@ public class StatSet<X extends Rated<P, R>, P, R extends Calc<R>> implements Rat
     @Override
     public Iterator<X> iterator(P p, R r) {
         incrementMap("iterator2");
-        return new StatSetIterator<>(items.stream().filter(x -> x.rated(p).atLeast(r)).toList());
+
+        GenericList<X> sorted = new GenericList<>();
+        for (int i = 0; i < items.size(); i++) {
+            if(items.get(i).rated(p).atLeast(r)) {
+                sorted.add(items.get(i));
+            }
+        }
+
+        return new StatSetIterator<>(sorted);
     }
 
     private class StatSetIterator<InnerX> implements Iterator<InnerX> {
         private final Iterator<InnerX> iterator;
 
-        public StatSetIterator(List<InnerX> list) {
+        public StatSetIterator(GenericList<InnerX> list) {
             this.iterator = list.iterator();
         }
 
@@ -128,7 +136,13 @@ public class StatSet<X extends Rated<P, R>, P, R extends Calc<R>> implements Rat
     public String statistics() {
         incrementMap("statistics");
         StringBuilder stats = new StringBuilder();
-        methodCalls.forEach((key, value) -> stats.append(key).append(" calls: ").append(value).append("\n"));
+
+        GenericList<Integer> values = methodCalls.values();
+        GenericList<String> keys = methodCalls.keys();
+        for (int i = 0; i < methodCalls.size(); i++) {
+            stats.append(keys.get(i)).append(" calls: ").append(values.get(i)).append("\n");
+        }
+
         return stats.toString();
     }
 }

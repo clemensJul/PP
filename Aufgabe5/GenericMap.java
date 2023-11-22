@@ -1,4 +1,7 @@
-public class GenericMap<K, V> {
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class GenericMap<K, V> implements Iterable{
     private final GenericList<Entry<K, V>> buckets;
     private int size;
 
@@ -23,6 +26,11 @@ public class GenericMap<K, V> {
         newNode.next = buckets.get(index);
         buckets.set(index, newNode);
         size++;
+    }
+
+    public V getOrDefault(K key, V defaultReturn) {
+        V value = get(key);
+        return value == null ? defaultReturn : value;
     }
 
     public V get(K key) {
@@ -63,11 +71,29 @@ public class GenericMap<K, V> {
         return size;
     }
 
+    public GenericList<K> keys() {
+        GenericList<K> keys = new GenericList<>();
+        for (Entry<K, V> entry : buckets) {
+            keys.add(entry.getKey());
+        }
+
+        return keys;
+    }
+
+    public GenericList<V> values() {
+        GenericList<V> values = new GenericList<>();
+        for (Entry<K, V> entry : buckets) {
+            values.add(entry.getValue());
+        }
+
+        return values;
+    }
+
     private int getIndex(K key) {
         return Math.abs(key.hashCode()) % buckets.size();
     }
 
-    private static class Entry<K, V> {
+    public static class Entry<K, V> {
         K key;
         V value;
         Entry<K, V> next;
@@ -75,6 +101,14 @@ public class GenericMap<K, V> {
         Entry(K key, V value) {
             this.key = key;
             this.value = value;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public V getValue() {
+            return value;
         }
     }
 }

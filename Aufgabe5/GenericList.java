@@ -1,4 +1,7 @@
-public class GenericList<T> {
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class GenericList<T> implements Iterable<T>{
     private Object[] array;
     private int size;
     private static final int DEFAULT_CAPACITY = 10;
@@ -57,5 +60,40 @@ public class GenericList<T> {
             System.arraycopy(array, 0, newArray, 0, size);
             array = newArray;
         }
+    }
+
+    /**
+     * Returns an iterator over elements of type {@code T}.
+     *
+     * @return an Iterator.
+     */
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            int count = 0;
+            boolean lastReturned = false;
+
+            @Override
+            public boolean hasNext() {
+                return count <= size();
+            }
+
+            @Override
+            public T next() throws NoSuchElementException{
+                if(!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+
+                lastReturned = true;
+                return get(count++);
+            }
+
+
+            @Override
+            public void remove() {
+                lastReturned = false;
+                removeAt(count--);
+            }
+        };
     }
 }

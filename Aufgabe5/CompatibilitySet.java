@@ -3,12 +3,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 public class CompatibilitySet<X extends Rated<X, R>, R extends Calc<R>> implements RatedSet<X, X, R> {
-    ArrayList<X> items;
-    ArrayList<X> criteria;
+    GenericList<X> items;
+    GenericList<X> criteria;
 
     public CompatibilitySet() {
-        this.items = new ArrayList<>();
-        this.criteria = new ArrayList<>();
+        this.items = new GenericList<>();
+        this.criteria = new GenericList<>();
     }
 
     /**
@@ -85,6 +85,35 @@ public class CompatibilitySet<X extends Rated<X, R>, R extends Calc<R>> implemen
         if (o == null || getClass() != o.getClass()) return false;
         CompatibilitySet<?, ?> that = (CompatibilitySet<?, ?>) o;
 
-        return items.stream().allMatch(item -> that.items.stream().anyMatch(oItem -> oItem == item)) && criteria.stream().allMatch(crit -> that.criteria.stream().anyMatch(oCrit -> oCrit == crit));
+        // Überprüfung der Elemente
+        for (X item : items) {
+            boolean found = false;
+            for (Rated<?, ?> oItem : that.items) {
+                if (oItem == item) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+
+        // Überprüfung der Kriterien
+        for (X item : criteria) {
+            boolean found = false;
+            for (Rated<?, ?> oItem : that .criteria) {
+                if (oItem == item) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+
+        return true;
+//        return items.stream().allMatch(item -> that.items.stream().anyMatch(oItem -> oItem == item)) && criteria.stream().allMatch(crit -> that.criteria.stream().anyMatch(oCrit -> oCrit == crit));
     }
 }

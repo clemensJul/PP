@@ -1,33 +1,43 @@
 public class Quality implements Calc<Quality> {
-
-    private static Quality[] qualities = new Quality[4];
-    private int quality;
+    public static final Quality NOT_USABLE = new Quality(0);
+    public static final Quality BEGINNER = new Quality(1);
+    public static final Quality SEMIPRO = new Quality(2);
+    public static final Quality PRO = new Quality(3);
+    private final int quality;
 
     private enum EQuality {
-        NOTUSABLE,
+        NOT_USABLE,
         BEGINNER,
         SEMIPRO,
         PRO
     }
 
     /**
-     * @param quality is only "NOTUSABLE","BEGINNER","SEMIPRO" and "PRO possible
+     * @param quality is only "NOT_USABLE","BEGINNER","SEMIPRO" and "PRO possible
      * @return the quality object
      */
     public static Quality getQuality(String quality) {
-
-        Quality output;
-        int cardinality = EQuality.valueOf(quality).ordinal();
-        if (qualities[cardinality] == null) new Quality(cardinality);
-        output = qualities[cardinality];
-        return output;
+        switch(EQuality.valueOf(quality)) {
+            case NOT_USABLE -> {
+                return NOT_USABLE;
+            }
+            case BEGINNER -> {
+                return BEGINNER;
+            }
+            case SEMIPRO -> {
+                return SEMIPRO;
+            }
+            case PRO -> {
+                return PRO;
+            }
+        }
+        return null;
     }
 
     /**
      * @param quality must be between (including) 0 and 3
      */
     private Quality(int quality) {
-        qualities[quality] = this;
         this.quality = quality;
     }
 
@@ -62,7 +72,6 @@ public class Quality implements Calc<Quality> {
      */
     @Override
     public boolean atLeast(Quality compareTo) {
-
         return this.quality >= compareTo.quality;
     }
 

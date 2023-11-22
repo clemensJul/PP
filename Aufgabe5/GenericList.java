@@ -2,80 +2,112 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class GenericList<T> implements Iterable<T> {
-    private Object[] array;
+    private static class Node<T> {
+        T data;
+        Node<T> next;
+
+        Node(T data) {
+            this.data = data;
+        }
+    }
+
+    private Node<T> head;
     private int size;
-    private static final int DEFAULT_CAPACITY = 10;
 
     public GenericList() {
-        this.array = new Object[DEFAULT_CAPACITY];
+        this.head = null;
         this.size = 0;
     }
 
     public void add(T item) {
-        ensureCapacity();
-        array[size++] = item;
+        Node<T> newNode = new Node<>(item);
+        if (head == null) {
+            head = newNode;
+        } else {
+            Node<T> current = head;
+            while (current.next != null) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        size++;
     }
 
-    @SuppressWarnings("unchecked")
     public T get(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
-        return (T) array[index];
+        Node<T> current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        return current.data;
     }
 
     public boolean remove(T item) {
-        for (int i = 0; i < size; i++) {
-            if (array[i].equals(item)) {
-                removeAt(i);
+        Node<T> current = head;
+        Node<T> prev = null;
+
+        while (current != null) {
+            if (current.data.equals(item)) {
+                if (prev == null) {
+                    head = current.next;
+                } else {
+                    prev.next = current.next;
+                }
+                size--;
                 return true;
             }
+            prev = current;
+            current = current.next;
         }
         return false;
     }
 
-    private void removeAt(int index) {
+    public void removeAt(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
-        System.arraycopy(array, index + 1, array, index, size - index - 1);
+        if (index == 0) {
+            head = head.next;
+        } else {
+            Node<T> current = head;
+            Node<T> prev = null;
+            for (int i = 0; i < index; i++) {
+                prev = current;
+                current = current.next;
+            }
+            prev.next = current.next;
+        }
         size--;
     }
+
 
     public void set(int index, T item) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
-        array[index] = item;
+        Node<T> current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        current.data = item;
     }
 
     public int size() {
         return size;
     }
 
-    private void ensureCapacity() {
-        if (size == array.length) {
-            int newCapacity = array.length * 2;
-            Object[] newArray = new Object[newCapacity];
-            System.arraycopy(array, 0, newArray, 0, size);
-            array = newArray;
-        }
-    }
-
-    /**
-     * Returns an iterator over elements of type {@code T}.
-     *
-     * @return an Iterator.
-     */
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
-            int count = 0;
+            Node<T> current = head;
+            Node<T> prev = null;
             boolean lastReturned = false;
 
             @Override
             public boolean hasNext() {
-                return count <= size();
+                return current != null;
             }
 
             @Override
@@ -83,16 +115,25 @@ public class GenericList<T> implements Iterable<T> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-
                 lastReturned = true;
-                return get(count++);
+                T data = current.data;
+                prev = current;
+                current = current.next;
+                return data;
             }
-
 
             @Override
             public void remove() {
+                if (!lastReturned) {
+                    throw new IllegalStateException("next() has not been called");
+                }
+                if (prev == null) {
+                    head = head.next;
+                } else {
+                    prev.next = current;
+                }
                 lastReturned = false;
-                removeAt(count--);
+                size--;
             }
         };
     }

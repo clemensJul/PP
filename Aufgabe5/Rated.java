@@ -1,2 +1,22 @@
-public interface Rated {
+import java.util.function.DoubleUnaryOperator;
+
+public interface Rated<P, R extends Calc<R>> {
+    /**
+     * @param p P must be != null
+     * @return a new Object of R with rated properties.
+     */
+    R rated(P p);
+
+    /**
+     * Sets the criterion used for rated, if there is no P given.
+     */
+    void setCriterion(P p);
+
+    /**
+     * Rates R based on P set with setCriterion.
+     * 
+     * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(Object)} before calling this method.
+     * @return a new Object of R with rated properties.
+     */
+    R rated() throws NoCriterionSetException;
 }

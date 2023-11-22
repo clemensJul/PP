@@ -1,38 +1,35 @@
-public class Arena implements Part<?> {
-
+public class Arena implements Part {
     private final float volume;
-    private Quality quality;
-    private Arena criterion;
+    private final Quality quality;
+    private Part criterion;
 
-    /**
-     * @param volume  in liters
-     * @param quality "needs to be "BEGINNER", "SEMIPRO" or "PRO"
-     */
     public Arena(float volume, String quality) {
         this.volume = volume;
-        if (!quality.equals("NOTUSABLE")) quality = "BEGINNER";
+        if (!quality.equals("NOTUSABLE")) {
+            quality = "BEGINNER";
+        }
         this.quality = Quality.getQuality(quality);
     }
 
     /**
      * returns an object of type Quality. Most of the time it will be a worst object, but if two parts are not compatible return "NOTUSABLE"
      *
-     * @param part must be != null
+     * @param p P must be != null
      * @return
      */
     @Override
-    public Quality rated(Part<?> part) {
-        return quality.sum(arena.quality);
+    public Quality rated(Part p) {
+        return null;
     }
 
     /**
      * Sets the criterion used for rated, if there is no P given.
      *
-     * @param arena
+     * @param part
      */
     @Override
-    public void setCriterion(Arena arena) {
-        this.criterion = arena;
+    public void setCriterion(Part part) {
+        this.criterion = part;
     }
 
     /**
@@ -43,7 +40,9 @@ public class Arena implements Part<?> {
      */
     @Override
     public Quality rated() throws NoCriterionSetException {
-        if (this.criterion == null) throw new NoCriterionSetException("no criterion was set");
-        return this.quality.sum(this.criterion.quality);
+        if(criterion == null) {
+            throw new NoCriterionSetException();
+        }
+        return null;
     }
 }

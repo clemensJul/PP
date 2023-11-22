@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class CompatibilitySet<X extends Rated<X, R>, R extends Calc<R>> implements RatedSet<X, X, R> {
+public class CompatibilitySet<X extends Rated<?, ?>, R extends Calc<R>> implements RatedSet<X, X, R> {
     GenericList<X> items;
     GenericList<X> criteria;
 

@@ -1,66 +1,68 @@
 import java.util.function.DoubleUnaryOperator;
 
-public class Numeric<P extends DoubleUnaryOperator> implements Calc<Numeric<P>>, Rated<P, Numeric<P>> {
+public class Numeric implements Rated<DoubleUnaryOperator, Numeric>, Calc<Numeric> {
     double value;
-    P criteria;
-
-    public Numeric(Double value) {
-        this.value = value;
-    }
 
     /**
+     * returns the sum of two objects of type R. Sum does not necessarily be a number
+     *
      * @param add must not be null
-     * @return
+     * @return is never null
      */
     @Override
-    public Numeric<P> sum(Numeric<P> add) {
-        return new Numeric<>(value + add.value);
+    public Numeric sum(Numeric add) {
+        return null;
     }
 
     /**
+     * returns the division of two objects of type R. Division does not necessarily be the same as for numbers
+     *
      * @param ratio must not be null
      * @return
      */
     @Override
-    public Numeric<P> ratio(int ratio) {
-        return new Numeric<>(value / ratio);
+    public Numeric ratio(int ratio) {
+        return null;
     }
 
     /**
+     * returns boolean TRUE if @this is bigger or equal to
+     *
      * @param compareTo must not be null
-     * @return
+     * @return always returns true or false
      */
     @Override
-    public boolean atLeast(Numeric<P> compareTo) {
-        return value >= compareTo.value;
+    public boolean atLeast(Numeric compareTo) {
+        return false;
     }
 
     /**
-     * @param p P must be != null
-     * @return
+     * @param doubleUnaryOperator P must be != null
+     * @return a new Object of R with rated properties.
      */
     @Override
-    public Numeric<P> rated(P p) {
-        return new Numeric<>(p.applyAsDouble(value));
+    public Numeric rated(DoubleUnaryOperator doubleUnaryOperator) {
+        return null;
     }
 
     /**
-     * @param p
+     * Sets the criterion used for rated, if there is no P given.
+     *
+     * @param doubleUnaryOperator
      */
     @Override
-    public void setCriterion(P p) {
-        criteria = p;
+    public void setCriterion(DoubleUnaryOperator doubleUnaryOperator) {
+
     }
 
     /**
-     * @return
-     * @throws NoCriterionSetException
+     * Rates R based on P set with setCriterion.
+     *
+     * @return a new Object of R with rated properties.
+     * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(Object)} before calling this method.
      */
     @Override
-    public Numeric<P> rated() throws NoCriterionSetException {
-        if (criteria == null) {
-            throw new NoCriterionSetException("");
-        }
-        return new Numeric<>(criteria.applyAsDouble(value));
+    public Numeric rated() throws NoCriterionSetException {
+        return null;
     }
 }

@@ -1,5 +1,3 @@
-import java.util.function.DoubleUnaryOperator;
-
 public interface Rated<P, R extends Calc<R>> {
     /**
      * @param p P must be != null
@@ -14,9 +12,9 @@ public interface Rated<P, R extends Calc<R>> {
 
     /**
      * Rates R based on P set with setCriterion.
-     * 
-     * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(Object)} before calling this method.
+     *
      * @return a new Object of R with rated properties.
+     * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(Object)} before calling this method.
      */
     R rated() throws NoCriterionSetException;
 }

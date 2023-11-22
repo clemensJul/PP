@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
 
 public class CompatibilitySet<X extends Rated<X, R>, R extends Calc<R>> implements RatedSet<X, X, R> {
     ArrayList<X> items;
@@ -35,7 +34,7 @@ public class CompatibilitySet<X extends Rated<X, R>, R extends Calc<R>> implemen
         HashSet<X> identicals = new HashSet<>();
         items.forEach(item -> {
             criteria.forEach(crit -> {
-                if(item == crit) {
+                if (item == crit) {
                     identicals.add(item);
                 }
             });

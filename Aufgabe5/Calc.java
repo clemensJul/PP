@@ -2,6 +2,7 @@ public interface Calc<R> {
 
     /**
      * returns the sum of two objects of type R. Sum does not necessarily be a number
+     *
      * @param add must not be null
      * @return is never null
      */
@@ -9,6 +10,7 @@ public interface Calc<R> {
 
     /**
      * returns the division of two objects of type R. Division does not necessarily be the same as for numbers
+     *
      * @param ratio must not be null
      * @return
      */
@@ -17,9 +19,9 @@ public interface Calc<R> {
 
     /**
      * returns boolean TRUE if @this is bigger or equal to
+     *
      * @param compareTo must not be null
      * @return always returns true or false
-     *
      */
     boolean atLeast(R compareTo);
 }

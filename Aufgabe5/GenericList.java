@@ -1,7 +1,7 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class GenericList<T> implements Iterable<T>{
+public class GenericList<T> implements Iterable<T> {
     private Object[] array;
     private int size;
     private static final int DEFAULT_CAPACITY = 10;
@@ -79,8 +79,8 @@ public class GenericList<T> implements Iterable<T>{
             }
 
             @Override
-            public T next() throws NoSuchElementException{
-                if(!hasNext()) {
+            public T next() throws NoSuchElementException {
+                if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
 

@@ -1,6 +1,6 @@
 import java.util.function.DoubleUnaryOperator;
 
-public class Numeric<P extends DoubleUnaryOperator> implements Calc<Numeric<P>>, Rated<P, Numeric<P>>{
+public class Numeric<P extends DoubleUnaryOperator> implements Calc<Numeric<P>>, Rated<P, Numeric<P>> {
     double value;
     P criteria;
 

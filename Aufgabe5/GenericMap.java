@@ -1,7 +1,4 @@
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-public class GenericMap<K, V> implements Iterable{
+public class GenericMap<K, V> {
     private final GenericList<Entry<K, V>> buckets;
     private int size;
 

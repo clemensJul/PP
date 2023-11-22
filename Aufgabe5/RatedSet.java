@@ -37,12 +37,12 @@ public interface RatedSet<X extends Rated<P, R>, P, R extends Calc<R>> extends I
     /**
      * @return an iterator, which returns all entries of the container which where added by {@link #add(Rated)} and for which following condition is met:
      * The average of x.rated(p) over all criteria in this container is >= r.
-     * */
+     */
     Iterator<X> iterator(R r);
 
     /**
      * The iterator removes the last returned element retrieved by next from the entries added by {@link #addCriterion(Object)}
-     * 
+     *
      * @return an iterator, which returns all criteria of the container which where added by {@link #addCriterion(Object)}}.
      */
     Iterator<P> criterions();

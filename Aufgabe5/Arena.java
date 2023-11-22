@@ -5,11 +5,10 @@ public class Arena implements Part<?> {
     private Arena criterion;
 
     /**
-     *
-     * @param volume in liters
+     * @param volume  in liters
      * @param quality "needs to be "BEGINNER", "SEMIPRO" or "PRO"
      */
-    public Arena(float volume,String quality) {
+    public Arena(float volume, String quality) {
         this.volume = volume;
         if (!quality.equals("NOTUSABLE")) quality = "BEGINNER";
         this.quality = Quality.getQuality(quality);
@@ -17,7 +16,8 @@ public class Arena implements Part<?> {
 
     /**
      * returns an object of type Quality. Most of the time it will be a worst object, but if two parts are not compatible return "NOTUSABLE"
-     * @param  part must be != null
+     *
+     * @param part must be != null
      * @return
      */
     @Override

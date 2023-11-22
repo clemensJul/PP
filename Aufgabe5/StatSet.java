@@ -1,4 +1,5 @@
-import java.util.*;
+import java.util.Iterator;
+import java.util.Objects;
 
 public class StatSet<X extends Rated<P, R>, P, R extends Calc<R>> implements RatedSet<X, P, R> {
     GenericList<X> items;
@@ -52,7 +53,7 @@ public class StatSet<X extends Rated<P, R>, P, R extends Calc<R>> implements Rat
 
         GenericList<X> sorted = new GenericList<>();
         for (int i = 0; i < items.size(); i++) {
-            if(items.get(i).rated(p).atLeast(r)) {
+            if (items.get(i).rated(p).atLeast(r)) {
                 sorted.add(items.get(i));
             }
         }

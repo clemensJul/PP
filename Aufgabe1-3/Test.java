@@ -10,6 +10,7 @@ public class Test {
      * Initializes some simulations.
      */
     public static void main(String[] args) {
+
         //simulation parameters
         int numberOfSims = 3;
         int cellSize = 3;
@@ -36,3 +37,4 @@ public class Test {
 //Clemens revamp of ants logic
 //Raphael revamp of grid logic
 //most of the classes are object-oriented. A notable exception is the Vector class, having many static functions
+

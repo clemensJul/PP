@@ -15,6 +15,7 @@ public class Simulation {
     private final Grid grid;
     private final EventScanner input;
     private Vector offset;
+    private int runtime = 400;
 
     /**
      * Initializes a Simulation.
@@ -56,6 +57,8 @@ public class Simulation {
             handleKeyboardInput(input);
             drawWindow();
         }
+        if(runtime-- < 0) cd.close();
+        System.out.println(runtime);
     }
 
     /**

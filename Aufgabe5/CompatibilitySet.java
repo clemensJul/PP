@@ -31,7 +31,7 @@ public class CompatibilitySet<X extends Rated,R extends Calc<R>> implements Rate
      * @return
      */
     public Iterator<X> identical() {
-        HashSet<X> identicals = new HashSet<>();
+        GenericList<X> identicals = new GenericList<>();
         items.forEach(item -> {
             criteria.forEach(crit -> {
                 if (item == crit) {
@@ -40,7 +40,7 @@ public class CompatibilitySet<X extends Rated,R extends Calc<R>> implements Rate
             });
         });
 
-        return identicals.stream().toList().iterator();
+        return identicals.iterator();
     }
 
 
@@ -49,8 +49,9 @@ public class CompatibilitySet<X extends Rated,R extends Calc<R>> implements Rate
      */
     @Override
     public Iterator<X> iterator() {
-        return null;
+        return items.iterator();
     }
+
     /**
      * @param x
      * @param r
@@ -75,7 +76,7 @@ public class CompatibilitySet<X extends Rated,R extends Calc<R>> implements Rate
      */
     @Override
     public Iterator<X> criterions() {
-        return null;
+        return criteria.iterator();
     }
 
     @Override

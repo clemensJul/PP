@@ -1,5 +1,6 @@
-public interface Rated<P, R extends Calc<R>> {
+public interface Rated<P , R extends Calc<R>> {
     /**
+     * Returns an object of R evaluated based on type P
      * @param p P must be != null
      * @return a new Object of R with rated properties.
      */

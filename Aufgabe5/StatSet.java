@@ -4,11 +4,12 @@ import java.util.Objects;
 public class StatSet<X extends Rated, P, R extends Calc<R>> implements RatedSet<X, P, R> {
     GenericList<X> items;
     GenericList<P> criteria;
-    private GenericMap<String, Integer> methodCalls;
+    private final GenericMap<String, Integer> methodCalls;
 
     public StatSet() {
         items = new GenericList<>();
         criteria = new GenericList<>();
+        methodCalls = new GenericMap<>();
     }
 
     /**

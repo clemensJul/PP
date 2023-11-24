@@ -1,10 +1,8 @@
 public class GenericMap<K, V> {
     private final GenericList<Entry<K, V>> buckets;
-    private int size;
 
     public GenericMap() {
         this.buckets = new GenericList<>();
-        this.size = 0;
     }
 
     public void put(K key, V value) {
@@ -20,9 +18,7 @@ public class GenericMap<K, V> {
         }
 
         Entry<K, V> newNode = new Entry<>(key, value);
-        newNode.next = buckets.get(index);
-        buckets.set(index, newNode);
-        size++;
+        buckets.add(newNode);
     }
 
     public V getOrDefault(K key, V defaultReturn) {
@@ -31,41 +27,25 @@ public class GenericMap<K, V> {
     }
 
     public V get(K key) {
-        int index = getIndex(key);
-        Entry<K, V> entry = buckets.get(index);
-
-        while (entry != null) {
+        for (Entry<K, V> entry : buckets) {
             if (entry.key.equals(key)) {
                 return entry.value;
             }
-            entry = entry.next;
         }
-
         return null;
     }
 
     public void remove(K key) {
-        int index = getIndex(key);
-        Entry<K, V> prev = null;
-        Entry<K, V> entry = buckets.get(index);
-
-        while (entry != null) {
+        // find item in map
+        for (Entry<K, V> entry : buckets) {
             if (entry.key.equals(key)) {
-                if (prev == null) {
-                    buckets.set(index, entry.next);
-                } else {
-                    prev.next = entry.next;
-                }
-                size--;
-                return;
+                buckets.remove(entry);
             }
-            prev = entry;
-            entry = entry.next;
         }
     }
 
     public int size() {
-        return size;
+        return buckets.size();
     }
 
     public GenericList<K> keys() {
@@ -87,7 +67,15 @@ public class GenericMap<K, V> {
     }
 
     private int getIndex(K key) {
-        return Math.abs(key.hashCode()) % buckets.size();
+        int i = 0;
+        for (K k : keys()) {
+            if(key.equals(k)) {
+                return i;
+            }
+            i++;
+        }
+
+        return i;
     }
 
     public static class Entry<K, V> {

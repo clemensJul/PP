@@ -33,10 +33,23 @@ public class GenericList<T> implements Iterable<T> {
         size++;
     }
 
+    public boolean contains(T item) {
+        Node<T> current = head;
+        while (current != null) {
+            if (current.data.equals(item)) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+
     public T get(int index) {
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index out of bounds");
+            return null;
         }
+
         Node<T> current = head;
         for (int i = 0; i < index; i++) {
             current = current.next;
@@ -100,7 +113,7 @@ public class GenericList<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             Node<T> current = head;
             Node<T> prev = null;
             boolean lastReturned = false;

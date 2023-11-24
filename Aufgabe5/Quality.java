@@ -17,7 +17,7 @@ public class Quality implements Calc<Quality> {
      * @return the quality object
      */
     public static Quality getQuality(String quality) {
-        switch(EQuality.valueOf(quality)) {
+        switch (EQuality.valueOf(quality)) {
             case NOT_USABLE -> {
                 return NOT_USABLE;
             }
@@ -39,7 +39,7 @@ public class Quality implements Calc<Quality> {
      * @return the quality object
      */
     public static Quality getQuality(int quality) {
-        switch(quality) {
+        switch (quality) {
             case 0 -> {
                 return NOT_USABLE;
             }

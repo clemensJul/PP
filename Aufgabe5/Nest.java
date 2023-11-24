@@ -24,7 +24,7 @@ public class Nest implements Part {
     // todo glaubst das passt so?
     @Override
     public Quality rated(Part p) {
-        if(p instanceof Nest) {
+        if (p instanceof Nest) {
             return Quality.NOT_USABLE;
         }
         return quality;

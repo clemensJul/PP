@@ -21,7 +21,6 @@ public class Test {
 //        fillStatSet(nnn);
 
 
-
         {
             System.out.println("test adding values to StatSet items");
             Numeric numeric1 = new Numeric(12);
@@ -132,17 +131,17 @@ public class Test {
 
         for (int i = 0; i < 10; i++) {
             poolForA.add((A) new Numeric(Math.floor(Math.random() * 100)));
-            poolForA.add((A) new Arena((float)Math.floor(Math.random() * 100), Quality.getQuality((int)Math.floor(Math.random() * 4)).toString()));
-            poolForA.add((A) new Nest((int)Math.floor(Math.random() * 100), Quality.getQuality((int)Math.floor(Math.random() * 4)).toString()));
+            poolForA.add((A) new Arena((float) Math.floor(Math.random() * 100), Quality.getQuality((int) Math.floor(Math.random() * 4)).toString()));
+            poolForA.add((A) new Nest((int) Math.floor(Math.random() * 100), Quality.getQuality((int) Math.floor(Math.random() * 4)).toString()));
             poolForB.add((B) new Numeric(Math.floor(Math.random() * 100)));
-            poolForB.add((B) new Arena((float)Math.floor(Math.random() * 100), Quality.getQuality((int)Math.floor(Math.random() * 4)).toString()));
-            poolForB.add((B) new Nest((int)Math.floor(Math.random() * 100), Quality.getQuality((int)Math.floor(Math.random() * 4)).toString()));
+            poolForB.add((B) new Arena((float) Math.floor(Math.random() * 100), Quality.getQuality((int) Math.floor(Math.random() * 4)).toString()));
+            poolForB.add((B) new Nest((int) Math.floor(Math.random() * 100), Quality.getQuality((int) Math.floor(Math.random() * 4)).toString()));
             poolForC.add((C) new Numeric(Math.floor(Math.random() * 100)));
         }
 
         for (int i = 0; i < 10; i++) {
-            set.add(poolForA.get((int)Math.floor(Math.random() * poolForA.size())));
-            set.addCriterion(poolForB.get((int)Math.floor(Math.random() * poolForA.size())));
+            set.add(poolForA.get((int) Math.floor(Math.random() * poolForA.size())));
+            set.addCriterion(poolForB.get((int) Math.floor(Math.random() * poolForA.size())));
         }
     }
 

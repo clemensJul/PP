@@ -152,7 +152,7 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
                 }
             }
 
-            if(!foundItem) {
+            if (!foundItem) {
                 return false;
             }
         }
@@ -166,7 +166,7 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
                 }
             }
 
-            if(!foundItem) {
+            if (!foundItem) {
                 return false;
             }
         }

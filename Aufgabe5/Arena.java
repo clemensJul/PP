@@ -24,7 +24,7 @@ public class Arena implements Part {
     }
 
     /**
-     * @return 
+     * @return
      */
     // TODO: die funktion hab i selbst ins interface dazugegeben, damit wir in rated irgendwie eine Quality zum vergleichen haben.
     @Override
@@ -50,7 +50,7 @@ public class Arena implements Part {
      */
     @Override
     public Quality rated() throws NoCriterionSetException {
-        if(criterion == null) {
+        if (criterion == null) {
             throw new NoCriterionSetException();
         }
 

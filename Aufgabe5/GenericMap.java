@@ -70,7 +70,7 @@ public class GenericMap<K, V> {
     private int getIndex(K key) {
         int i = 0;
         for (K k : keys()) {
-            if(key.equals(k)) {
+            if (key.equals(k)) {
                 return i;
             }
             i++;

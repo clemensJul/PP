@@ -18,6 +18,11 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
     @Override
     public void add(X x) {
         incrementMap("add");
+        for (X item : items) {
+            if (item == x) {
+                return;
+            }
+        }
         items.add(x);
     }
 

@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class CompatibilitySet<X extends Rated<? super X, R>,R extends Calc<R>> implements RatedSet<X,X,R> {
+public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> implements RatedSet<X, X, R> {
     GenericList<X> items;
     GenericList<X> criteria;
 
@@ -16,6 +16,12 @@ public class CompatibilitySet<X extends Rated<? super X, R>,R extends Calc<R>> i
      */
     @Override
     public void add(X x) {
+        for (X item : items) {
+            if (item == x) {
+                return;
+            }
+        }
+
         items.add(x);
     }
 
@@ -24,6 +30,12 @@ public class CompatibilitySet<X extends Rated<? super X, R>,R extends Calc<R>> i
      */
     @Override
     public void addCriterion(X x) {
+        for (X crit : criteria) {
+            if (crit == x) {
+                return;
+            }
+        }
+
         criteria.add(x);
     }
 
@@ -102,7 +114,7 @@ public class CompatibilitySet<X extends Rated<? super X, R>,R extends Calc<R>> i
         // Überprüfung der Kriterien
         for (X item : criteria) {
             boolean found = false;
-            for (Rated<?, ?> oItem : that .criteria) {
+            for (Rated<?, ?> oItem : that.criteria) {
                 if (oItem == item) {
                     found = true;
                     break;

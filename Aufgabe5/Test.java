@@ -1,3 +1,4 @@
+import java.util.Iterator;
 import java.util.function.DoubleUnaryOperator;
 
 public class Test {
@@ -17,6 +18,60 @@ public class Test {
         CompatibilitySet<Arena, Quality> aq = new CompatibilitySet<>();
         CompatibilitySet<Nest, Quality> nq = new CompatibilitySet<>();
 
+        {
+            // test adding values to StatSet
+            Numeric numeric1 = new Numeric(12);
+            nnn.add(numeric1);
+
+            int counter = 0;
+            for (Numeric value : nnn) {
+                counter++;
+            }
+
+            testValue(counter, 1);
+
+            // should not be added
+            nnn.add(numeric1);
+            counter = 0;
+            for (Numeric numeric : nnn) {
+                counter++;
+            }
+            testValue(counter, 1);
+        }
+
         Quality s = Quality.NOT_USABLE;
+    }
+
+    public static void testIdentity(Object given, Object expected) {
+        if (given == expected) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
+        }
+    }
+
+    public static void testEquals(Object given, Object expected) {
+        if (given.equals(expected)) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected.toString() + " / Given " +
+                    "value: " + given.toString());
+        }
+    }
+
+    public static void testValue(boolean given, boolean expected) {
+        if (given == expected) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
+        }
+    }
+
+    public static void testValue(int given, int expected) {
+        if (given == expected) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
+        }
     }
 }

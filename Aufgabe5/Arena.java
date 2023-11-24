@@ -5,21 +5,29 @@ public class Arena implements Part {
 
     public Arena(float volume, String quality) {
         this.volume = volume;
-        if (!quality.equals("NOTUSABLE")) {
+        if (!quality.equals("NOT_USABLE")) {
             quality = "BEGINNER";
         }
         this.quality = Quality.getQuality(quality);
     }
 
     /**
-     * returns an object of type Quality. Most of the time it will be a worst object, but if two parts are not compatible return "NOTUSABLE"
+     * returns an object of type Quality. Most of the time it will be the worst object, but if two parts are not compatible return "NOT_USABLE"
      *
      * @param p P must be != null
      * @return
      */
     @Override
     public Quality rated(Part p) {
-        return null;
+        return quality.atLeast(p.getQuality()) ? quality : p.getQuality();
+    }
+
+    /**
+     * @return 
+     */
+    @Override
+    public Quality getQuality() {
+        return quality;
     }
 
     /**
@@ -36,13 +44,14 @@ public class Arena implements Part {
      * Rates R based on P set with setCriterion.
      *
      * @return a new Object of R with rated properties.
-     * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(Object)} before calling this method.
+     * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(Part)} before calling this method.
      */
     @Override
     public Quality rated() throws NoCriterionSetException {
         if(criterion == null) {
             throw new NoCriterionSetException();
         }
-        return null;
+
+        return rated(criterion);
     }
 }

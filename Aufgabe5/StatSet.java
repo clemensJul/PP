@@ -36,6 +36,11 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
     @Override
     public void addCriterion(P p) {
         incrementMap("addCriterion");
+        for (P crit : criteria) {
+            if (crit == p) {
+                return;
+            }
+        }
         criteria.add(p);
     }
 
@@ -69,9 +74,13 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
 
     private class StatSetIterator<InnerX> implements Iterator<InnerX> {
         private final Iterator<InnerX> iterator;
+        private final GenericList<InnerX> list;
+
+        private InnerX lastReturned;
 
         public StatSetIterator(GenericList<InnerX> list) {
             this.iterator = list.iterator();
+            this.list = list;
         }
 
         /**
@@ -89,7 +98,12 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         @Override
         public void remove() {
             incrementMap("remove");
-            Iterator.super.remove();
+            if (lastReturned == null) {
+                return;
+            }
+
+            list.remove(lastReturned);
+            lastReturned = null;
         }
 
         /**
@@ -98,7 +112,8 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         @Override
         public InnerX next() {
             incrementMap("next");
-            return iterator.next();
+            lastReturned = iterator.next();
+            return lastReturned;
         }
     }
 
@@ -107,19 +122,31 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
      * @return
      */
     @Override
-    public Iterator<X> iterator(R r) {
+    public Iterator<X> iterator(R r) throws NoCriterionSetException {
         incrementMap("iterator3");
 //        // calculate average
-//        P average = new P();
-//        items.forEach(x -> {
-//            criteria.forEach(crit -> {
-//                x.rated(crit)
-//            });
-//        });
-//
-//        return items.stream().filter(x -> {
-//            x.rated(average).atLeast()
-//        }).iterator();
+        R sum = null;
+
+        for (X item : items) {
+            for (P crit : criteria) {
+                R rated = item.rated(crit);
+                if (sum == null) {
+                    sum = rated;
+                } else {
+                    sum = sum.sum(rated);
+                }
+            }
+        }
+
+        R average = sum.ratio(items.size());
+        GenericList<X> itemsAboveAverage = new GenericList<>();
+
+        for (X item : items) {
+            if(item.rated().atLeast(average)) {
+                itemsAboveAverage.add(item);
+            }
+        }
+
         return new StatSetIterator<>(items);
     }
 
@@ -140,6 +167,11 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         return Objects.equals(items, statSet.items) && Objects.equals(criteria, statSet.criteria);
     }
 
+    /**
+     * Returns a statistic of the amount the methods got called
+     *
+     * @return Method call statistic
+     */
     public String statistics() {
         incrementMap("statistics");
         StringBuilder stats = new StringBuilder();

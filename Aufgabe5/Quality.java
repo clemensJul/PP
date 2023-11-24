@@ -35,12 +35,33 @@ public class Quality implements Calc<Quality> {
     }
 
     /**
+     * @param quality is only "NOT_USABLE","BEGINNER","SEMIPRO" and "PRO possible
+     * @return the quality object
+     */
+    public static Quality getQuality(int quality) {
+        switch(quality) {
+            case 0 -> {
+                return NOT_USABLE;
+            }
+            case 1 -> {
+                return BEGINNER;
+            }
+            case 2 -> {
+                return SEMIPRO;
+            }
+            case 3 -> {
+                return PRO;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @param quality must be between (including) 0 and 3
      */
     private Quality(int quality) {
         this.quality = quality;
     }
-
 
     /**
      * returns the worst quality

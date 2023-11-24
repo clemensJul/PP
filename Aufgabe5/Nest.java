@@ -1,5 +1,4 @@
 public class Nest implements Part {
-
     private final int anSize;
     private final Quality quality;
     private Part criterion;
@@ -7,22 +6,35 @@ public class Nest implements Part {
     /**
      * @param size sets the recommended ant size in mm for this nest
      */
-    private Nest(int size, String quality) {
+    public Nest(int size, String quality) {
         this.anSize = size;
-        if (!quality.equals("NOTUSABLE")) {
+
+        if (!quality.equals("NOT_USABLE")) {
             quality = "BEGINNER";
         }
-        this.quality = Quality.getQuality(quality);    }
+        this.quality = Quality.getQuality(quality);
+    }
 
     /**
-     * returns an object of type Quality. Most of the time it will be a worst object, but if two parts are not compatible return "NOTUSABLE"
+     * returns an object of type Quality. Most of the time it will be the worst object, but if two parts are not compatible return "NOT_USABLE"
      *
      * @param p P must be != null
      * @return
      */
     @Override
     public Quality rated(Part p) {
-        return null;
+        if(p instanceof Nest) {
+            return Quality.NOT_USABLE;
+        }
+        return quality;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Quality getQuality() {
+        return quality;
     }
 
     /**
@@ -39,12 +51,17 @@ public class Nest implements Part {
      * Rates R based on P set with setCriterion.
      *
      * @return a new Object of R with rated properties.
-     * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(Object)} before calling this method.
+     * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(Part)} before calling this method.
      */
     @Override
     public Quality rated() throws NoCriterionSetException {
-        if(criterion == null) {
+        if (criterion == null) {
             throw new NoCriterionSetException();
         }
-        return null;    }
+        return rated(criterion);
+    }
+
+    public int antSize() {
+        return anSize;
+    }
 }

@@ -14,6 +14,9 @@ public interface Part extends Rated<Part, Quality> {
      * @return
      */
     Quality rated(Part p);
+
+    // TODO: should we add this method??
+    Quality getQuality();
 }
 
 

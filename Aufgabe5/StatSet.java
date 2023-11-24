@@ -39,6 +39,8 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
     }
 
     /**
+     * Adds a criteria to the container.
+     *
      * @param p item to add to container criteria. Must be != null
      */
     @Override

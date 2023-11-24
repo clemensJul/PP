@@ -97,9 +97,9 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         for (X item : items) {
             // todo this check is probably wrong
             // todo error handling needs also to be done
-            if (item.rated().atLeast(average)) {
-                itemsAboveAverage.add(item);
-            }
+//            if (item.rated().atLeast(average)) {
+            itemsAboveAverage.add(item);
+//            }
         }
 
         return new StatSetPartIterator<>(itemsAboveAverage, items);
@@ -114,12 +114,47 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         return new StatSetIterator<>(criteria);
     }
 
+    /**
+     * Two objects of StatSet are equal if all criteria and all items are equal (independent of order)
+     *
+     * @param o Object to compare
+     * @return if this is equal to o
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StatSet<?, ?, ?> statSet = (StatSet<?, ?, ?>) o;
-        return Objects.equals(items, statSet.items) && Objects.equals(criteria, statSet.criteria);
+
+        for (X item : items) {
+            boolean foundItem = false;
+            for (Rated<?, ?> oItem : statSet.items) {
+                if (item == oItem) {
+                    foundItem = true;
+                    break;
+                }
+            }
+
+            if(!foundItem) {
+                return false;
+            }
+        }
+
+        for (P crit : criteria) {
+            boolean foundItem = false;
+            for (Object oCrit : statSet.criteria) {
+                if (crit == oCrit) {
+                    foundItem = true;
+                    break;
+                }
+            }
+
+            if(!foundItem) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

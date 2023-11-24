@@ -13,6 +13,8 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
     }
 
     /**
+     * Adds an item to the container.
+     *
      * @param x item to add to container. Must be != null
      */
     @Override
@@ -26,6 +28,12 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         items.add(x);
     }
 
+    /**
+     * This function increments the value of the map associated by function by one.
+     * If the value does not already exist, it gets added to the map.
+     *
+     * @param function Function to increment, must be != null
+     */
     private void incrementMap(String function) {
         methodCalls.put(function, methodCalls.getOrDefault(function, 0) + 1);
     }
@@ -45,7 +53,9 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
     }
 
     /**
-     * @return
+     * The iterator removes the last returned element retrieved by next from the entries added by {@link #add(Rated)}
+     *
+     * @return an iterator, which returns all entries of the container which where added by {@link #add(Rated)}.
      */
     @Override
     public Iterator<X> iterator() {
@@ -54,9 +64,11 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
     }
 
     /**
-     * @param p
-     * @param r
-     * @return
+     * The iterator removes the last returned element retrieved by next from the entries added by {@link #add(Rated)}
+     *
+     * @param p P
+     * @param r R
+     * @return an iterator, which returns all entries of the container which where added by {@link #add(Rated)} and for which rated(p) is >= than r.
      */
     @Override
     public Iterator<X> iterator(P p, R r) {
@@ -73,8 +85,10 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
     }
 
     /**
-     * @param r
-     * @return
+     * The iterator removes the last returned element retrieved by next from the entries added by {@link #add(Rated)}
+     *
+     * @return an iterator, which returns all entries of the container which where added by {@link #add(Rated)} and for which following condition is met:
+     * The average of x.rated(p) over all criteria in this container is >= r.
      */
     @Override
     public Iterator<X> iterator(R r) {
@@ -106,7 +120,9 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
     }
 
     /**
-     * @return
+     * The iterator removes the last returned element retrieved by next from the entries added by {@link #addCriterion(Object)}
+     *
+     * @return an iterator, which returns all criteria of the container which where added by {@link #addCriterion(Object)}}.
      */
     @Override
     public Iterator<P> criterions() {

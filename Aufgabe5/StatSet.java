@@ -192,6 +192,8 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         return stats.toString();
     }
 
+    // TODO: Kein TODO aber so als frage falls es besser geht. i hab jetzt zwei iteratoren gebraucht, damit das löschen funktioniert
+    // todo man gibt halt bei dem zweiten iterator einfach eine referenz auf die liste zurück, aus der man den eintrag löschen will bei remove
     private class StatSetIterator<InnerX> implements Iterator<InnerX> {
         private final Iterator<InnerX> iterator;
         private final GenericList<InnerX> list;

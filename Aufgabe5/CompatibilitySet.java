@@ -1,5 +1,7 @@
 import java.util.Iterator;
 
+//TODO könnt vielleicht wirklich ein Untertyp von StatSet sein... es ist fast alles gleich.. (vielleicht einfach vererben)
+
 public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> implements RatedSet<X, X, R> {
     GenericList<X> items;
     GenericList<X> criteria;
@@ -191,6 +193,8 @@ public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> 
     }
 
 
+    // TODO: Kein TODO aber so als frage falls es besser geht. i hab jetzt zwei iteratoren gebraucht, damit das löschen funktioniert
+    // todo man gibt halt bei dem zweiten iterator einfach eine referenz auf die liste zurück, aus der man den eintrag löschen will bei remove
     private class CompatibilitySetIterator<InnerX> implements Iterator<InnerX> {
         private final Iterator<InnerX> iterator;
         private final GenericList<InnerX> list;

@@ -1,6 +1,7 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+// todo soll ma die anderen methoden löschen die nicht gebraucht werden?
 public class GenericList<T> implements Iterable<T> {
     private static class Node<T> {
         T data;
@@ -94,7 +95,6 @@ public class GenericList<T> implements Iterable<T> {
         }
         size--;
     }
-
 
     public void set(int index, T item) {
         if (index < 0 || index >= size) {

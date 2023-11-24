@@ -83,6 +83,7 @@ public class Numeric implements DoubleUnaryOperator, Rated<DoubleUnaryOperator, 
      * @param operand the operand
      * @return the operator result
      */
+    // todo da bin i mir auch nit sicher wie man das richtig macht.
     @Override
     public double applyAsDouble(double operand) {
         return this.value + operand;

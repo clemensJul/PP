@@ -1,6 +1,7 @@
 public class GenericMap<K, V> {
     private final GenericList<Entry<K, V>> buckets;
 
+    // todo soll ma die anderen methoden löschen die nicht gebraucht werden?
     public GenericMap() {
         this.buckets = new GenericList<>();
     }

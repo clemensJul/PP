@@ -21,6 +21,7 @@ public class Nest implements Part {
      * @param p P must be != null
      * @return
      */
+    // todo glaubst das passt so?
     @Override
     public Quality rated(Part p) {
         if(p instanceof Nest) {
@@ -61,6 +62,7 @@ public class Nest implements Part {
         return rated(criterion);
     }
 
+    // todo keine ahnung was wir hier berechnen sollen bzw. wie
     public int antSize() {
         return anSize;
     }

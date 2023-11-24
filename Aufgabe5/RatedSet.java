@@ -5,8 +5,6 @@ import java.util.Iterator;
 // R -> Rated (R wie Result)
 
 public interface RatedSet<X extends Rated<? super P, R>, P, R extends Calc<R>> extends Iterable<X> {
-    //TODO do we need an rated method here?
-
     /**
      * Adds an element to the container if it is not already there.
      *

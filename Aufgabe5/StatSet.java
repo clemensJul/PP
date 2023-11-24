@@ -1,9 +1,8 @@
 import java.util.Iterator;
-import java.util.Objects;
 
 public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implements RatedSet<X, P, R> {
-    GenericList<X> items;
-    GenericList<P> criteria;
+    private final GenericList<X> items;
+    private final GenericList<P> criteria;
     private final GenericMap<String, Integer> methodCalls;
 
     public StatSet() {

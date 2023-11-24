@@ -3,8 +3,8 @@ import java.util.Iterator;
 //TODO könnt vielleicht wirklich ein Untertyp von StatSet sein... es ist fast alles gleich.. (vielleicht einfach vererben)
 
 public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> implements RatedSet<X, X, R> {
-    GenericList<X> items;
-    GenericList<X> criteria;
+    private final GenericList<X> items;
+    private final GenericList<X> criteria;
     private final GenericMap<String, Integer> methodCalls;
 
     public CompatibilitySet() {

@@ -1,8 +1,8 @@
 import java.util.function.DoubleUnaryOperator;
 
 public class Numeric implements DoubleUnaryOperator, Rated<DoubleUnaryOperator, Numeric>, Calc<Numeric> {
-    double value;
-    DoubleUnaryOperator criterion;
+    private final double value;
+    private DoubleUnaryOperator criterion;
 
     public Numeric(double value) {
         this.value = value;

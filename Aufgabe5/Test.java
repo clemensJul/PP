@@ -116,6 +116,15 @@ public class Test {
         }
 
         Quality s = Quality.NOT_USABLE;
+
+        {
+            Numeric n1 = new Numeric();
+            Numeric n2 = new Numeric();
+            Numeric n3 = new Numeric();
+            Numeric n4 = new Numeric();
+            Numeric n5 = new Numeric();
+            Numeric n6 = new Numeric();
+        }
     }
 
     // Generische Methode zur Befüllung eines StatSet mit Einträgen

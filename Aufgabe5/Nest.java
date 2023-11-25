@@ -21,13 +21,12 @@ public class Nest implements Part {
      * @param p P must be != null
      * @return
      */
-    // todo glaubst das passt so?
     @Override
     public Quality rated(Part p) {
         if (p instanceof Nest) {
             return Quality.NOT_USABLE;
         }
-        return quality;
+        return this.quality.atLeast(p.getQuality())?p.getQuality():this.getQuality();
     }
 
     /**

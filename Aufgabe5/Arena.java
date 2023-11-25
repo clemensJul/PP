@@ -17,16 +17,17 @@ public class Arena implements Part {
      * @param p P must be != null
      * @return
      */
-    // TODO: berechnung passt so sicher nicht
+    // TODO: berechnung passt so sicher nicht - wieso?
     @Override
     public Quality rated(Part p) {
-        return quality.atLeast(p.getQuality()) ? quality : p.getQuality();
+
+       return this.getQuality().atLeast(p.getQuality())?p.getQuality():this.getQuality();
     }
 
     /**
      * @return
      */
-    // TODO: die funktion hab i selbst ins interface dazugegeben, damit wir in rated irgendwie eine Quality zum vergleichen haben.
+    // TODO: lass mas so, sonst wirds nie fertig
     @Override
     public Quality getQuality() {
         return quality;

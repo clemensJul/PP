@@ -192,22 +192,31 @@ public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> 
         return true;
     }
 
-
-    // TODO: Kein TODO aber so als frage falls es besser geht. i hab jetzt zwei iteratoren gebraucht, damit das löschen funktioniert
-    // todo man gibt halt bei dem zweiten iterator einfach eine referenz auf die liste zurück, aus der man den eintrag löschen will bei remove
+    /**
+     * Iterator for the CompatibilitySet class, iterating through the entire provided list.
+     *
+     * @param <InnerX> The type of elements in the iterator.
+     */
     private class CompatibilitySetIterator<InnerX> implements Iterator<InnerX> {
         private final Iterator<InnerX> iterator;
         private final GenericList<InnerX> list;
 
         private InnerX lastReturned;
 
+        /**
+         * Constructs an iterator for the provided list.
+         *
+         * @param list The list to iterate through.
+         */
         public CompatibilitySetIterator(GenericList<InnerX> list) {
             this.iterator = list.iterator();
             this.list = list;
         }
 
         /**
-         * @return
+         * Checks if there is a next element in the iteration.
+         *
+         * @return True if there is a next element, otherwise false.
          */
         @Override
         public boolean hasNext() {
@@ -216,7 +225,7 @@ public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> 
         }
 
         /**
-         *
+         * Removes the last element returned by the iterator.
          */
         @Override
         public void remove() {
@@ -230,7 +239,9 @@ public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> 
         }
 
         /**
-         * @return
+         * Retrieves the next element in the iteration.
+         *
+         * @return The next element in the iteration.
          */
         @Override
         public InnerX next() {
@@ -240,6 +251,11 @@ public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> 
         }
     }
 
+    /**
+     * Iterator for the CompatibilitySet class, iterating through a specified part of the provided list.
+     *
+     * @param <InnerX> The type of elements in the iterator.
+     */
     private class CompatibilityPartIterator<InnerX> implements Iterator<InnerX> {
         private final Iterator<InnerX> iterator;
         private final GenericList<InnerX> listToIterate;
@@ -247,6 +263,12 @@ public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> 
 
         private InnerX lastReturned;
 
+        /**
+         * Constructs an iterator for a specific part of the provided list.
+         *
+         * @param listToIterate The list to iterate through.
+         * @param sourceList    The source list from which the part is extracted.
+         */
         public CompatibilityPartIterator(GenericList<InnerX> listToIterate, GenericList<InnerX> sourceList) {
             this.listToIterate = listToIterate;
             this.sourceList = sourceList;
@@ -254,7 +276,9 @@ public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> 
         }
 
         /**
-         * @return
+         * Checks if there is a next element in the iteration.
+         *
+         * @return True if there is a next element, otherwise false.
          */
         @Override
         public boolean hasNext() {
@@ -263,7 +287,7 @@ public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> 
         }
 
         /**
-         *
+         * Removes the last element returned by the iterator from both lists.
          */
         @Override
         public void remove() {
@@ -278,7 +302,9 @@ public class CompatibilitySet<X extends Rated<? super X, R>, R extends Calc<R>> 
         }
 
         /**
-         * @return
+         * Retrieves the next element in the iteration.
+         *
+         * @return The next element in the iteration.
          */
         @Override
         public InnerX next() {

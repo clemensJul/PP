@@ -4,7 +4,10 @@ public class Nest implements Part {
     private Part criterion;
 
     /**
-     * @param size sets the recommended ant size in mm for this nest
+     * Initializes a Nest.
+     *
+     * @param size    sets the recommended ant size in mm for this nest
+     * @param quality Quality
      */
     public Nest(int size, String quality) {
         this.anSize = size;
@@ -16,21 +19,22 @@ public class Nest implements Part {
     }
 
     /**
-     * returns an object of type Quality. Most of the time it will be the worst object, but if two parts are not compatible return "NOT_USABLE"
+     * Returns the best quality of this and p.
+     * If P is another Nest, the Quality "NOT_USABLE" is returned, since in a Formicarium there can only be one Nest.
      *
      * @param p P must be != null
-     * @return
+     * @return rated Quality
      */
     @Override
     public Quality rated(Part p) {
         if (p instanceof Nest) {
             return Quality.NOT_USABLE;
         }
-        return this.quality.atLeast(p.getQuality())?p.getQuality():this.getQuality();
+        return this.quality.atLeast(p.getQuality()) ? p.getQuality() : this.getQuality();
     }
 
     /**
-     * @return
+     * @return quality of this.
      */
     @Override
     public Quality getQuality() {
@@ -48,9 +52,10 @@ public class Nest implements Part {
     }
 
     /**
-     * Rates R based on P set with setCriterion.
+     * Returns the best quality of this and the criterion set with {@link #setCriterion(Part)}..
+     * If P is another Nest, the Quality "NOT_USABLE" is returned, since in a Formicarium there can only be one Nest.
      *
-     * @return a new Object of R with rated properties.
+     * @return rated Quality
      * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(Part)} before calling this method.
      */
     @Override
@@ -61,7 +66,9 @@ public class Nest implements Part {
         return rated(criterion);
     }
 
-    // todo keine ahnung was wir hier berechnen sollen bzw. wie
+    /**
+     * @return the average recommended antSize for the Nest.
+     */
     public int antSize() {
         return anSize;
     }

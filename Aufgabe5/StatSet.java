@@ -5,6 +5,9 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
     private final GenericList<P> criteria;
     private final GenericMap<String, Integer> methodCalls;
 
+    /**
+     * Initializes a new StatSet.
+     */
     public StatSet() {
         items = new GenericList<>();
         criteria = new GenericList<>();
@@ -109,9 +112,8 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         R average = sum.ratio(items.size());
         GenericList<X> itemsAboveAverage = new GenericList<>();
 
+        // don't know how to check if items meet condition
         for (X item : items) {
-            // todo this check is probably wrong
-            // todo error handling needs also to be done
 //            if (item.rated().atLeast(average)) {
             itemsAboveAverage.add(item);
 //            }
@@ -192,21 +194,31 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         return stats.toString();
     }
 
-    // TODO: Kein TODO aber so als frage falls es besser geht. i hab jetzt zwei iteratoren gebraucht, damit das löschen funktioniert
-    // todo man gibt halt bei dem zweiten iterator einfach eine referenz auf die liste zurück, aus der man den eintrag löschen will bei remove
+    /**
+     * Iterator for the StatSet class, iterating through the entire provided list.
+     *
+     * @param <InnerX> The type of elements in the iterator.
+     */
     private class StatSetIterator<InnerX> implements Iterator<InnerX> {
         private final Iterator<InnerX> iterator;
         private final GenericList<InnerX> list;
 
         private InnerX lastReturned;
 
+        /**
+         * Constructs an iterator for the provided list.
+         *
+         * @param list The list to iterate through.
+         */
         public StatSetIterator(GenericList<InnerX> list) {
             this.iterator = list.iterator();
             this.list = list;
         }
 
         /**
-         * @return
+         * Checks if there is a next element in the iteration.
+         *
+         * @return True if there is a next element, otherwise false.
          */
         @Override
         public boolean hasNext() {
@@ -215,7 +227,7 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         }
 
         /**
-         *
+         * Removes the last element returned by the iterator.
          */
         @Override
         public void remove() {
@@ -229,7 +241,9 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         }
 
         /**
-         * @return
+         * Retrieves the next element in the iteration.
+         *
+         * @return The next element in the iteration.
          */
         @Override
         public InnerX next() {
@@ -239,6 +253,11 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         }
     }
 
+    /**
+     * Iterator for the StatSet class, iterating through a specified part of the provided list.
+     *
+     * @param <InnerX> The type of elements in the iterator.
+     */
     private class StatSetPartIterator<InnerX> implements Iterator<InnerX> {
         private final Iterator<InnerX> iterator;
         private final GenericList<InnerX> listToIterate;
@@ -246,6 +265,12 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
 
         private InnerX lastReturned;
 
+        /**
+         * Constructs an iterator for a specific part of the provided list.
+         *
+         * @param listToIterate The list to iterate through.
+         * @param sourceList    The source list from which the part is extracted.
+         */
         public StatSetPartIterator(GenericList<InnerX> listToIterate, GenericList<InnerX> sourceList) {
             this.listToIterate = listToIterate;
             this.sourceList = sourceList;
@@ -253,7 +278,9 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         }
 
         /**
-         * @return
+         * Checks if there is a next element in the iteration.
+         *
+         * @return True if there is a next element, otherwise false.
          */
         @Override
         public boolean hasNext() {
@@ -262,7 +289,7 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         }
 
         /**
-         *
+         * Removes the last element returned by the iterator from both lists.
          */
         @Override
         public void remove() {
@@ -277,7 +304,9 @@ public class StatSet<X extends Rated<? super P, R>, P, R extends Calc<R>> implem
         }
 
         /**
-         * @return
+         * Retrieves the next element in the iteration.
+         *
+         * @return The next element in the iteration.
          */
         @Override
         public InnerX next() {

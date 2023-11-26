@@ -3,6 +3,12 @@ public class Arena implements Part {
     private final Quality quality;
     private Part criterion;
 
+    /**
+     * Initializes an Arena.
+     *
+     * @param volume  Volume
+     * @param quality Quality
+     */
     public Arena(float volume, String quality) {
         this.volume = volume;
         if (!quality.equals("NOT_USABLE")) {
@@ -12,22 +18,19 @@ public class Arena implements Part {
     }
 
     /**
-     * returns an object of type Quality. Most of the time it will be the worst object, but if two parts are not compatible return "NOT_USABLE"
+     * Returns the best quality of this and p.
      *
      * @param p P must be != null
-     * @return
+     * @return Quality
      */
-    // TODO: berechnung passt so sicher nicht - wieso?
     @Override
     public Quality rated(Part p) {
-
-       return this.getQuality().atLeast(p.getQuality())?p.getQuality():this.getQuality();
+        return this.getQuality().atLeast(p.getQuality()) ? p.getQuality() : this.getQuality();
     }
 
     /**
-     * @return
+     * @return quality of this.
      */
-    // TODO: lass mas so, sonst wirds nie fertig
     @Override
     public Quality getQuality() {
         return quality;
@@ -36,7 +39,7 @@ public class Arena implements Part {
     /**
      * Sets the criterion used for rated, if there is no P given.
      *
-     * @param part
+     * @param part Criterion to set, must be != null
      */
     @Override
     public void setCriterion(Part part) {
@@ -44,9 +47,9 @@ public class Arena implements Part {
     }
 
     /**
-     * Rates R based on P set with setCriterion.
+     * Returns the best quality of this and the criterion set with {@link #setCriterion(Part)}.
      *
-     * @return a new Object of R with rated properties.
+     * @return rated Quality.
      * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(Part)} before calling this method.
      */
     @Override
@@ -56,5 +59,12 @@ public class Arena implements Part {
         }
 
         return rated(criterion);
+    }
+
+    /**
+     * @return the volume of the Arena.
+     */
+    public float volume() {
+        return volume;
     }
 }

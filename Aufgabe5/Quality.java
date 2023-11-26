@@ -64,10 +64,10 @@ public class Quality implements Calc<Quality> {
     }
 
     /**
-     * returns the worst quality
+     * Returns the worse quality of this and add
      *
-     * @param add must not be null
-     * @return
+     * @param add Quality to compare
+     * @return this if quality was greater than add. Otherwise add is returned.
      */
     @Override
     public Quality sum(Quality add) {
@@ -75,10 +75,10 @@ public class Quality implements Calc<Quality> {
     }
 
     /**
-     * returns itself without looking at the parameter
+     * Returns itself without looking at the parameter
      *
-     * @param ratio must not be null
-     * @return
+     * @param ratio Ratio, parameter has no effect
+     * @return this
      */
     @Override
     public Quality ratio(int ratio) {
@@ -86,16 +86,17 @@ public class Quality implements Calc<Quality> {
     }
 
     /**
-     * returns if this is at least as good as compareTo
-     *
-     * @param compareTo must not be null
-     * @return
+     * @param compareTo Quality to compare, must be != null
+     * @return true, if this is at least as good as compareTo
      */
     @Override
     public boolean atLeast(Quality compareTo) {
         return this.quality >= compareTo.quality;
     }
 
+    /**
+     * @return String representation of Quality.
+     */
     @Override
     public String toString() {
         return "the quality is " + EQuality.values()[quality].toString();

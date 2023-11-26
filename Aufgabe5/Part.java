@@ -8,14 +8,16 @@ public interface Part extends Rated<Part, Quality> {
     String toString();
 
     /**
-     * returns an object of type Quality. Most of the time it will be a worst object, but if two parts are not compatible return "NOTUSABLE"
+     * Returns an object of type Quality. Most of the time it will be the worst object, but if two parts are not compatible return "NOTUSABLE"
      *
      * @param p P must be != null
-     * @return
+     * @return rated Quality
      */
     Quality rated(Part p);
 
-    // TODO: should we add this method??
+    /**
+     * @return the Quality of the object
+     */
     Quality getQuality();
 }
 

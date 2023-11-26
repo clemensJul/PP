@@ -4,6 +4,11 @@ public class Numeric implements DoubleUnaryOperator, Rated<DoubleUnaryOperator, 
     private final double value;
     private DoubleUnaryOperator criterion;
 
+    /**
+     * Initializes a Numeric
+     *
+     * @param value value
+     */
     public Numeric(double value) {
         this.value = value;
     }
@@ -12,7 +17,7 @@ public class Numeric implements DoubleUnaryOperator, Rated<DoubleUnaryOperator, 
      * Returns the sum of two this and the object in add
      *
      * @param add must not be null
-     * @return is never null
+     * @return new Numeric object with sum of value of this and value of add.
      */
     @Override
     public Numeric sum(Numeric add) {
@@ -31,10 +36,8 @@ public class Numeric implements DoubleUnaryOperator, Rated<DoubleUnaryOperator, 
     }
 
     /**
-     * returns boolean TRUE if @this is bigger or equal to
-     *
-     * @param compareTo must not be null
-     * @return always returns true or false
+     * @param compareTo Numeric object to compare to, must be != null
+     * @return true if value of this >= value of compareTo
      */
     @Override
     public boolean atLeast(Numeric compareTo) {
@@ -42,7 +45,7 @@ public class Numeric implements DoubleUnaryOperator, Rated<DoubleUnaryOperator, 
     }
 
     /**
-     * @param doubleUnaryOperator doubleUnaryOperator must be != null
+     * @param doubleUnaryOperator doubleUnaryOperator, must be != null
      * @return a new Object of R with rated properties.
      */
     @Override
@@ -52,7 +55,7 @@ public class Numeric implements DoubleUnaryOperator, Rated<DoubleUnaryOperator, 
     }
 
     /**
-     * Sets the criterion used for rated, if there is no P given.
+     * Sets the criterion used for rated.
      *
      * @param doubleUnaryOperator criterion to set
      */
@@ -62,9 +65,9 @@ public class Numeric implements DoubleUnaryOperator, Rated<DoubleUnaryOperator, 
     }
 
     /**
-     * Rates R based on P set with setCriterion.
+     * Rates this based on the criterion set with {@link #setCriterion(DoubleUnaryOperator)}.
      *
-     * @return a new Object of R with rated properties.
+     * @return new Numeric with rated value.
      * @throws NoCriterionSetException if the criterion was not set with {@link #setCriterion(DoubleUnaryOperator)} before calling this method.
      */
     @Override
@@ -83,7 +86,6 @@ public class Numeric implements DoubleUnaryOperator, Rated<DoubleUnaryOperator, 
      * @param operand the operand
      * @return the operator result
      */
-    // todo da bin i mir auch nit sicher wie man das richtig macht.
     @Override
     public double applyAsDouble(double operand) {
         return this.value + operand;

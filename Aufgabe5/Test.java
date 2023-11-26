@@ -1,5 +1,5 @@
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.function.DoubleUnaryOperator;
 
 public class Test {
     public static void main(String[] args) {
@@ -18,8 +18,30 @@ public class Test {
         CompatibilitySet<Arena, Quality> aq = new CompatibilitySet<>();
         CompatibilitySet<Nest, Quality> nq = new CompatibilitySet<>();
 
-//        fillStatSet(nnn);
+        StatSet<Part, Nest, Quality> a = pnq;
+        StatSet<Part, Part, Quality> b = ppq;
+        StatSet<Arena, Nest, Quality> c = anq;
 
+        // add items to c
+        c.add(new Arena(129, "SEMIPRO"));
+        c.add(new Arena(3, "BEGINNER"));
+        c.add(new Arena(129, "SEMIPRO"));
+        c.addCriterion(new Nest(3, "PRO"));
+        c.addCriterion(new Nest(30, "BEGINNER"));
+
+        for (Iterator<Arena> iterator = c.iterator(); iterator.hasNext(); ) {
+            Arena p = iterator.next();
+            p.volume();
+            a.add(p);
+            b.addCriterion(p);
+        }
+
+        for (Iterator<Nest> iterator = c.criterions(); iterator.hasNext(); ) {
+            Nest p = iterator.next();
+            p.antSize();
+            a.add(p);
+            b.addCriterion(p);
+        }
 
         {
             System.out.println("test adding values to StatSet items");
@@ -98,6 +120,17 @@ public class Test {
             }
             testValue(counter, 0);
 
+            System.out.println("test StatSet check if removed value can be added again");
+            nnn.add(numeric1);
+            nnn.add(new Numeric(-23));
+            counter = 0;
+            for (Iterator<Numeric> it = nnn.iterator(); it.hasNext(); ) {
+                it.next();
+                counter++;
+            }
+            testValue(counter, 2);
+
+
             System.out.println("test StatSet criterions iterator remove method");
             counter = 3;
             for (Iterator<Numeric> it = nnn.criterions(); it.hasNext(); ) {
@@ -112,34 +145,56 @@ public class Test {
                 counter++;
             }
             testValue(counter, 0);
-
-        }
-    }
-
-    // Generische Methode zur Befüllung eines StatSet mit Einträgen
-    public static <A extends Rated<? super B, C>, B, C extends Calc<C>> void fillStatSet(StatSet<A, B, C> set) {
-        ArrayList<A> poolForA = new ArrayList<>();
-        ArrayList<B> poolForB = new ArrayList<>();
-        ArrayList<C> poolForC = new ArrayList<>();
-
-        poolForC.add((C) Quality.NOT_USABLE);
-        poolForC.add((C) Quality.BEGINNER);
-        poolForC.add((C) Quality.SEMIPRO);
-        poolForC.add((C) Quality.PRO);
-
-        for (int i = 0; i < 10; i++) {
-            poolForA.add((A) new Numeric(Math.floor(Math.random() * 100)));
-            poolForA.add((A) new Arena((float) Math.floor(Math.random() * 100), Quality.getQuality((int) Math.floor(Math.random() * 4)).toString()));
-            poolForA.add((A) new Nest((int) Math.floor(Math.random() * 100), Quality.getQuality((int) Math.floor(Math.random() * 4)).toString()));
-            poolForB.add((B) new Numeric(Math.floor(Math.random() * 100)));
-            poolForB.add((B) new Arena((float) Math.floor(Math.random() * 100), Quality.getQuality((int) Math.floor(Math.random() * 4)).toString()));
-            poolForB.add((B) new Nest((int) Math.floor(Math.random() * 100), Quality.getQuality((int) Math.floor(Math.random() * 4)).toString()));
-            poolForC.add((C) new Numeric(Math.floor(Math.random() * 100)));
         }
 
-        for (int i = 0; i < 10; i++) {
-            set.add(poolForA.get((int) Math.floor(Math.random() * poolForA.size())));
-            set.addCriterion(poolForB.get((int) Math.floor(Math.random() * poolForA.size())));
+        {
+            System.out.println("Test numerics");
+            // Erstelle einige Numeric-Objekte
+            Numeric num1 = new Numeric(5);
+            Numeric num2 = new Numeric(10);
+
+            // Teste die Summenbildung
+            Numeric sum = num1.sum(num2);
+            testValue(sum.getValue(), 15);
+
+            // Teste die Ratioberechnung
+            Numeric ratio = num2.ratio(2);
+            testValue(ratio.getValue(), 5);
+
+            // Teste die atLeast-Methode
+            boolean isAtLeast = num2.atLeast(num1);
+            testValue(isAtLeast, true);
+
+            // Teste rated ohne parameter (x sollte quadriert werden)
+            num1.setCriterion(x -> x * x);
+            try {
+                Numeric ratedNum = num1.rated();
+                testValue(ratedNum.getValue(), 25);
+            } catch (NoCriterionSetException ignored) {
+            }
+
+            // Teste rated mit parameter (x nur mehr die hälfte sein)
+            testValue(num1.rated(x -> x / 2).getValue(), 2.5);
+
+            // Noch ein lambda ausdruck, der alles unter 10 auf 0 setzt
+            DoubleUnaryOperator floorIfSmallerThanTen = x -> {
+                if (x < 10) {
+                    return 0;
+                }
+                return x;
+            };
+            testValue(num1.rated(floorIfSmallerThanTen).getValue(), 0);
+            testValue(num2.rated(floorIfSmallerThanTen).getValue(), 10);
+
+            // lambda-ausdruck, der einfach um 1 erhöht
+            testValue(num2.rated(x -> x + 1).getValue(), 11);
+
+            // lambda-ausdruck, der das Vorzeichen umkehrt
+            testValue(num1.rated(x -> x * (-1)).getValue(), -5);
+
+            // Teste die applyAsDouble-Methode
+            double result = num1.applyAsDouble(3);
+            testValue(result, 8);
         }
     }
 
@@ -168,6 +223,14 @@ public class Test {
         }
     }
 
+    public static void testValue(double given, double expected) {
+        if (given == expected) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
+        }
+    }
+
     public static void testValue(int given, int expected) {
         if (given == expected) {
             System.out.println("Successful test");
@@ -176,3 +239,9 @@ public class Test {
         }
     }
 }
+
+
+// Arbeitsaufteilung:
+// Raphael: Generische Map/Liste, StatSet, CompatibilitySet, Testcases
+// Clemens: Nest, Arena, Quality, Exception
+// Gemeinsam: Erarbeiten und (Re)Faktorisieren der Generizität

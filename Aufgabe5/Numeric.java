@@ -90,4 +90,11 @@ public class Numeric implements DoubleUnaryOperator, Rated<DoubleUnaryOperator, 
     public double applyAsDouble(double operand) {
         return this.value + operand;
     }
+
+    /**
+     * @return value of this
+     */
+    public double getValue() {
+        return value;
+    }
 }

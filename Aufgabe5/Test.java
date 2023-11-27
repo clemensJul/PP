@@ -18,6 +18,45 @@ public class Test {
         CompatibilitySet<Arena, Quality> aq = new CompatibilitySet<>();
         CompatibilitySet<Nest, Quality> nq = new CompatibilitySet<>();
 
+        // add some items to sets
+        Numeric numeric = new Numeric(12);
+        Nest nest = new Nest(23, "BEGINNER");
+        Arena arena = new Arena(100, "BEGINNER");
+        apq.add(arena);
+        apq.addCriterion(nest);
+        apq.addCriterion(arena);
+
+        npq.add(nest);
+        npq.addCriterion(nest);
+        npq.addCriterion(arena);
+        npq.addCriterion(new Nest(12, "PRO"));
+
+        paq.add(nest);
+        paq.addCriterion(arena);
+
+        aaq.add(arena);
+        aaq.addCriterion(new Arena(120, "SEMIPRO"));
+        aaq.addCriterion(arena);
+        aaq.addCriterion(new Arena(50, "BEGINNER"));
+
+        naq.add(nest);
+        naq.addCriterion(arena);
+
+        nnq.add(nest);
+        nnq.addCriterion(nest);
+
+        nn.add(new Numeric(0));
+        nn.addCriterion(numeric);
+
+        pq.add(arena);
+        pq.add(nest);
+
+        aq.add(arena);
+        aq.addCriterion(arena);
+
+        nq.add(nest);
+        nq.addCriterion(nest);
+
         StatSet<Part, Nest, Quality> a = pnq;
         StatSet<Part, Part, Quality> b = ppq;
         StatSet<Arena, Nest, Quality> c = anq;

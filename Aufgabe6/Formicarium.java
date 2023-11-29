@@ -5,12 +5,20 @@ public class Formicarium {
     private String antSpecies;
 
     @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            preconditions = "Name must not be null",
+            postconditions = "Returns a new Formicarium"
+    )
     public Formicarium(String name, String antSpecies) {
         this.name = name;
         this.antSpecies = antSpecies;
     }
 
     @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            preconditions = "Name must not be null",
+            postconditions = "Returns a new Formicarium"
+    )
     public void addNest(Nest nest) {
         nests.add(nest);
     }

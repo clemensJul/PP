@@ -15,6 +15,7 @@ public class Test {
 //        Class[] classes = new Class[]{Formicarium.class};
         Class[] classes = new Class[]{CodedBy.class, Entity.class, Formicarium.class, Institute.class, Nest.class, NestArrayList.class, SignatureAndAssertions.class, Test.class};
         HashMap<String, AnnotationObject> infos = new HashMap<>();
+        HashMap<String, ClassAnnotationObject> assertionsPerClass = new HashMap<>();
 
         for (Class aClass : classes) {
             List<AccessibleObject> members = new ArrayList<>();
@@ -34,11 +35,7 @@ public class Test {
                             continue;
                         }
 
-                        AnnotationObject info = infos.get(responsiblePerson);
-                        if (info == null) {
-                            info = new AnnotationObject();
-                            infos.put(responsiblePerson, info);
-                        }
+                        AnnotationObject info = infos.computeIfAbsent(responsiblePerson, k -> new AnnotationObject());
 
                         // if member is constructor, add to constructor stats
                         if(member instanceof Constructor<?>) {
@@ -55,8 +52,11 @@ public class Test {
                         }
                     }
 
-                    if (annotation instanceof SignatureAndAssertions) {
+                    if (annotation instanceof SignatureAndAssertions signatureAndAssertions) {
                         wroteAssertion = true;
+
+                        ClassAnnotationObject classAnnotationObject = assertionsPerClass.computeIfAbsent(aClass.getName(), k -> new ClassAnnotationObject());
+                        classAnnotationObject.getAssertionsPerMethod().put(member.toString(), signatureAndAssertions);
                     }
                 }
 
@@ -64,29 +64,6 @@ public class Test {
                     infos.get(responsiblePerson).increaseAssertions();
                 }
             }
-
-//            Constructor[] constructors = aClass.getDeclaredConstructors();
-//            for (Constructor constructor : constructors) {
-//                // read all annotations from method
-//                for (Annotation annotation : constructor.getDeclaredAnnotations()) {
-//                    // check for different cases
-//                    if (annotation instanceof CodedBy codedBy) {
-//                        if (aClass.isInterface() || aClass.isAnnotation()) {
-//                            continue;
-//                        }
-//
-//                        String name = codedBy.value();
-//                        AnnotationObject info = infos.get(name);
-//                        if (info == null) {
-//                            info = new AnnotationObject();
-//                            infos.put(name, info);
-//                        }
-//
-//                        // get the amount of methods per class
-//
-//                    }
-//                }
-//            }
 
             Annotation[] declaredAnnotation = aClass.getDeclaredAnnotations();
             for (Annotation annotation : declaredAnnotation) {
@@ -129,6 +106,21 @@ public class Test {
 
             result.append("wrote ").append(value.getAssertions()).append(" assertions");
             result.append("\n\n");
+        });
+
+        result.append("Zusicherungen:\n");
+
+        assertionsPerClass.forEach((key, value) -> {
+            result.append("---------------------------------------------------------\n");
+            result.append(key).append("\n\n");
+
+            value.getAssertionsPerMethod().forEach((key1, value1) -> {
+                result.append(key1).append("\n");
+                result.append("Preconiditions: ").append(value1.preconditions()).append("\n");
+                result.append("Postconditions: ").append(value1.postconditions()).append("\n");
+                result.append("Invariants: ").append(value1.invariants()).append("\n");
+                result.append("History-Constraints: ").append(value1.historyConstrains()).append("\n\n");
+            });
         });
 
 

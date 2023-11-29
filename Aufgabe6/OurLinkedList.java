@@ -4,22 +4,22 @@ import java.util.NoSuchElementException;
 /**
  * A generic linked list implementation.
  */
-public class NestArrayList implements Iterable<Nest> {
+public class OurLinkedList implements Iterable {
 
     /**
      * Node class for holding data and references in the list.
      */
     private static class Node {
-        Nest nest;
+        Object data;
         Node next;
 
         /**
          * Node constructor.
          *
-         * @param nest the data to be stored in the node
+         * @param data the data to be stored in the node
          */
-        Node(Nest nest) {
-            this.nest = nest;
+        Node(Object data) {
+            this.data = data;
         }
     }
 
@@ -29,7 +29,7 @@ public class NestArrayList implements Iterable<Nest> {
     /**
      * Constructs an empty GenericList.
      */
-    public NestArrayList() {
+    public OurLinkedList() {
         this.head = null;
         this.size = 0;
     }
@@ -39,7 +39,7 @@ public class NestArrayList implements Iterable<Nest> {
      *
      * @param item the item to add
      */
-    public void add(Nest item) {
+    public void add(Object item) {
         Node newNode = new Node(item);
         if (head == null) {
             head = newNode;
@@ -59,10 +59,10 @@ public class NestArrayList implements Iterable<Nest> {
      * @param item the item to check for
      * @return true if the item is found, false otherwise
      */
-    public boolean contains(Nest item) {
+    public boolean contains(Object item) {
         Node current = head;
         while (current != null) {
-            if (current.nest.equals(item)) {
+            if (current.data.equals(item)) {
                 return true;
             }
             current = current.next;
@@ -76,7 +76,7 @@ public class NestArrayList implements Iterable<Nest> {
      * @param index the index of the item to retrieve
      * @return the item at the specified index, or null if the index is out of bounds
      */
-    public Nest get(int index) {
+    public Object get(int index) {
         if (index < 0 || index >= size) {
             return null;
         }
@@ -85,7 +85,7 @@ public class NestArrayList implements Iterable<Nest> {
         for (int i = 0; i < index; i++) {
             current = current.next;
         }
-        return current.nest;
+        return current.data;
     }
 
     /**
@@ -94,12 +94,12 @@ public class NestArrayList implements Iterable<Nest> {
      * @param item the item to remove
      * @return true if the item was removed, false if the item was not found
      */
-    public boolean remove(Nest item) {
+    public boolean remove(Object item) {
         Node current = head;
         Node prev = null;
 
         while (current != null) {
-            if (current.nest.equals(item)) {
+            if (current.data.equals(item)) {
                 if (prev == null) {
                     head = current.next;
                 } else {
@@ -145,7 +145,7 @@ public class NestArrayList implements Iterable<Nest> {
      * @param item  the new item value
      * @throws IndexOutOfBoundsException if the index is out of bounds
      */
-    public void set(int index, Nest item) throws IndexOutOfBoundsException {
+    public void set(int index, Object item) throws IndexOutOfBoundsException {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
@@ -153,7 +153,7 @@ public class NestArrayList implements Iterable<Nest> {
         for (int i = 0; i < index; i++) {
             current = current.next;
         }
-        current.nest = item;
+        current.data = item;
     }
 
     /**
@@ -171,8 +171,8 @@ public class NestArrayList implements Iterable<Nest> {
      * @return an iterator
      */
     @Override
-    public Iterator<Nest> iterator() {
-        return new Iterator<>() {
+    public Iterator iterator() {
+        return new Iterator() {
             Node current = head;
             Node prev = null;
             boolean lastReturned = false;
@@ -192,12 +192,12 @@ public class NestArrayList implements Iterable<Nest> {
              * @throws NoSuchElementException if there are no more elements
              */
             @Override
-            public Nest next() throws NoSuchElementException {
+            public Object next() throws NoSuchElementException {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
                 lastReturned = true;
-                Nest data = current.nest;
+                Object data = current.data;
                 prev = current;
                 current = current.next;
                 return data;

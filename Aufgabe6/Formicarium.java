@@ -1,6 +1,6 @@
 @CodedBy("Raphael")
 public class Formicarium {
-    NestArrayList nests = new NestArrayList();
+    OurLinkedList nests = new OurLinkedList();
     private final String name;
     private String antSpecies;
 
@@ -47,8 +47,8 @@ public class Formicarium {
     @CodedBy("Raphael")
     public double averageNestVolume() {
         double sum = 0;
-        for (Nest nest : nests) {
-            sum += nest.getVolume();
+        for (Object nest : nests) {
+            sum += ((Nest)nest).getVolume();
         }
 
         return sum / nests.size();

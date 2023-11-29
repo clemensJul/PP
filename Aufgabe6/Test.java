@@ -1,5 +1,7 @@
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,13 +9,15 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args) {
+
+
         System.out.println(getAnnotationEvaluation());
     }
 
     private static String getAnnotationEvaluation() {
         StringBuilder result = new StringBuilder();
 //        Class[] classes = new Class[]{Formicarium.class};
-        Class[] classes = new Class[]{CodedBy.class, Entity.class, Formicarium.class, Institute.class, Nest.class, NestArrayList.class, SignatureAndAssertions.class, Test.class};
+        Class[] classes = new Class[]{CodedBy.class, Formicarium.class, Institute.class, Nest.class, SignatureAndAssertions.class, Test.class, OurLinkedList.class};
         HashMap<String, AnnotationObject> infos = new HashMap<>();
         HashMap<String, ClassAnnotationObject> assertionsPerClass = new HashMap<>();
 
@@ -38,13 +42,13 @@ public class Test {
                         AnnotationObject info = infos.computeIfAbsent(responsiblePerson, k -> new AnnotationObject());
 
                         // if member is constructor, add to constructor stats
-                        if(member instanceof Constructor<?>) {
+                        if (member instanceof Constructor<?>) {
                             HashMap<String, Integer> constructorsInClass = info.getConstructorsInClass();
                             int newValue = constructorsInClass.getOrDefault(aClass.getName(), 0) + 1;
                             constructorsInClass.put(aClass.getName(), newValue);
                         }
 
-                        if(member instanceof Method) {
+                        if (member instanceof Method) {
                             // get the amount of methods per class
                             HashMap<String, Integer> methodsInClass = info.getMethodsInClass();
                             int newValue = methodsInClass.getOrDefault(aClass.getName(), 0) + 1;
@@ -60,7 +64,7 @@ public class Test {
                     }
                 }
 
-                if(!responsiblePerson.isEmpty() && wroteAssertion) {
+                if (!responsiblePerson.isEmpty() && wroteAssertion) {
                     infos.get(responsiblePerson).increaseAssertions();
                 }
             }
@@ -87,7 +91,7 @@ public class Test {
                 result.append(key1).append(":\t").append(value1).append(" method(s)");
             });
 
-            if(!value.getMethodsInClass().isEmpty()) {
+            if (!value.getMethodsInClass().isEmpty()) {
                 result.append("\n");
             }
 
@@ -95,7 +99,7 @@ public class Test {
                 result.append(key1).append(":\t").append(value1).append(" constructor(s)");
             });
 
-            if(!value.getConstructorsInClass().isEmpty()) {
+            if (!value.getConstructorsInClass().isEmpty()) {
                 result.append("\n");
             }
 
@@ -109,20 +113,31 @@ public class Test {
         });
 
         result.append("Zusicherungen:\n");
-
         assertionsPerClass.forEach((key, value) -> {
             result.append("---------------------------------------------------------\n");
             result.append(key).append("\n\n");
 
             value.getAssertionsPerMethod().forEach((key1, value1) -> {
                 result.append(key1).append("\n");
-                result.append("Preconiditions: ").append(value1.preconditions()).append("\n");
-                result.append("Postconditions: ").append(value1.postconditions()).append("\n");
-                result.append("Invariants: ").append(value1.invariants()).append("\n");
-                result.append("History-Constraints: ").append(value1.historyConstrains()).append("\n\n");
+                if (!value1.preconditions().isEmpty()) {
+                    result.append("Preconiditions: ").append(value1.preconditions()).append("\n");
+                }
+
+                if (!value1.postconditions().isEmpty()) {
+                    result.append("Postconditions: ").append(value1.postconditions()).append("\n");
+                }
+
+                if (!value1.invariants().isEmpty()) {
+                    result.append("Invariants: ").append(value1.invariants()).append("\n");
+                }
+
+                if (!value1.historyConstrains().isEmpty()) {
+                    result.append("History-Constraints: ").append(value1.historyConstrains()).append("\n");
+                }
+
+                result.append("\n");
             });
         });
-
 
         return result.toString();
     }

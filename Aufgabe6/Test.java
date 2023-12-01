@@ -1,3 +1,4 @@
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
@@ -9,6 +10,18 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args) {
+        {
+            Institute inst1 = new Institute("Ants Int");
+            Formicarium first = new Formicarium("first","magnae");
+            Formicarium second = new Formicarium("second","magnae");
+
+
+
+            Institute inst2 = new Institute("Big Ants corp");
+            Institute inst3 = new Institute("Ants ants Ants");
+
+
+        }
 
 
         System.out.println(getAnnotationEvaluation());
@@ -17,7 +30,23 @@ public class Test {
     private static String getAnnotationEvaluation() {
         StringBuilder result = new StringBuilder();
 //        Class[] classes = new Class[]{Formicarium.class};
-        Class[] classes = new Class[]{CodedBy.class, Formicarium.class, Institute.class, Nest.class, SignatureAndAssertions.class, Test.class, OurLinkedList.class};
+        //Class[] classes = new Class[]{CodedBy.class, Formicarium.class, Institute.class, Nest.class, SignatureAndAssertions.class, Test.class, OurLinkedList.class};
+        //TODO: :)
+        File[] files = new File("Aufgabe6").listFiles();
+        Class[] classes = Arrays.stream(files)
+                .filter(f -> f.isFile() && f.getName().endsWith(".java"))
+                .map(f -> {
+                    try {
+                        // Convert file name to class name and load the class
+                        String className = f.getName().replace(".java", "");
+                        return Class.forName(className);
+                    } catch (ClassNotFoundException e) {
+                        return null;
+                    }
+                })
+                .toArray(Class[]::new);
+
+
         HashMap<String, AnnotationObject> infos = new HashMap<>();
         HashMap<String, ClassAnnotationObject> assertionsPerClass = new HashMap<>();
 
@@ -140,5 +169,46 @@ public class Test {
         });
 
         return result.toString();
+    }
+
+    public static void testIdentity(Object given, Object expected) {
+        if (given == expected) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
+        }
+    }
+
+    public static void testEquals(Object given, Object expected) {
+        if (given.equals(expected)) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected.toString() + " / Given " +
+                    "value: " + given.toString());
+        }
+    }
+
+    public static void testValue(boolean given, boolean expected) {
+        if (given == expected) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
+        }
+    }
+
+    public static void testValue(double given, double expected) {
+        if (given == expected) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
+        }
+    }
+
+    public static void testValue(int given, int expected) {
+        if (given == expected) {
+            System.out.println("Successful test");
+        } else {
+            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
+        }
     }
 }

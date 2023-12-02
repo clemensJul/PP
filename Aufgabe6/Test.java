@@ -29,20 +29,14 @@ public class Test {
 
     private static String getAnnotationEvaluation() {
         StringBuilder result = new StringBuilder();
-//        Class[] classes = new Class[]{Formicarium.class};
-        //Class[] classes = new Class[]{CodedBy.class, Formicarium.class, Institute.class, Nest.class, SignatureAndAssertions.class, Test.class, OurLinkedList.class};
-        //TODO: :)
         String currentDirectory = System.getProperty("user.dir");
-        System.out.println(currentDirectory);
         File[] files = new File(currentDirectory).listFiles();
-        String currentPath = new File("").getAbsolutePath();
-        System.out.println(currentPath);
 
         if(files == null) {
             return "";
         }
 
-        Class[] classes = Arrays.stream(files)
+        Class <?>[] classes = Arrays.stream(files)
                 .filter(f -> f.isFile() && f.getName().endsWith(".java"))
                 .map(f -> {
                     try {
@@ -59,7 +53,7 @@ public class Test {
         HashMap<String, AnnotationObject> infos = new HashMap<>();
         HashMap<String, ClassAnnotationObject> assertionsPerClass = new HashMap<>();
 
-        for (Class aClass : classes) {
+        for (Class<?> aClass : classes) {
             List<AccessibleObject> members = new ArrayList<>();
             members.addAll(Arrays.asList(aClass.getMethods()));
             members.addAll(Arrays.asList(aClass.getConstructors()));

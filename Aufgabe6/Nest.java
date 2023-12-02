@@ -3,12 +3,11 @@
         historyConstrains = "material muss not be null"
 )
 public abstract class Nest {
-
     private static int id_counter = 0;
-    private float depth;
-    private float height;
-    private float width;
-    private int id;
+    private final float depth;
+    private final float height;
+    private final float width;
+    private final int id;
     private NestInteriorMaterial material;
 
     public Nest(float height, float width, NestInteriorMaterial material) {
@@ -19,6 +18,7 @@ public abstract class Nest {
         this.id = id_counter++;
         this.depth = 2f;
     }
+
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             preconditions = "material is a subtype of NestInteriorMaterial",
@@ -35,6 +35,7 @@ public abstract class Nest {
     public float getVolume(){
         return this.depth * this.height * this.width;
     }
+
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "returns height of nest"
@@ -42,6 +43,7 @@ public abstract class Nest {
     public float getHeight() {
         return height;
     }
+
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "returns width of nest"
@@ -79,6 +81,7 @@ public abstract class Nest {
             return sandClay.getHeight();
         } return 0f;
     }
+
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "returns width of nest substrate"

@@ -4,21 +4,21 @@ import java.util.NoSuchElementException;
 /**
  * A generic linked list implementation.
  */
+@CodedBy("Raphael")
+@SignatureAndAssertions(
+
+)
 public class OurLinkedList implements Iterable {
-
-
-    /**
-     * Node class for holding data and references in the list.
-     */
+    @CodedBy("Raphael")
     private static class Node {
         Object data;
         Node next;
 
-        /**
-         * Node constructor.
-         *
-         * @param data the data to be stored in the node
-         */
+
+        @CodedBy("Raphael")
+        @SignatureAndAssertions(
+                postconditions = "Initializes a new Node object"
+        )
         Node(Object data) {
             this.data = data;
         }
@@ -27,19 +27,19 @@ public class OurLinkedList implements Iterable {
     private Node head;
     private int size;
 
-    /**
-     * Constructs an empty GenericList.
-     */
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Initializes a new OurLinkedList object"
+    )
     public OurLinkedList() {
         this.head = null;
         this.size = 0;
     }
 
-    /**
-     * Adds an item to the end of the list.
-     *
-     * @param item the item to add
-     */
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Adds an item to the end of the list"
+    )
     public void add(Object item) {
         Node newNode = new Node(item);
         if (head == null) {
@@ -54,29 +54,10 @@ public class OurLinkedList implements Iterable {
         size++;
     }
 
-    /**
-     * Checks if the list contains a specific item.
-     *
-     * @param item the item to check for
-     * @return true if the item is found, false otherwise
-     */
-    public boolean contains(Object item) {
-        Node current = head;
-        while (current != null) {
-            if (current.data.equals(item)) {
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    /**
-     * Retrieves an item at a specified index.
-     *
-     * @param index the index of the item to retrieve
-     * @return the item at the specified index, or null if the index is out of bounds
-     */
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "the item at the specified index, or null if the index is out of bounds"
+    )
     public Object get(int index) {
         if (index < 0 || index >= size) {
             return null;
@@ -89,12 +70,10 @@ public class OurLinkedList implements Iterable {
         return current.data;
     }
 
-    /**
-     * Removes the first occurrence of a specified item from the list.
-     *
-     * @param item the item to remove
-     * @return true if the item was removed, false if the item was not found
-     */
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Removes the first occurrence of a specified item from the lis. Returns true if the item was removed, false if the item was not found"
+    )
     public boolean remove(Object item) {
         Node current = head;
         Node prev = null;

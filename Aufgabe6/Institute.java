@@ -16,6 +16,10 @@ public class Institute {
         formicariums.add(formicarium);
     }
 
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Removes the formicarium from the list if it is in here."
+    )
     public void remove(Formicarium formicarium) {
         formicariums.remove(formicarium);
     }

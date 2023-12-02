@@ -1,6 +1,6 @@
 import java.util.HashMap;
 
-@CodedBy("Raphael")
+@CodedBy("Clemens")
 public class Formicarium {
     OurLinkedList nests = new OurLinkedList();
     private final String name;
@@ -32,6 +32,10 @@ public class Formicarium {
     }
 
     @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            preconditions = "Nest must be != null",
+            postconditions = "Removes the nest from the list if it is in here"
+    )
     public void removeNest(Nest nest) {
         nests.remove(nest);
     }
@@ -53,7 +57,10 @@ public class Formicarium {
 
     // statistical calculations
     @CodedBy("Raphael")
-    public double averageNestVolume() {
+    @SignatureAndAssertions(
+            postconditions = "returns the average volume of the all nests - throws an exception if no such element is found"
+    )
+    public double averageNestVolume() throws ArithmeticException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
@@ -64,6 +71,7 @@ public class Formicarium {
         return sum / counter;
     }
 
+    @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "returns the average volume of the moist nests - throws an exception if no such element is found"
     )
@@ -79,11 +87,12 @@ public class Formicarium {
         if (counter == 0) throw new ArithmeticException("can not divide by zero");
         return sum / counter;
     }
+
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "returns the average volume of the moist nests - throws an exception if no such element is found"
     )
-    public double averageMoistNestVolume() {
+    public double averageMoistNestVolume() throws ArithmeticException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
@@ -92,14 +101,15 @@ public class Formicarium {
                 sum += moistNest.getVolume();
             }
         }
-        if (sum == 0) return 0;
+        if (counter == 0) throw new ArithmeticException("can not divide by zero");
         return sum / counter;
     }
+
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "returns the average power of the heated nests - throws an exception if no such element is found"
     )
-    public int averagePower() {
+    public int averagePower() throws ArithmeticException{
         int sum = 0;
         int counter = 0;
         for (Object nest : nests) {
@@ -111,11 +121,12 @@ public class Formicarium {
         if (counter == 0) throw new ArithmeticException("can not divide by zero");
         return sum / counter;
     }
+
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "returns the average volume of the moist nests water tanks - throws an exception if no such element is found"
     )
-    public double averageWatertankVolumen() {
+    public double averageWatertankVolumen() throws ArithmeticException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
@@ -127,12 +138,12 @@ public class Formicarium {
         if (counter == 0) throw new ArithmeticException("can not divide by zero");
         return sum / counter;
     }
+
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "returns the average weight of the sand clay substrates - throws an exception if no such element is found"
     )
-    //TODO: vllt machen ma statt ner list ne hashmap?
-    public double averageWeightSandClay(Statistic statistic) {
+    public double averageWeightSandClay(Statistic statistic) throws ArithmeticException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
@@ -156,7 +167,7 @@ public class Formicarium {
                 }
                 case BOTH -> {
                     counter++;
-                    sum += ((Nest)nest).getSubstrateWeight();
+                    sum += casted.getSubstrateWeight();
                 }
             }
         }

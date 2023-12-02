@@ -33,6 +33,7 @@ public class Test {
         //Class[] classes = new Class[]{CodedBy.class, Formicarium.class, Institute.class, Nest.class, SignatureAndAssertions.class, Test.class, OurLinkedList.class};
         //TODO: :)
         String currentDirectory = System.getProperty("user.dir");
+        System.out.println(currentDirectory);
         File[] files = new File(currentDirectory).listFiles();
         Class[] classes = Arrays.stream(files)
                 .filter(f -> f.isFile() && f.getName().endsWith(".java"))

@@ -55,17 +55,19 @@ public class Formicarium {
     @CodedBy("Raphael")
     public double averageNestVolume() {
         double sum = 0;
+        int counter = 0;
         for (Object nest : nests) {
             sum += ((Nest)nest).getVolume();
+            counter++;
         }
-        if (sum == 0) return 0;
-        return sum / nests.size();
+        if (counter == 0) throw new ArithmeticException("can not divide by zero");
+        return sum / counter;
     }
 
     @SignatureAndAssertions(
-            postconditions = "returns the average volume of the moist nests"
+            postconditions = "returns the average volume of the moist nests - throws an exception if no such element is found"
     )
-    public double averageHeatedNestVolume() {
+    public double averageHeatedNestVolume() throws ArithmeticException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
@@ -74,12 +76,12 @@ public class Formicarium {
                 sum += heatedNest.getVolume();
             }
         }
-        if (sum == 0) return 0;
+        if (counter == 0) throw new ArithmeticException("can not divide by zero");
         return sum / counter;
     }
     @CodedBy("Clemens")
     @SignatureAndAssertions(
-            postconditions = "returns the average volume of the moist nests"
+            postconditions = "returns the average volume of the moist nests - throws an exception if no such element is found"
     )
     public double averageMoistNestVolume() {
         double sum = 0;
@@ -95,7 +97,7 @@ public class Formicarium {
     }
     @CodedBy("Clemens")
     @SignatureAndAssertions(
-            postconditions = "returns the average power of the heated nests"
+            postconditions = "returns the average power of the heated nests - throws an exception if no such element is found"
     )
     public int averagePower() {
         int sum = 0;
@@ -106,12 +108,12 @@ public class Formicarium {
                 sum += heatedNest.getPower();
             }
         }
-        if (sum == 0) return 0;
+        if (counter == 0) throw new ArithmeticException("can not divide by zero");
         return sum / counter;
     }
     @CodedBy("Clemens")
     @SignatureAndAssertions(
-            postconditions = "returns the average volume of the moist nests water tanks"
+            postconditions = "returns the average volume of the moist nests water tanks - throws an exception if no such element is found"
     )
     public double averageWatertankVolumen() {
         double sum = 0;
@@ -122,32 +124,34 @@ public class Formicarium {
                 sum += moistNest.getWaterTankVolume();
             }
         }
-        if (sum == 0) return 0;
+        if (counter == 0) throw new ArithmeticException("can not divide by zero");
         return sum / counter;
     }
     @CodedBy("Clemens")
     @SignatureAndAssertions(
-            postconditions = "returns the average weight of the sand clay substrates"
+            postconditions = "returns the average weight of the sand clay substrates - throws an exception if no such element is found"
     )
     //TODO: vllt machen ma statt ner list ne hashmap?
     public double averageWeightSandClay(Statistic statistic) {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
-
-            //TODO: missing conditional for substrate type - but this methode seems so explicid - is there a better way?
+            Nest casted = (Nest)nest;
+            if (!(casted.getMaterial() instanceof SandClay)){
+                continue;
+            }
             switch (statistic) {
                 case HEATED -> {
 
                     if (nest instanceof HeatedNest){
                         counter++;
-                        sum += ((Nest)nest).getSubstrateWeight();
+                        sum += casted.getSubstrateWeight();
                     }
                 }
                 case MOIST -> {
                     if (nest instanceof MoistNest){
                         counter++;
-                        sum += ((Nest)nest).getSubstrateWeight();
+                        sum += casted.getSubstrateWeight();
                     }
                 }
                 case BOTH -> {
@@ -155,11 +159,44 @@ public class Formicarium {
                     sum += ((Nest)nest).getSubstrateWeight();
                 }
             }
-
         }
-        if (sum == 0) return 0;
+        if (counter == 0) throw new ArithmeticException("can not divide by zero");
         return sum / counter;
     }
-    @CodedBy("Raphael")
-    private static class Test {}
+
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            postconditions = "returns the average weight of the sand clay substrates - throws an exception if no such element is found"
+    )
+    public double averageVolumeGlassConcrete(Statistic statistic) throws ArithmeticException {
+        double sum = 0;
+        int counter = 0;
+        for (Object nest : nests) {
+            Nest casted = (Nest)nest;
+            if (!(casted.getMaterial() instanceof GlassConcrete)){
+                continue;
+            }
+            switch (statistic) {
+                case HEATED -> {
+
+                    if (nest instanceof HeatedNest){
+                        counter++;
+                        sum += casted.getSubstrateHeight()* casted.getSubstrateWidth()* casted.getDepth();
+                    }
+                }
+                case MOIST -> {
+                    if (nest instanceof MoistNest){
+                        counter++;
+                        sum += casted.getSubstrateHeight()* casted.getSubstrateWidth()* casted.getDepth();;
+                    }
+                }
+                case BOTH -> {
+                    counter++;
+                    sum += casted.getSubstrateHeight()* casted.getSubstrateWidth()* casted.getDepth();;
+                }
+            }
+        }
+        if (counter == 0) throw new ArithmeticException("can not divide by zero");
+        return sum / counter;
+    }
 }

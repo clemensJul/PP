@@ -115,12 +115,11 @@ public class OurLinkedList implements Iterable {
         return false;
     }
 
-    /**
-     * Removes an item at the specified index.
-     *
-     * @param index the index of the item to remove
-     * @throws IndexOutOfBoundsException if the index is out of bounds
-     */
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            preconditions =  "index must be smaller than the list size",
+            postconditions = "removes item at specified index - throws IndexOutOfBoundsException"
+    )
     public void removeAt(int index) throws IndexOutOfBoundsException {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index out of bounds");
@@ -139,13 +138,11 @@ public class OurLinkedList implements Iterable {
         size--;
     }
 
-    /**
-     * Sets the item at the specified index to a new value.
-     *
-     * @param index the index of the item to set
-     * @param item  the new item value
-     * @throws IndexOutOfBoundsException if the index is out of bounds
-     */
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            preconditions =  "index must be smaller than the list size",
+            postconditions = "sets object into list - throws IndexOutOfBoundsException"
+    )
     public void set(int index, Object item) throws IndexOutOfBoundsException {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index out of bounds");
@@ -157,20 +154,18 @@ public class OurLinkedList implements Iterable {
         current.data = item;
     }
 
-    /**
-     * Returns the size of the list.
-     *
-     * @return the size of the list
-     */
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Returns the size of the list."
+    )
     public int size() {
         return size;
     }
 
-    /**
-     * Returns an iterator over the elements in the list.
-     *
-     * @return an iterator
-     */
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "returns an iterator over the elements in the list."
+    )
     @Override
     public Iterator iterator() {
         return new Iterator() {
@@ -178,20 +173,19 @@ public class OurLinkedList implements Iterable {
             Node prev = null;
             boolean lastReturned = false;
 
-            /**
-             * Checks if the iterator has a next element.
-             * @return true if there is a next element, false otherwise
-             */
+            @CodedBy("Raphael")
+            @SignatureAndAssertions(
+                    postconditions = "Checks if the iterator has a next element"
+            )
             @Override
             public boolean hasNext() {
                 return current != null;
             }
 
-            /**
-             * Retrieves the next element in the iteration.
-             * @return the next element
-             * @throws NoSuchElementException if there are no more elements
-             */
+            @CodedBy("Raphael")
+            @SignatureAndAssertions(
+                    postconditions = "retrieves the next element n the iteration - throws new NoSuchElementException"
+            )
             @Override
             public Object next() throws NoSuchElementException {
                 if (!hasNext()) {
@@ -204,10 +198,10 @@ public class OurLinkedList implements Iterable {
                 return data;
             }
 
-            /**
-             * Removes the last returned element from the list.
-             * @throws IllegalStateException if next() has not been called
-             */
+            @CodedBy("Raphael")
+            @SignatureAndAssertions(
+                    postconditions = "removes last returned element from the list - throws new illegalStateException"
+            )
             @Override
             public void remove() {
                 if (!lastReturned) {

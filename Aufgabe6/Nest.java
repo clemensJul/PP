@@ -50,6 +50,15 @@ public abstract class Nest {
         return width;
     }
 
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            postconditions = "returns depth" +
+                    " of nest"
+    )
+    public float getDepth() {
+        return depth;
+    }
+
     //TODO: hab lang rumprobiert, auch mit den multimethoden aber die gehn halt nid wirklich bei verschiedenen return types
     @CodedBy("Clemens")
     @SignatureAndAssertions(
@@ -78,5 +87,13 @@ public abstract class Nest {
         if (material instanceof GlassConcrete sandClay){
             return sandClay.getWidth();
         } return 0f;
+    }
+
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            postconditions = "returns substrate of nest"
+    )
+    public NestInteriorMaterial getMaterial() {
+        return material;
     }
 }

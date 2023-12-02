@@ -35,6 +35,8 @@ public class Test {
         String currentDirectory = System.getProperty("user.dir");
         System.out.println(currentDirectory);
         File[] files = new File(currentDirectory).listFiles();
+        String currentPath = new File("").getAbsolutePath();
+        System.out.println(currentPath);
         Class[] classes = Arrays.stream(files)
                 .filter(f -> f.isFile() && f.getName().endsWith(".java"))
                 .map(f -> {

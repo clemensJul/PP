@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE_USE, ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR})
 @CodedBy("Raphael")
 public @interface SignatureAndAssertions {
+    String description() default "";
     String preconditions() default "";
     String postconditions() default "";
     String invariants() default "";

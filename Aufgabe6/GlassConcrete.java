@@ -45,4 +45,13 @@ public class GlassConcrete implements NestInteriorMaterial{
         if (this.width == 0) throw new NoProperitytSetException("no width set");
         return width;
     }
+
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Returns a string representation of this GlassConcrete"
+    )
+    @Override
+    public String toString() {
+        return "GlassConcrete";
+    }
 }

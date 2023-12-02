@@ -74,16 +74,34 @@ public class Formicarium {
     }
 
     @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Return the antSpecies of the Formicarium"
+    )
     public String getAntSpecies() {
         return antSpecies;
     }
 
     @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Return the name of the Formicarium"
+    )
+    public String getName() {
+        return name;
+    }
+
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            preconditions = "antSpecies must != null",
+            postconditions = "Sets the ant species of the Formicarium"
+    )
     public void setAntSpecies(String antSpecies) {
         this.antSpecies = antSpecies;
     }
 
     @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Sets the ant species to an empty string"
+    )
     public void deleteAntSpecies() {
         this.antSpecies = "";
     }
@@ -143,7 +161,7 @@ public class Formicarium {
     @SignatureAndAssertions(
             postconditions = "returns the average volume of the moist nests water tanks - throws an exception if no such element is found"
     )
-    public double averageWatertankVolumen() throws ArithmeticException {
+    public double averageWatertankVolume() throws ArithmeticException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
@@ -171,7 +189,6 @@ public class Formicarium {
             }
             switch (statistic) {
                 case HEATED -> {
-
                     if (nest instanceof HeatedNest){
                         counter++;
                         sum += casted.getSubstrateWeight();
@@ -208,7 +225,6 @@ public class Formicarium {
             }
             switch (statistic) {
                 case HEATED -> {
-
                     if (nest instanceof HeatedNest){
                         counter++;
                         sum += casted.getSubstrateHeight()* casted.getSubstrateWidth()* casted.getDepth();

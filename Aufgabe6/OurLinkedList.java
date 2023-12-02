@@ -56,6 +56,21 @@ public class OurLinkedList implements Iterable {
 
     @CodedBy("Raphael")
     @SignatureAndAssertions(
+            postconditions = "Returns true, if the item is in the list."
+    )
+    public boolean contains(Object item) {
+        Node current = head;
+        while(current != null) {
+            if(current.data.equals(item)) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
             postconditions = "the item at the specified index, or null if the index is out of bounds"
     )
     public Object get(int index) {
@@ -68,6 +83,19 @@ public class OurLinkedList implements Iterable {
             current = current.next;
         }
         return current.data;
+    }
+
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            postconditions = "the item at the specified index, or null if the index is out of bounds"
+    )
+    public Object get(Object item) {
+        Node current = head;
+        for (int i = 0; i < this.size; i++) {
+            if (current.data.equals(item)) return current.data;
+            current = current.next;
+        }
+        return null;
     }
 
     @CodedBy("Raphael")

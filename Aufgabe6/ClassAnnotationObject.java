@@ -2,7 +2,7 @@ import java.util.HashMap;
 
 @CodedBy("Raphael")
 @SignatureAndAssertions(
-        postconditions = "returns a HashMap of a histogram of the users methods in class"
+        description = "returns a HashMap of a histogram of the users methods in class"
 )
 public class ClassAnnotationObject {
     private final HashMap<String, SignatureAndAssertions> assertionsPerMethod = new HashMap<>();

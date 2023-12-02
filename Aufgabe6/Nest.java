@@ -11,12 +11,19 @@ public abstract class Nest {
     private final float height;
     private final float width;
     private final int id;
-    private NestInteriorMaterial material;
+    private SandClay sandClay;
+    private GlassConcrete glassConcrete;
 
-    public Nest(float height, float width, NestInteriorMaterial material) {
+    public Nest(float height, float width, NestInteriorMaterial material){
         this.height = height;
         this.width = width;
-        this.material = material;
+        if (material instanceof SandClay sandClay) {
+            this.sandClay = sandClay;
+        }
+
+        if (material instanceof GlassConcrete glassConcrete) {
+            this.glassConcrete = glassConcrete;
+        }
 
         this.id = id_counter++;
         this.depth = 2f;
@@ -28,7 +35,15 @@ public abstract class Nest {
             postconditions = "material of nest is changed to parameter"
     )
     public void changeInteriorMaterial(NestInteriorMaterial material){
-        this.material = material;
+        if (material instanceof SandClay sandClay) {
+            this.sandClay = sandClay;
+            this.glassConcrete = null;
+        }
+
+        if (material instanceof GlassConcrete glassConcrete) {
+            this.glassConcrete = glassConcrete;
+            this.sandClay = null;
+        }
     }
 
     @CodedBy("Clemens")
@@ -70,7 +85,7 @@ public abstract class Nest {
             postconditions = "returns weight of nest substrate"
     )
     public float getSubstrateWeight() throws NoProperitytSetException {
-        if (material instanceof SandClay sandClay){
+        if (sandClay != null){
             return sandClay.getWeight();
         } return 0f;
     }
@@ -80,8 +95,8 @@ public abstract class Nest {
             postconditions = "returns height of nest substrate"
     )
     public float getSubstrateHeight() throws NoProperitytSetException {
-        if (material instanceof GlassConcrete sandClay){
-            return sandClay.getHeight();
+        if (glassConcrete != null){
+            return glassConcrete.getHeight();
         } return 0f;
     }
 
@@ -90,8 +105,8 @@ public abstract class Nest {
             postconditions = "returns width of nest substrate"
     )
     public float getSubstrateWidth() throws NoProperitytSetException {
-        if (material instanceof GlassConcrete sandClay){
-            return sandClay.getWidth();
+        if (glassConcrete != null){
+            return glassConcrete.getWidth();
         } return 0f;
     }
 
@@ -100,7 +115,10 @@ public abstract class Nest {
             postconditions = "returns substrate of nest"
     )
     public NestInteriorMaterial getMaterial() {
-        return material;
+        if(sandClay == null) {
+            return glassConcrete;
+        }
+        return sandClay;
     }
 
     @Override
@@ -126,8 +144,25 @@ public abstract class Nest {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("ID: ").append(id).append("\tMaterial: ").append(material.toString());
+        result.append("ID: ").append(id).append("\tMaterial: ").append(glassConcrete ==null? sandClay.toString() : glassConcrete.toString());
 
         return result.toString();
+    }
+
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            preconditions = "two parameters can only be used if the material is glass concrete",
+            historyConstrains = "can only be called once per material"
+    )
+    public void placeProperty(float height, float width) throws AlreadySetException {
+        if (glassConcrete != null) glassConcrete.placeDimensions(height,width);
+    }
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            preconditions = "one parameter can only be used if the material is sandClay",
+            historyConstrains = "can only be called once per material"
+    )
+    public void placeProperty(float weight) throws AlreadySetException {
+        if (glassConcrete != null) sandClay.fillSandClay(weight);
     }
 }

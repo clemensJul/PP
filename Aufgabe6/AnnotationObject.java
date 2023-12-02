@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 @CodedBy("Raphael")
 @SignatureAndAssertions(
-    invariants = "An AnnotationObject describes the statistics of an User"
+    description = "An AnnotationObject describes the statistics of an User"
 )
 public class AnnotationObject {
     private final HashMap<String, Integer> methodsInClass = new HashMap<>();

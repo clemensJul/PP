@@ -1,7 +1,8 @@
 @CodedBy("Clemens")
 @SignatureAndAssertions(
         historyConstrains = "",
-        invariants = ""
+        invariants = "",
+        description = "type of nest that stores it's power"
 )
 public class HeatedNest extends Nest{
 

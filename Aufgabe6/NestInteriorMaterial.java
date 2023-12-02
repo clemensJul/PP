@@ -1,7 +1,8 @@
 @CodedBy("Clemens")
 @SignatureAndAssertions(
         historyConstrains = "",
-        invariants = ""
+        invariants = "",
+        description = "interface for nest interior materials"
 )
 public interface NestInteriorMaterial {
 

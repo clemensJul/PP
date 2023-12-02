@@ -1,8 +1,9 @@
-import java.util.HashMap;
-
 @CodedBy("Clemens")
+@SignatureAndAssertions(
+        description = "Formicarium object that can store multiple nests and calculate statistics of them"
+)
 public class Formicarium {
-    OurLinkedList nests = new OurLinkedList();
+    private OurLinkedList nests;
     private final String name;
     private String antSpecies;
 
@@ -20,6 +21,7 @@ public class Formicarium {
     public Formicarium(String name, String antSpecies) {
         this.name = name;
         this.antSpecies = antSpecies;
+        this.nests = new OurLinkedList();
     }
 
     @CodedBy("Raphael")
@@ -28,7 +30,30 @@ public class Formicarium {
             postconditions = "Returns a new Formicarium"
     )
     public void addNest(Nest nest) {
-        nests.add(nest);
+        if (!(nests.contains(nest))) nests.add(nest);
+    }
+
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            postconditions = "if nest is not in Institute return null"
+    )
+    public Nest getNest(Nest nest) {
+        return (Nest) (nests.get(nest));
+    }
+
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "returns Nest if id is contained"
+    )
+    public Nest getById(int id) {
+        for(Object item : nests) {
+            Nest nest = (Nest) item;
+
+            if(nest.getId() == id) {
+                return nest;
+            }
+        }
+        return null;
     }
 
     @CodedBy("Raphael")
@@ -38,6 +63,14 @@ public class Formicarium {
     )
     public void removeNest(Nest nest) {
         nests.remove(nest);
+    }
+
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            postconditions = "returns list of nests"
+    )
+    public OurLinkedList getNests(){
+        return nests;
     }
 
     @CodedBy("Raphael")
@@ -58,47 +91,31 @@ public class Formicarium {
     // statistical calculations
     @CodedBy("Raphael")
     @SignatureAndAssertions(
+            preconditions = "specify from what type of nest you need data using the Statistics enum",
             postconditions = "returns the average volume of the all nests - throws an exception if no such element is found"
     )
-    public double averageNestVolume() throws ArithmeticException {
+    public double averageNestVolume(Statistic statistic) throws ArithmeticException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
-            sum += ((Nest)nest).getVolume();
-            counter++;
-        }
-        if (counter == 0) throw new ArithmeticException("can not divide by zero");
-        return sum / counter;
-    }
-
-    @CodedBy("Clemens")
-    @SignatureAndAssertions(
-            postconditions = "returns the average volume of the moist nests - throws an exception if no such element is found"
-    )
-    public double averageHeatedNestVolume() throws ArithmeticException {
-        double sum = 0;
-        int counter = 0;
-        for (Object nest : nests) {
-            if(nest instanceof HeatedNest heatedNest) {
-                counter++;
-                sum += heatedNest.getVolume();
-            }
-        }
-        if (counter == 0) throw new ArithmeticException("can not divide by zero");
-        return sum / counter;
-    }
-
-    @CodedBy("Clemens")
-    @SignatureAndAssertions(
-            postconditions = "returns the average volume of the moist nests - throws an exception if no such element is found"
-    )
-    public double averageMoistNestVolume() throws ArithmeticException {
-        double sum = 0;
-        int counter = 0;
-        for (Object nest : nests) {
-            if(nest instanceof MoistNest moistNest) {
-                counter++;
-                sum += moistNest.getVolume();
+            Nest casted = (Nest)nest;
+            switch (statistic) {
+                case HEATED -> {
+                    if (nest instanceof HeatedNest){
+                        counter++;
+                        sum += casted.getVolume();
+                    }
+                }
+                case MOIST -> {
+                    if (nest instanceof MoistNest){
+                        counter++;
+                        sum += casted.getVolume();
+                    }
+                }
+                case BOTH -> {
+                    counter++;
+                    sum += casted.getVolume();
+                }
             }
         }
         if (counter == 0) throw new ArithmeticException("can not divide by zero");
@@ -141,9 +158,10 @@ public class Formicarium {
 
     @CodedBy("Clemens")
     @SignatureAndAssertions(
+            preconditions = "specify from what type of nest you need data using the Statistics enum",
             postconditions = "returns the average weight of the sand clay substrates - throws an exception if no such element is found"
     )
-    public double averageWeightSandClay(Statistic statistic) throws ArithmeticException {
+    public double averageWeightSandClay(Statistic statistic) throws ArithmeticException, NoProperitytSetException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
@@ -177,9 +195,10 @@ public class Formicarium {
 
     @CodedBy("Clemens")
     @SignatureAndAssertions(
+            preconditions = "specify from what type of nest you need data using the Statistics enum",
             postconditions = "returns the average weight of the sand clay substrates - throws an exception if no such element is found"
     )
-    public double averageVolumeGlassConcrete(Statistic statistic) throws ArithmeticException {
+    public double averageVolumeGlassConcrete(Statistic statistic) throws ArithmeticException, NoProperitytSetException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
@@ -209,5 +228,88 @@ public class Formicarium {
         }
         if (counter == 0) throw new ArithmeticException("can not divide by zero");
         return sum / counter;
+    }
+
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            postconditions = "Returns true if the obj to compare is an instance of Formicarium and has the same name."
+    )
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Formicarium that = (Formicarium) o;
+        return this.name.equals(that.name);
+    }
+
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Returns a string representation of this Formicarium"
+    )
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("Name: ").append(name).append("\n");
+        result.append("AntSpecies: ").append(antSpecies).append("\n");
+
+        result.append("Statistics:\n");
+        try {
+            result.append("AverageNestVolume MOIST:\t").append(averageNestVolume(Statistic.MOIST)).append("\n");
+        }
+        catch (ArithmeticException ignored){}
+
+        try {
+            result.append("AverageNestVolume HEATED:\t").append(averageNestVolume(Statistic.HEATED)).append("\n");
+        }
+        catch (ArithmeticException ignored){}
+
+        try {
+            result.append("AverageNestVolume BOTH:\t").append(averageNestVolume(Statistic.BOTH)).append("\n");
+        }
+        catch (ArithmeticException ignored){}
+
+        try {
+            result.append("averageVolumeGlassConcrete MOIST:\t").append(averageVolumeGlassConcrete(Statistic.MOIST)).append("\n");
+        }
+        catch (Exception ignored){}
+
+        try {
+            result.append("averageVolumeGlassConcrete HEATED:\t").append(averageVolumeGlassConcrete(Statistic.HEATED)).append("\n");
+        }
+        catch (Exception ignored){}
+
+        try {
+            result.append("averageVolumeGlassConcrete BOTH:\t").append(averageVolumeGlassConcrete(Statistic.BOTH)).append("\n");
+        }
+        catch (Exception ignored){}
+
+        try {
+            result.append("averageWeightSandClay MOIST:\t").append(averageWeightSandClay(Statistic.MOIST)).append("\n");
+        }
+        catch (Exception ignored){}
+
+        try {
+            result.append("averageWeightSandClay HEATED:\t").append(averageWeightSandClay(Statistic.HEATED)).append("\n");
+        }
+        catch (Exception ignored){}
+
+        try {
+            result.append("averageWeightSandClay BOTH:\t").append(averageWeightSandClay(Statistic.BOTH)).append("\n");
+        }
+        catch (Exception ignored){}
+
+        try {
+            result.append("averagePower:\t").append(averagePower()).append("\n");
+        }
+        catch (ArithmeticException ignored){}
+        try {
+            result.append("averageWatertankVolume:\t").append(averageWatertankVolume()).append("\n");
+        }
+        catch (ArithmeticException ignored){}
+
+        result.append("Formicariums:\n");
+        nests.forEach(nest -> result.append(nest.toString()).append("\n"));
+
+        return result.toString();
     }
 }

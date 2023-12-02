@@ -13,7 +13,16 @@ public class Institute {
             historyConstrains = "only for testing"
     )
     public void add(Formicarium formicarium) {
-        formicariums.add(formicarium);
+        if(!(formicariums.contains(formicarium))) {
+            formicariums.add(formicarium);
+        }
+    }
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            postconditions = "returns every formicarium in the institute - used for testing"
+    )
+    public OurLinkedList getFormicariums() {
+        return formicariums;
     }
 
     @CodedBy("Raphael")

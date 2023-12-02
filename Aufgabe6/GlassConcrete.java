@@ -1,7 +1,8 @@
 @CodedBy("Clemens")
 @SignatureAndAssertions(
         historyConstrains = "height and width can only be set once",
-        invariants = ""
+        invariants = "",
+        description = "Substrate type that can be put into a nest"
 )
 public class GlassConcrete implements NestInteriorMaterial{
     private float height = 0;
@@ -16,7 +17,9 @@ public class GlassConcrete implements NestInteriorMaterial{
             historyConstrains = "placeDimensions must be called first",
             postconditions = "returns volume of water tank"
     )
-    public float getHeight() {
+    public float getHeight() throws NoProperitytSetException {
+
+        if (this.height == 0) throw new NoProperitytSetException("no height set");
         return height;
     }
 
@@ -38,7 +41,8 @@ public class GlassConcrete implements NestInteriorMaterial{
             historyConstrains = "placeDimensions must be called first",
             postconditions = "returns volume of water tank"
     )
-    public float getWidth() {
+    public float getWidth() throws NoProperitytSetException {
+        if (this.width == 0) throw new NoProperitytSetException("no width set");
         return width;
     }
 }

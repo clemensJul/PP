@@ -32,7 +32,7 @@ public class Test {
 //        Class[] classes = new Class[]{Formicarium.class};
         //Class[] classes = new Class[]{CodedBy.class, Formicarium.class, Institute.class, Nest.class, SignatureAndAssertions.class, Test.class, OurLinkedList.class};
         //TODO: :)
-        File[] files = new File(".").listFiles();
+        File[] files = new File("./Aufgabe6").listFiles();
         Class[] classes = Arrays.stream(files)
                 .filter(f -> f.isFile() && f.getName().endsWith(".java"))
                 .map(f -> {

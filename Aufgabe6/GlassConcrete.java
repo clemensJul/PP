@@ -12,9 +12,9 @@ public class GlassConcrete implements NestInteriorMaterial {
             historyConstraints = "placeDimensions must be called first",
             postconditions = "returns volume of water tank"
     )
-    public float getHeight() throws NoProperitytSetException {
+    public float getHeight() throws NoPropertytSetException {
         if (this.concreteHeight == 0) {
-            throw new NoProperitytSetException("no height set");
+            throw new NoPropertytSetException("no height set");
         }
         return concreteHeight;
     }
@@ -38,9 +38,9 @@ public class GlassConcrete implements NestInteriorMaterial {
             historyConstraints = "placeDimensions must be called first",
             postconditions = "returns volume of water tank"
     )
-    public float getWidth() throws NoProperitytSetException {
+    public float getWidth() throws NoPropertytSetException {
         if (this.concreteWidth == 0) {
-            throw new NoProperitytSetException("no width set");
+            throw new NoPropertytSetException("no width set");
         }
         return concreteWidth;
     }

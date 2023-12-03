@@ -84,7 +84,7 @@ public abstract class Nest {
     @SignatureAndAssertions(
             postconditions = "returns weight of nest substrate"
     )
-    public float getSubstrateWeight() throws NoProperitytSetException {
+    public float getSubstrateWeight() throws NoPropertytSetException {
         if (sandClay != null) {
             return sandClay.getWeight();
         }
@@ -95,7 +95,7 @@ public abstract class Nest {
     @SignatureAndAssertions(
             postconditions = "returns height of nest substrate"
     )
-    public float getSubstrateHeight() throws NoProperitytSetException {
+    public float getSubstrateHeight() throws NoPropertytSetException {
         if (glassConcrete != null) {
             return glassConcrete.getHeight();
         }
@@ -106,7 +106,7 @@ public abstract class Nest {
     @SignatureAndAssertions(
             postconditions = "returns width of nest substrate"
     )
-    public float getSubstrateWidth() throws NoProperitytSetException {
+    public float getSubstrateWidth() throws NoPropertytSetException {
         if (glassConcrete != null) {
             return glassConcrete.getWidth();
         }

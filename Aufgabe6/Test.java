@@ -44,7 +44,7 @@ public class Test {
             try {
                 inst1.getByName("first").averageWeightSandClay(Formicarium.Statistic.BOTH);
                 System.out.println("Failed test");
-            } catch (NoProperitytSetException e) {
+            } catch (NoPropertytSetException e) {
                 System.out.println("Successful test");
             }
             GlassConcrete glassConcrete = (GlassConcrete) inst1.getByName("first").getById(1).getMaterial();
@@ -200,7 +200,7 @@ public class Test {
                         double averageGlasConcreteVolume = formicarium.averageVolumeGlassConcrete(Formicarium.Statistic.BOTH);
                         double averageGlasConcreteVolume2 = formicarium.averageVolumeGlassConcrete(Formicarium.Statistic.MOIST) / 2 + formicarium.averageVolumeGlassConcrete(Formicarium.Statistic.HEATED) / 2;
                         testEquals(averageGlasConcreteVolume, averageGlasConcreteVolume2);
-                    } catch (NoProperitytSetException e) {
+                    } catch (NoPropertytSetException e) {
                         System.out.println("Failed test");
                     }
                     try {
@@ -208,7 +208,7 @@ public class Test {
                         double averageWeightSandClay = formicarium.averageWeightSandClay(Formicarium.Statistic.BOTH);
                         double averageWeightSandClay2 = formicarium.averageWeightSandClay(Formicarium.Statistic.MOIST) / 2 + formicarium.averageWeightSandClay(Formicarium.Statistic.HEATED) / 2;
                         testEquals(averageWeightSandClay, averageWeightSandClay2);
-                    } catch (NoProperitytSetException e) {
+                    } catch (NoPropertytSetException e) {
                         System.out.println("Failed test");
                     }
                     institute.remove(formicarium);

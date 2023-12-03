@@ -179,7 +179,7 @@ public class Formicarium {
             preconditions = "specify from what type of nest you need data using the Statistics enum",
             postconditions = "returns the average weight of the sand clay substrates - throws an exception if no such element is found"
     )
-    public double averageWeightSandClay(Statistic statistic) throws ArithmeticException, NoProperitytSetException {
+    public double averageWeightSandClay(Statistic statistic) throws ArithmeticException, NoPropertytSetException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
@@ -215,7 +215,7 @@ public class Formicarium {
             preconditions = "specify from what type of nest you need data using the Statistics enum",
             postconditions = "returns the average weight of the sand clay substrates - throws an exception if no such element is found"
     )
-    public double averageVolumeGlassConcrete(Statistic statistic) throws ArithmeticException, NoProperitytSetException {
+    public double averageVolumeGlassConcrete(Statistic statistic) throws ArithmeticException, NoPropertytSetException {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {

@@ -2,12 +2,12 @@
 @SignatureAndAssertions(
         description = "gets thrown if no properties of NestInteriorMaterial are already set"
 )
-public class NoProperitytSetException extends Exception {
+public class NoPropertytSetException extends Exception {
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "Initializes a new NoPropertySetException"
     )
-    public NoProperitytSetException(String message) {
+    public NoPropertytSetException(String message) {
         super(message);
     }
 }

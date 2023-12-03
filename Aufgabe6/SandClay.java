@@ -24,9 +24,9 @@ public class SandClay implements NestInteriorMaterial {
             historyConstraints = "fillSandClay must be called first",
             postconditions = "returns weight of sand clay"
     )
-    public float getWeight() throws NoProperitytSetException {
+    public float getWeight() throws NoPropertytSetException {
         if (this.weight == 0) {
-            throw new NoProperitytSetException("no weight was set");
+            throw new NoPropertytSetException("no weight was set");
         }
         return weight;
     }

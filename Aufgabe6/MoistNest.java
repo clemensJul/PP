@@ -3,7 +3,7 @@
         description = "type of nest that uses a watertank to create a moist environment"
 )
 public class MoistNest extends Nest {
-    private float waterTankVolume;
+    private final float waterTankVolume;
 
     @CodedBy("Clemens")
     @SignatureAndAssertions(

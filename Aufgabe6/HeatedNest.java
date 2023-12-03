@@ -3,8 +3,8 @@
         description = "type of nest that stores it's power"
 )
 public class HeatedNest extends Nest {
+    private final int power;
 
-    private int power;
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             preconditions = "Height, Width and Power must be > 0 and material must be != null",

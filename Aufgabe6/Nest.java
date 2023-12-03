@@ -3,7 +3,7 @@
         description = "Abstract class of nest. Nest can only be exclusively moist nests or powered nest"
 )
 public abstract class Nest {
-    private static int id_counter = 1;
+    private static int idCounter = 1;
     private final float depth;
     private final float height;
     private final float width;
@@ -27,7 +27,7 @@ public abstract class Nest {
             this.glassConcrete = glassConcrete;
         }
 
-        this.id = id_counter++;
+        this.id = idCounter++;
         this.depth = 2f;
     }
 

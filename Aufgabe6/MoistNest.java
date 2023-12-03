@@ -4,7 +4,7 @@
         invariants = "",
         description = "type of nest that uses a watertank to create a moist environment"
 )
-public class MoistNest extends Nest{
+public class MoistNest extends Nest {
     private float waterTankVolume;
 
     public MoistNest(float height, float width, NestInteriorMaterial material, float waterTankVolume) {

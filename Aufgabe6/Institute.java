@@ -18,10 +18,11 @@ public class Institute {
             postconditions = "Adds the formicarium to the list if it is not already in there."
     )
     public void add(Formicarium formicarium) {
-        if(!(formicariums.contains(formicarium))) {
+        if (!(formicariums.contains(formicarium))) {
             formicariums.add(formicarium);
         }
     }
+
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "returns every formicarium in the institute - used for testing"
@@ -43,10 +44,10 @@ public class Institute {
             postconditions = "Removes the formicarium from the list if it is in there."
     )
     public Formicarium getByName(String name) {
-        for(Object item : formicariums) {
+        for (Object item : formicariums) {
             Formicarium formicarium = (Formicarium) item;
 
-            if(formicarium.getName().equals(name)) {
+            if (formicarium.getName().equals(name)) {
                 return formicarium;
             }
         }

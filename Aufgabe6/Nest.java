@@ -1,5 +1,3 @@
-import java.util.Objects;
-
 @CodedBy("Clemens")
 @SignatureAndAssertions(
         historyConstrains = "material muss not be null",
@@ -14,7 +12,7 @@ public abstract class Nest {
     private SandClay sandClay;
     private GlassConcrete glassConcrete;
 
-    public Nest(float height, float width, NestInteriorMaterial material){
+    public Nest(float height, float width, NestInteriorMaterial material) {
         this.height = height;
         this.width = width;
         if (material instanceof SandClay sandClay) {
@@ -34,7 +32,7 @@ public abstract class Nest {
             preconditions = "material is a subtype of NestInteriorMaterial",
             postconditions = "material of nest is changed to parameter"
     )
-    public void changeInteriorMaterial(NestInteriorMaterial material){
+    public void changeInteriorMaterial(NestInteriorMaterial material) {
         if (material instanceof SandClay sandClay) {
             this.sandClay = sandClay;
             this.glassConcrete = null;
@@ -50,7 +48,7 @@ public abstract class Nest {
     @SignatureAndAssertions(
             postconditions = "returns volume by multiplying every dimension"
     )
-    public float getVolume(){
+    public float getVolume() {
         return this.depth * this.height * this.width;
     }
 
@@ -85,9 +83,10 @@ public abstract class Nest {
             postconditions = "returns weight of nest substrate"
     )
     public float getSubstrateWeight() throws NoProperitytSetException {
-        if (sandClay != null){
+        if (sandClay != null) {
             return sandClay.getWeight();
-        } return 0f;
+        }
+        return 0f;
     }
 
     @CodedBy("Clemens")
@@ -95,9 +94,10 @@ public abstract class Nest {
             postconditions = "returns height of nest substrate"
     )
     public float getSubstrateHeight() throws NoProperitytSetException {
-        if (glassConcrete != null){
+        if (glassConcrete != null) {
             return glassConcrete.getHeight();
-        } return 0f;
+        }
+        return 0f;
     }
 
     @CodedBy("Clemens")
@@ -105,9 +105,10 @@ public abstract class Nest {
             postconditions = "returns width of nest substrate"
     )
     public float getSubstrateWidth() throws NoProperitytSetException {
-        if (glassConcrete != null){
+        if (glassConcrete != null) {
             return glassConcrete.getWidth();
-        } return 0f;
+        }
+        return 0f;
     }
 
     @CodedBy("Clemens")
@@ -115,7 +116,7 @@ public abstract class Nest {
             postconditions = "returns substrate of nest"
     )
     public NestInteriorMaterial getMaterial() {
-        if(sandClay == null) {
+        if (sandClay == null) {
             return glassConcrete;
         }
         return sandClay;
@@ -145,20 +146,20 @@ public abstract class Nest {
     public String toString() {
         StringBuilder result = new StringBuilder();
 
-        if(this instanceof MoistNest) {
+        if (this instanceof MoistNest) {
             result.append("MoistNest");
         }
 
-        if(this instanceof HeatedNest) {
+        if (this instanceof HeatedNest) {
             result.append("HeatedNest");
         }
 
         result.append("\tID: ").append(id).append("\tMaterial: ");
-        if(glassConcrete != null) {
+        if (glassConcrete != null) {
             result.append(glassConcrete);
         }
 
-        if(sandClay != null) {
+        if (sandClay != null) {
             result.append(sandClay);
         }
 

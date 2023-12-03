@@ -4,7 +4,7 @@
         invariants = "",
         description = "Substrate type that can be put into a nest"
 )
-public class GlassConcrete implements NestInteriorMaterial{
+public class GlassConcrete implements NestInteriorMaterial {
     private float concreteHeight = 0;
     private float concreteWidth = 0;
 
@@ -26,10 +26,10 @@ public class GlassConcrete implements NestInteriorMaterial{
             postconditions = "returns volume of water tank"
     )
     public void placeDimensions(float height, float width) throws AlreadySetException {
-        if (this.concreteHeight == 0 && this.concreteWidth == 0){
+        if (this.concreteHeight == 0 && this.concreteWidth == 0) {
             this.concreteHeight = height;
-            this.concreteWidth =width;
-        }else {
+            this.concreteWidth = width;
+        } else {
             throw new AlreadySetException("dimensions were already set");
         }
     }

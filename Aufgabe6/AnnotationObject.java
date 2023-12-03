@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 @CodedBy("Raphael")
 @SignatureAndAssertions(
-    description = "An AnnotationObject describes the statistics of an User"
+        description = "An AnnotationObject describes the statistics of an User"
 )
 public class AnnotationObject {
     private final HashMap<String, Integer> methodsInClass = new HashMap<>();
@@ -13,7 +13,7 @@ public class AnnotationObject {
 
     @CodedBy("Raphael")
     @SignatureAndAssertions(
-        postconditions = "returns a HashMap of a histogram of the users methods in class"
+            postconditions = "returns a HashMap of a histogram of the users methods in class"
     )
     public HashMap<String, Integer> getMethodsInClass() {
         return methodsInClass;

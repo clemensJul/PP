@@ -17,8 +17,7 @@ public class OurLinkedList implements Iterable {
         @CodedBy("Raphael")
         @SignatureAndAssertions(
                 postconditions = "Initializes a new Node object"
-        )
-        Node(Object data) {
+        ) Node(Object data) {
             this.data = data;
         }
     }
@@ -59,8 +58,8 @@ public class OurLinkedList implements Iterable {
     )
     public boolean contains(Object item) {
         Node current = head;
-        while(current != null) {
-            if(current.data.equals(item)) {
+        while (current != null) {
+            if (current.data.equals(item)) {
                 return true;
             }
             current = current.next;
@@ -123,7 +122,7 @@ public class OurLinkedList implements Iterable {
 
     @CodedBy("Raphael")
     @SignatureAndAssertions(
-            preconditions =  "index must be smaller than the list size",
+            preconditions = "index must be smaller than the list size",
             postconditions = "removes item at specified index - throws IndexOutOfBoundsException"
     )
     public void removeAt(int index) throws IndexOutOfBoundsException {
@@ -146,7 +145,7 @@ public class OurLinkedList implements Iterable {
 
     @CodedBy("Raphael")
     @SignatureAndAssertions(
-            preconditions =  "index must be smaller than the list size",
+            preconditions = "index must be smaller than the list size",
             postconditions = "sets object into list - throws IndexOutOfBoundsException"
     )
     public void set(int index, Object item) throws IndexOutOfBoundsException {

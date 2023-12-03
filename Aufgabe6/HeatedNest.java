@@ -4,10 +4,11 @@
         invariants = "",
         description = "type of nest that stores it's power"
 )
-public class HeatedNest extends Nest{
+public class HeatedNest extends Nest {
 
     private int power;
-    public HeatedNest(float height, float width, NestInteriorMaterial material,int power) {
+
+    public HeatedNest(float height, float width, NestInteriorMaterial material, int power) {
         super(height, width, material);
         this.power = power;
     }

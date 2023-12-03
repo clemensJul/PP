@@ -46,10 +46,10 @@ public class Formicarium {
             postconditions = "returns Nest if id is contained"
     )
     public Nest getById(int id) {
-        for(Object item : nests) {
+        for (Object item : nests) {
             Nest nest = (Nest) item;
 
-            if(nest.getId() == id) {
+            if (nest.getId() == id) {
                 return nest;
             }
         }
@@ -69,7 +69,7 @@ public class Formicarium {
     @SignatureAndAssertions(
             postconditions = "returns list of nests"
     )
-    public OurLinkedList getNests(){
+    public OurLinkedList getNests() {
         return nests;
     }
 
@@ -116,16 +116,16 @@ public class Formicarium {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
-            Nest casted = (Nest)nest;
+            Nest casted = (Nest) nest;
             switch (statistic) {
                 case HEATED -> {
-                    if (nest instanceof HeatedNest){
+                    if (nest instanceof HeatedNest) {
                         counter++;
                         sum += casted.getVolume();
                     }
                 }
                 case MOIST -> {
-                    if (nest instanceof MoistNest){
+                    if (nest instanceof MoistNest) {
                         counter++;
                         sum += casted.getVolume();
                     }
@@ -144,11 +144,11 @@ public class Formicarium {
     @SignatureAndAssertions(
             postconditions = "returns the average power of the heated nests - throws an exception if no such element is found"
     )
-    public int averagePower() throws ArithmeticException{
+    public int averagePower() throws ArithmeticException {
         int sum = 0;
         int counter = 0;
         for (Object nest : nests) {
-            if(nest instanceof HeatedNest heatedNest) {
+            if (nest instanceof HeatedNest heatedNest) {
                 counter++;
                 sum += heatedNest.getPower();
             }
@@ -165,7 +165,7 @@ public class Formicarium {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
-            if(nest instanceof MoistNest moistNest) {
+            if (nest instanceof MoistNest moistNest) {
                 counter++;
                 sum += moistNest.getWaterTankVolume();
             }
@@ -183,19 +183,19 @@ public class Formicarium {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
-            Nest casted = (Nest)nest;
-            if (!(casted.getMaterial() instanceof SandClay)){
+            Nest casted = (Nest) nest;
+            if (!(casted.getMaterial() instanceof SandClay)) {
                 continue;
             }
             switch (statistic) {
                 case HEATED -> {
-                    if (nest instanceof HeatedNest){
+                    if (nest instanceof HeatedNest) {
                         counter++;
                         sum += casted.getSubstrateWeight();
                     }
                 }
                 case MOIST -> {
-                    if (nest instanceof MoistNest){
+                    if (nest instanceof MoistNest) {
                         counter++;
                         sum += casted.getSubstrateWeight();
                     }
@@ -219,26 +219,28 @@ public class Formicarium {
         double sum = 0;
         int counter = 0;
         for (Object nest : nests) {
-            Nest casted = (Nest)nest;
-            if (!(casted.getMaterial() instanceof GlassConcrete)){
+            Nest casted = (Nest) nest;
+            if (!(casted.getMaterial() instanceof GlassConcrete)) {
                 continue;
             }
             switch (statistic) {
                 case HEATED -> {
-                    if (nest instanceof HeatedNest){
+                    if (nest instanceof HeatedNest) {
                         counter++;
-                        sum += casted.getSubstrateHeight()* casted.getSubstrateWidth()* casted.getDepth();
+                        sum += casted.getSubstrateHeight() * casted.getSubstrateWidth() * casted.getDepth();
                     }
                 }
                 case MOIST -> {
-                    if (nest instanceof MoistNest){
+                    if (nest instanceof MoistNest) {
                         counter++;
-                        sum += casted.getSubstrateHeight()* casted.getSubstrateWidth()* casted.getDepth();;
+                        sum += casted.getSubstrateHeight() * casted.getSubstrateWidth() * casted.getDepth();
+                        ;
                     }
                 }
                 case BOTH -> {
                     counter++;
-                    sum += casted.getSubstrateHeight()* casted.getSubstrateWidth()* casted.getDepth();;
+                    sum += casted.getSubstrateHeight() * casted.getSubstrateWidth() * casted.getDepth();
+                    ;
                 }
             }
         }
@@ -271,57 +273,57 @@ public class Formicarium {
         result.append("\nStatistics:\n");
         try {
             result.append("AverageNestVolume MOIST:\t").append(averageNestVolume(Statistic.MOIST)).append("\n");
+        } catch (ArithmeticException ignored) {
         }
-        catch (ArithmeticException ignored){}
 
         try {
             result.append("AverageNestVolume HEATED:\t").append(averageNestVolume(Statistic.HEATED)).append("\n");
+        } catch (ArithmeticException ignored) {
         }
-        catch (ArithmeticException ignored){}
 
         try {
             result.append("AverageNestVolume BOTH:\t").append(averageNestVolume(Statistic.BOTH)).append("\n");
+        } catch (ArithmeticException ignored) {
         }
-        catch (ArithmeticException ignored){}
 
         try {
             result.append("averageVolumeGlassConcrete MOIST:\t").append(averageVolumeGlassConcrete(Statistic.MOIST)).append("\n");
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored){}
 
         try {
             result.append("averageVolumeGlassConcrete HEATED:\t").append(averageVolumeGlassConcrete(Statistic.HEATED)).append("\n");
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored){}
 
         try {
             result.append("averageVolumeGlassConcrete BOTH:\t").append(averageVolumeGlassConcrete(Statistic.BOTH)).append("\n");
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored){}
 
         try {
             result.append("averageWeightSandClay MOIST:\t").append(averageWeightSandClay(Statistic.MOIST)).append("\n");
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored){}
 
         try {
             result.append("averageWeightSandClay HEATED:\t").append(averageWeightSandClay(Statistic.HEATED)).append("\n");
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored){}
 
         try {
             result.append("averageWeightSandClay BOTH:\t").append(averageWeightSandClay(Statistic.BOTH)).append("\n");
+        } catch (Exception ignored) {
         }
-        catch (Exception ignored){}
 
         try {
             result.append("averagePower:\t").append(averagePower()).append("\n");
+        } catch (ArithmeticException ignored) {
         }
-        catch (ArithmeticException ignored){}
         try {
             result.append("averageWatertankVolume:\t").append(averageWatertankVolume()).append("\n");
+        } catch (ArithmeticException ignored) {
         }
-        catch (ArithmeticException ignored){}
 
         result.append("\nNests in Formicarium:\n");
         nests.forEach(nest -> result.append(nest.toString()).append("\n"));

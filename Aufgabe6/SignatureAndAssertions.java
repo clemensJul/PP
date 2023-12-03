@@ -8,8 +8,12 @@ import java.lang.annotation.Target;
 @CodedBy("Raphael")
 public @interface SignatureAndAssertions {
     String description() default "";
+
     String preconditions() default "";
+
     String postconditions() default "";
+
     String invariants() default "";
+
     String historyConstrains() default "";
 }

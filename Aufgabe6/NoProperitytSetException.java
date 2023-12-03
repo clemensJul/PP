@@ -2,7 +2,7 @@
 @SignatureAndAssertions(
         description = "gets thrown if no properties of NestInteriorMaterial are already set"
 )
-public class NoProperitytSetException extends Exception{
+public class NoProperitytSetException extends Exception {
     /**
      * Constructs a new exception with the specified detail message.  The
      * cause is not initialized, and may subsequently be initialized by

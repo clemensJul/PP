@@ -3,7 +3,7 @@
         description = "Formicarium object that can store multiple nests and calculate statistics of them"
 )
 public class Formicarium {
-    private OurLinkedList nests;
+    private final OurLinkedList nests;
     private final String name;
     private String antSpecies;
 

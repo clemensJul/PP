@@ -1,7 +1,6 @@
 @CodedBy("Clemens")
 @SignatureAndAssertions(
         historyConstraints = "weight can only be set once",
-        invariants = "",
         description = "Substrate type that can be put into a nest"
 )
 public class SandClay implements NestInteriorMaterial {

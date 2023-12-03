@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Test {
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            description = "Starting point of the application. Contains test for our HW"
+    )
     public static void main(String[] args) {
         {
             Institute inst1 = new Institute("Ants Int");
@@ -75,7 +79,7 @@ public class Test {
 
             try {
                 double average = institute.getByName("F1").averageVolumeGlassConcrete(Formicarium.Statistic.MOIST);
-                testValue(average, 240);
+                testEquals(average, 240);
             } catch (Exception e) {
                 System.out.println("Failed test");
             }
@@ -95,21 +99,21 @@ public class Test {
         {
             Nest nest = new MoistNest(110, 100, new GlassConcrete(), 100);
             // get height/width of nest
-            testValue(nest.getHeight(), 110);
-            testValue(nest.getWidth(), 100);
+            testEquals(nest.getHeight(), 110);
+            testEquals(nest.getWidth(), 100);
         }
 
         {
             // receive watertank volume of MoistedNest
             Nest nest = new MoistNest(110, 100, new GlassConcrete(), 100);
             MoistNest moistNest = (MoistNest) nest;
-            testValue(moistNest.getWaterTankVolume(), 100);
+            testEquals(moistNest.getWaterTankVolume(), 100);
         }
         {
             // receive power of HeatedNest
             Nest nest = new HeatedNest(110, 100, new GlassConcrete(), 100);
             HeatedNest moistNest = (HeatedNest) nest;
-            testValue(moistNest.getPower(), 100);
+            testEquals(moistNest.getPower(), 100);
         }
 
         {
@@ -189,13 +193,13 @@ public class Test {
                     System.out.println("Test: Average volume of both is equal to average volume of moist + heated");
                     double averageVolume = formicarium.averageNestVolume(Formicarium.Statistic.BOTH);
                     double averageVolume2 = (formicarium.averageNestVolume(Formicarium.Statistic.MOIST) + formicarium.averageNestVolume(Formicarium.Statistic.HEATED)) / 2;
-                    testValue(averageVolume, averageVolume2);
+                    testEquals(averageVolume, averageVolume2);
 
                     try {
                         System.out.println("Test: Average volume of both glas concrete nests is equal to average volume of moist + heated");
                         double averageGlasConcreteVolume = formicarium.averageVolumeGlassConcrete(Formicarium.Statistic.BOTH);
                         double averageGlasConcreteVolume2 = formicarium.averageVolumeGlassConcrete(Formicarium.Statistic.MOIST) / 2 + formicarium.averageVolumeGlassConcrete(Formicarium.Statistic.HEATED) / 2;
-                        testValue(averageGlasConcreteVolume, averageGlasConcreteVolume2);
+                        testEquals(averageGlasConcreteVolume, averageGlasConcreteVolume2);
                     } catch (NoProperitytSetException e) {
                         System.out.println("Failed test");
                     }
@@ -203,7 +207,7 @@ public class Test {
                         System.out.println("Test: average weight of both sand clay nests is equal to average weight of moist + heated");
                         double averageWeightSandClay = formicarium.averageWeightSandClay(Formicarium.Statistic.BOTH);
                         double averageWeightSandClay2 = formicarium.averageWeightSandClay(Formicarium.Statistic.MOIST) / 2 + formicarium.averageWeightSandClay(Formicarium.Statistic.HEATED) / 2;
-                        testValue(averageWeightSandClay, averageWeightSandClay2);
+                        testEquals(averageWeightSandClay, averageWeightSandClay2);
                     } catch (NoProperitytSetException e) {
                         System.out.println("Failed test");
                     }
@@ -216,9 +220,13 @@ public class Test {
         }
 
         // print statistics from annotations
-//        System.out.println(getAnnotationEvaluation());
+        System.out.println(getAnnotationEvaluation());
     }
 
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Returns a String representation of all Annotations in this current directory."
+    )
     private static String getAnnotationEvaluation() {
         StringBuilder result = new StringBuilder();
         String currentDirectory = System.getProperty("user.dir");
@@ -370,6 +378,10 @@ public class Test {
         return result.toString();
     }
 
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Prints a 'Successful Test' message on stdout if the two given objects have the same idendity."
+    )
     public static void testIdentity(Object given, Object expected) {
         if (given == expected) {
             System.out.println("Successful test");
@@ -378,37 +390,16 @@ public class Test {
         }
     }
 
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Prints a 'Successful Test' message on stdout if the two given objects are considered equal."
+    )
     public static void testEquals(Object given, Object expected) {
-
         if ((given == null && expected == null) || given.equals(expected)) {
             System.out.println("Successful test");
         } else {
             System.out.println("Test NOT successful! Expected value: " + expected.toString() + " / Given " +
                     "value: " + given.toString());
-        }
-    }
-
-    public static void testValue(boolean given, boolean expected) {
-        if (given == expected) {
-            System.out.println("Successful test");
-        } else {
-            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
-        }
-    }
-
-    public static void testValue(double given, double expected) {
-        if (given == expected) {
-            System.out.println("Successful test");
-        } else {
-            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
-        }
-    }
-
-    public static void testValue(int given, int expected) {
-        if (given == expected) {
-            System.out.println("Successful test");
-        } else {
-            System.out.println("Test NOT successful! Expected value: " + expected + " / Given value: " + given);
         }
     }
 }

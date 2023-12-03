@@ -1,4 +1,7 @@
 @CodedBy("Raphael")
+@SignatureAndAssertions(
+        description = "An institute holds a list of Formicariums which can be edited. It also has an unchangable name."
+)
 public class Institute {
     private final OurLinkedList formicariums;
     private final String name;
@@ -54,6 +57,10 @@ public class Institute {
         return null;
     }
 
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Returns a String representation of this institute.."
+    )
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();

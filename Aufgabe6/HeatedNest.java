@@ -1,13 +1,15 @@
 @CodedBy("Clemens")
 @SignatureAndAssertions(
-        historyConstraints = "",
-        invariants = "",
         description = "type of nest that stores it's power"
 )
 public class HeatedNest extends Nest {
 
     private int power;
-
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            preconditions = "Height, Width and Power must be > 0 and material must be != null",
+            postconditions = "Initializes a new HeatedNest"
+    )
     public HeatedNest(float height, float width, NestInteriorMaterial material, int power) {
         super(height, width, material);
         this.power = power;
@@ -15,7 +17,7 @@ public class HeatedNest extends Nest {
 
     @CodedBy("Clemens")
     @SignatureAndAssertions(
-            postconditions = "returns power of heater"
+            postconditions = "Returns power of heater"
     )
     public int getPower() {
         return power;

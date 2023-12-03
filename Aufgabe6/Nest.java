@@ -1,7 +1,6 @@
 @CodedBy("Clemens")
 @SignatureAndAssertions(
-        historyConstraints = "material muss not be null",
-        description = " abstract class of nest. Nest can only be exclusively moist nests or powered nest"
+        description = "Abstract class of nest. Nest can only be exclusively moist nests or powered nest"
 )
 public abstract class Nest {
     private static int id_counter = 1;
@@ -12,6 +11,11 @@ public abstract class Nest {
     private SandClay sandClay;
     private GlassConcrete glassConcrete;
 
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            preconditions = "height and width must be > 0 and material must be != null",
+            postconditions = "Initializes a new Nest"
+    )
     public Nest(float height, float width, NestInteriorMaterial material) {
         this.height = height;
         this.width = width;
@@ -70,14 +74,12 @@ public abstract class Nest {
 
     @CodedBy("Clemens")
     @SignatureAndAssertions(
-            postconditions = "returns depth" +
-                    " of nest"
+            postconditions = "returns depth of nest"
     )
     public float getDepth() {
         return depth;
     }
 
-    //TODO: hab lang rumprobiert, auch mit den multimethoden aber die gehn halt nid wirklich bei verschiedenen return types
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             postconditions = "returns weight of nest substrate"
@@ -122,6 +124,10 @@ public abstract class Nest {
         return sandClay;
     }
 
+    @CodedBy("Clemens")
+    @SignatureAndAssertions(
+            postconditions = "Returns true if the object is an instance of Nest and has the same id."
+    )
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

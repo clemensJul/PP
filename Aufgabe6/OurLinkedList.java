@@ -6,10 +6,13 @@ import java.util.NoSuchElementException;
  */
 @CodedBy("Raphael")
 @SignatureAndAssertions(
-
+    description = "Own implementation of a single LinkedList-"
 )
 public class OurLinkedList implements Iterable {
     @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            description = "A node of our LinkedList"
+    )
     private static class Node {
         Object data;
         Node next;
@@ -17,7 +20,8 @@ public class OurLinkedList implements Iterable {
         @CodedBy("Raphael")
         @SignatureAndAssertions(
                 postconditions = "Initializes a new Node object"
-        ) Node(Object data) {
+        )
+        Node(Object data) {
             this.data = data;
         }
     }

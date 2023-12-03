@@ -16,7 +16,7 @@ public class Formicarium {
     @CodedBy("Raphael")
     @SignatureAndAssertions(
             preconditions = "Name must not be null",
-            postconditions = "Returns a new Formicarium"
+            postconditions = "Initializes a new Formicarium"
     )
     public Formicarium(String name, String antSpecies) {
         this.name = name;

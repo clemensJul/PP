@@ -242,7 +242,7 @@ public class Test {
                 .toArray(Class[]::new);
 
 
-        HashMap<String, AnnotationObject> infos = new HashMap<>();
+        HashMap<String, UserAnnotationObject> infos = new HashMap<>();
         HashMap<String, ClassAnnotationObject> assertionsPerClass = new HashMap<>();
 
         for (Class<?> aClass : classes) {
@@ -263,7 +263,7 @@ public class Test {
                             continue;
                         }
 
-                        AnnotationObject info = infos.computeIfAbsent(responsiblePerson, k -> new AnnotationObject());
+                        UserAnnotationObject info = infos.computeIfAbsent(responsiblePerson, k -> new UserAnnotationObject());
 
                         // if member is constructor, add to constructor stats
                         if (member instanceof Constructor<?>) {
@@ -297,13 +297,13 @@ public class Test {
             for (Annotation annotation : declaredAnnotation) {
                 if (annotation instanceof CodedBy codedBy) {
                     String name = codedBy.value();
-                    AnnotationObject info = infos.get(name);
+                    UserAnnotationObject info = infos.get(name);
                     if (info == null) {
-                        info = new AnnotationObject();
+                        info = new UserAnnotationObject();
                         infos.put(name, info);
                     }
 
-                    List<String> list = infos.getOrDefault(name, new AnnotationObject()).getResponsibleEntities();
+                    List<String> list = infos.getOrDefault(name, new UserAnnotationObject()).getResponsibleEntities();
                     list.add(aClass.getName());
                 }
             }

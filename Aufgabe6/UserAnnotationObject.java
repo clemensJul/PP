@@ -5,7 +5,7 @@ import java.util.HashMap;
 @SignatureAndAssertions(
         description = "An AnnotationObject describes the statistics of an User"
 )
-public class AnnotationObject {
+public class UserAnnotationObject {
     private final HashMap<String, Integer> methodsInClass = new HashMap<>();
     private final HashMap<String, Integer> constructorsInClass = new HashMap<>();
     private final ArrayList<String> responsibleEntities = new ArrayList<>();

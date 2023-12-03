@@ -22,10 +22,8 @@ public class Test {
                 firstN.placeProperty(100,160);
                 secondN.placeProperty(1000);
             }catch (AlreadySetException a){
-                System.out.println("not successful");
+                System.out.println("Failed test");
             }
-
-
 
             Formicarium second = new Formicarium("second","magnae");
             Institute inst2 = new Institute("Big Ants corp");
@@ -37,29 +35,30 @@ public class Test {
             inst1.add(new Formicarium("third", "woho"));
             //inst1.remove(first);
 
-
-            System.out.println("test properties set");
+            System.out.println("Test: properties set");
             inst1.getByName("first").setAntSpecies("pravus");
             try {
                 inst1.getByName("first").averageWeightSandClay(Formicarium.Statistic.BOTH);
+                System.out.println("Failed test");
             }catch (NoProperitytSetException e){
-                System.out.println("test successful");
+                System.out.println("Successful test");
             }
             GlassConcrete glassConcrete = (GlassConcrete)inst1.getByName("first").getById(1).getMaterial();
 
-            System.out.println("try to set properites of glassConcrete two times");
+            System.out.println("Test: try to set properites of glassConcrete two times");
             try {
                 glassConcrete.placeDimensions(10,16);
                 glassConcrete.placeDimensions(10,16);
+                System.out.println("Failed test");
             }catch (AlreadySetException alreadySetException){
-                System.out.println("test successful");
+                System.out.println("Successful test");
             }
 
             //test statistics
-
         }
 
         {
+            System.out.println("Test: Statistic Methods");
             Institute institute = new Institute("Ants Int");
             Formicarium formicarium = new Formicarium("F1", "Rohos");
             Nest moistNest = new MoistNest(2, 2, new GlassConcrete(), 100);
@@ -67,6 +66,7 @@ public class Test {
             institute.add(formicarium);
 
             try {
+                moistNest.placeProperty(12, 10);
                 double average = institute.getByName("F1").averageWeightSandClay(Formicarium.Statistic.HEATED);
                 System.out.println("Failed test");
             } catch (Exception e) {
@@ -74,8 +74,8 @@ public class Test {
             }
 
             try {
-                double average = institute.getByName("F1").averageWeightSandClay(Formicarium.Statistic.HEATED);
-                testValue(average, 100);
+                double average = institute.getByName("F1").averageVolumeGlassConcrete(Formicarium.Statistic.MOIST);
+                testValue(average, 240);
             } catch (Exception e) {
                 System.out.println("Failed test");
             }
@@ -129,7 +129,7 @@ public class Test {
                         MoistNest nest = new MoistNest(randomHeight, randomWidth, new GlassConcrete(), randomTankVolume);
                         ((Institute)institutes.get(i)).getByName("Formicarium:" +i  + "" + j).addNest(nest);
                         try {
-                            ((GlassConcrete)nest.getMaterial()).placeDimensions(23, 4);
+                            nest.placeProperty(23, 4);
                         }
                         catch(AlreadySetException ignored) {
                         }
@@ -142,7 +142,7 @@ public class Test {
                         MoistNest nest = new MoistNest(randomHeight, randomWidth, new SandClay(), randomTankVolume);
                         ((Institute)institutes.get(i)).getByName("Formicarium:" +i  + "" + j).addNest(nest);
                         try {
-                            ((SandClay)nest.getMaterial()).fillSandClay(100);
+                            nest.placeProperty(100);
                         }
                         catch(AlreadySetException ignored) {
                         }
@@ -155,7 +155,7 @@ public class Test {
                         HeatedNest nest = new HeatedNest(randomHeight, randomWidth, new GlassConcrete(), randomPower);
                         ((Institute)institutes.get(i)).getByName("Formicarium:" +i  + "" + j).addNest(nest);
                         try {
-                            ((GlassConcrete)nest.getMaterial()).placeDimensions(23, 4);
+                            nest.placeProperty(23, 4);
                         }
                         catch(AlreadySetException ignored) {
                         }
@@ -168,7 +168,7 @@ public class Test {
                         HeatedNest nest = new HeatedNest(randomHeight,randomWidth, new SandClay(), randomPower);
                         ((Institute)institutes.get(i)).getByName("Formicarium:" +i  + "" + j).addNest(nest);
                         try {
-                            ((SandClay)nest.getMaterial()).fillSandClay(100);
+                            nest.placeProperty(100);
                         }
                         catch(AlreadySetException ignored) {
                         }
@@ -179,31 +179,37 @@ public class Test {
             // print statistics
             for (int i = 0; i < institutes.size(); i++) {
                 Institute institute = (Institute) (institutes.get(i));
+
+                if(i == 0) {
+                    System.out.println("Print statistics of first Institute:");
+                    System.out.println(institute.toString());
+                }
+
+                System.out.println("\n\n" + "Test: Check statistics for Institute: F" + (i + 1));
                 OurLinkedList list = institute.getFormicariums();
                 for (int j = 0; j < list.size(); j++) {
                     Formicarium formicarium = (Formicarium)list.get(j);
                     System.out.println(formicarium.getName());
-                    System.out.println("average volume of both is equal to average volume of moist + heated");
+                    System.out.println("Test: Average volume of both is equal to average volume of moist + heated");
                     double averageVolume = formicarium.averageNestVolume(Formicarium.Statistic.BOTH);
                     double averageVolume2 = (formicarium.averageNestVolume(Formicarium.Statistic.MOIST) + formicarium.averageNestVolume(Formicarium.Statistic.HEATED))/2;
                     testValue(averageVolume,averageVolume2);
 
-
                     try {
-                        System.out.println("average volume of both glas concrete nests  is equal to average volume of moist + heated");
+                        System.out.println("Test: Average volume of both glas concrete nests is equal to average volume of moist + heated");
                         double averageGlasConcreteVolume = formicarium.averageVolumeGlassConcrete(Formicarium.Statistic.BOTH);
                         double averageGlasConcreteVolume2 = formicarium.averageVolumeGlassConcrete(Formicarium.Statistic.MOIST)/2 + formicarium.averageVolumeGlassConcrete(Formicarium.Statistic.HEATED)/2;
                         testValue(averageGlasConcreteVolume,averageGlasConcreteVolume2);
                     } catch (NoProperitytSetException e){
-                        System.out.println("Something went wrong");
+                        System.out.println("Failed test");
                     }
                     try {
-                        System.out.println("average weight of both sand clay nests  is equal to average weight of moist + heated");
+                        System.out.println("Test: average weight of both sand clay nests is equal to average weight of moist + heated");
                         double averageWeightSandClay = formicarium.averageWeightSandClay(Formicarium.Statistic.BOTH);
                         double averageWeightSandClay2 = formicarium.averageWeightSandClay(Formicarium.Statistic.MOIST)/2 + formicarium.averageWeightSandClay(Formicarium.Statistic.HEATED)/2;
                         testValue(averageWeightSandClay,averageWeightSandClay2);
                     }catch (NoProperitytSetException e){
-                        System.out.println("Something went wrong");
+                        System.out.println("Failed test");
                     }
                     institute.remove(formicarium);
                 }
@@ -213,10 +219,8 @@ public class Test {
             }
         }
 
-        fo
-
         // print statistics from annotations
-        System.out.println(getAnnotationEvaluation());
+//        System.out.println(getAnnotationEvaluation());
     }
 
     private static String getAnnotationEvaluation() {

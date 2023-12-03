@@ -268,7 +268,7 @@ public class Formicarium {
         result.append("Name: ").append(name).append("\n");
         result.append("AntSpecies: ").append(antSpecies).append("\n");
 
-        result.append("Statistics:\n");
+        result.append("\nStatistics:\n");
         try {
             result.append("AverageNestVolume MOIST:\t").append(averageNestVolume(Statistic.MOIST)).append("\n");
         }
@@ -323,7 +323,7 @@ public class Formicarium {
         }
         catch (ArithmeticException ignored){}
 
-        result.append("Formicariums:\n");
+        result.append("\nNests in Formicarium:\n");
         nests.forEach(nest -> result.append(nest.toString()).append("\n"));
 
         return result.toString();

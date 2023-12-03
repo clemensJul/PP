@@ -19,13 +19,4 @@ public class MoistNest extends Nest{
     public float getWaterTankVolume() {
         return waterTankVolume;
     }
-
-    @CodedBy("Raphael")
-    @SignatureAndAssertions(
-            postconditions = "Returns a string representation of this MoistNest"
-    )
-    @Override
-    public String toString() {
-        return "MoistNest";
-    }
 }

@@ -14,7 +14,6 @@ public class OurLinkedList implements Iterable {
         Object data;
         Node next;
 
-
         @CodedBy("Raphael")
         @SignatureAndAssertions(
                 postconditions = "Initializes a new Node object"

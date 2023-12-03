@@ -6,10 +6,6 @@
 )
 public class SandClay implements NestInteriorMaterial {
     private float weight;
-    private boolean alreadySet;
-    public SandClay() {
-        alreadySet = false;
-    }
 
     @CodedBy("Clemens")
     @SignatureAndAssertions(
@@ -17,9 +13,11 @@ public class SandClay implements NestInteriorMaterial {
             postconditions = "returns weight of sand clay and locks the method from "
     )
     public void fillSandClay(float weight) throws AlreadySetException {
-        if (alreadySet) throw new AlreadySetException("weight was already set");
-        this.weight = weight;
-        this.alreadySet = true;
+        if (this.weight == 0) {
+            this.weight = weight;
+            return;
+        }
+        throw new AlreadySetException("weight was already set");
     }
 
     @CodedBy("Clemens")
@@ -28,8 +26,18 @@ public class SandClay implements NestInteriorMaterial {
             postconditions = "returns weight of sand clay"
     )
     public float getWeight() throws NoProperitytSetException {
-
-        if (this.weight == 0) throw new NoProperitytSetException("no weight was set");
+        if (this.weight == 0) {
+            throw new NoProperitytSetException("no weight was set");
+        }
         return weight;
+    }
+
+    @CodedBy("Raphael")
+    @SignatureAndAssertions(
+            postconditions = "Returns a string representation of this SandClay"
+    )
+    @Override
+    public String toString() {
+        return "SandClay";
     }
 }

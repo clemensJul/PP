@@ -56,8 +56,8 @@ public class Institute {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("Institute ").append(name).append("\n");
-        formicariums.forEach(formicarium -> result.append(formicarium.toString()).append("\n"));
+        result.append("\n--------------------------------------\n").append("Institute ").append(name).append("\n--------------------------------------\n");
+        formicariums.forEach(formicarium -> result.append(formicarium.toString()).append("\n------\n"));
 
         return result.toString();
     }

@@ -144,7 +144,23 @@ public abstract class Nest {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("ID: ").append(id).append("\tMaterial: ").append(glassConcrete ==null? sandClay.toString() : glassConcrete.toString());
+
+        if(this instanceof MoistNest) {
+            result.append("MoistNest");
+        }
+
+        if(this instanceof HeatedNest) {
+            result.append("HeatedNest");
+        }
+
+        result.append("\tID: ").append(id).append("\tMaterial: ");
+        if(glassConcrete != null) {
+            result.append(glassConcrete);
+        }
+
+        if(sandClay != null) {
+            result.append(sandClay);
+        }
 
         return result.toString();
     }
@@ -155,14 +171,19 @@ public abstract class Nest {
             historyConstrains = "can only be called once per material"
     )
     public void placeProperty(float height, float width) throws AlreadySetException {
-        if (glassConcrete != null) glassConcrete.placeDimensions(height,width);
+        if (glassConcrete != null) {
+            glassConcrete.placeDimensions(height, width);
+        }
     }
+
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             preconditions = "one parameter can only be used if the material is sandClay",
             historyConstrains = "can only be called once per material"
     )
     public void placeProperty(float weight) throws AlreadySetException {
-        if (glassConcrete != null) sandClay.fillSandClay(weight);
+        if (sandClay != null) {
+            sandClay.fillSandClay(weight);
+        }
     }
 }

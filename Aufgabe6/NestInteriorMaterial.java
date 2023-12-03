@@ -1,6 +1,6 @@
 @CodedBy("Clemens")
 @SignatureAndAssertions(
-        historyConstrains = "",
+        historyConstraints = "",
         invariants = "",
         description = "interface for nest interior materials"
 )

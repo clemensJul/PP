@@ -1,6 +1,6 @@
 @CodedBy("Clemens")
 @SignatureAndAssertions(
-        historyConstrains = "",
+        historyConstraints = "",
         invariants = "",
         description = "type of nest that stores it's power"
 )

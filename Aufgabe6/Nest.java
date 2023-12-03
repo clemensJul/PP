@@ -1,6 +1,6 @@
 @CodedBy("Clemens")
 @SignatureAndAssertions(
-        historyConstrains = "material muss not be null",
+        historyConstraints = "material muss not be null",
         description = " abstract class of nest. Nest can only be exclusively moist nests or powered nest"
 )
 public abstract class Nest {
@@ -169,7 +169,7 @@ public abstract class Nest {
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             preconditions = "two parameters can only be used if the material is glass concrete",
-            historyConstrains = "can only be called once per material"
+            historyConstraints = "can only be called once per material"
     )
     public void placeProperty(float height, float width) throws AlreadySetException {
         if (glassConcrete != null) {
@@ -180,7 +180,7 @@ public abstract class Nest {
     @CodedBy("Clemens")
     @SignatureAndAssertions(
             preconditions = "one parameter can only be used if the material is sandClay",
-            historyConstrains = "can only be called once per material"
+            historyConstraints = "can only be called once per material"
     )
     public void placeProperty(float weight) throws AlreadySetException {
         if (sandClay != null) {

@@ -359,8 +359,8 @@ public class Test {
                     result.append("Invariants: ").append(value1.invariants()).append("\n");
                 }
 
-                if (!value1.historyConstrains().isEmpty()) {
-                    result.append("History-Constraints: ").append(value1.historyConstrains()).append("\n");
+                if (!value1.historyConstraints().isEmpty()) {
+                    result.append("History-Constraints: ").append(value1.historyConstraints()).append("\n");
                 }
 
                 result.append("\n");

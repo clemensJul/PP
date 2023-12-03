@@ -1,6 +1,6 @@
 @CodedBy("Clemens")
 @SignatureAndAssertions(
-        historyConstrains = "weight can only be set once",
+        historyConstraints = "weight can only be set once",
         invariants = "",
         description = "Substrate type that can be put into a nest"
 )
@@ -22,7 +22,7 @@ public class SandClay implements NestInteriorMaterial {
 
     @CodedBy("Clemens")
     @SignatureAndAssertions(
-            historyConstrains = "fillSandClay must be called first",
+            historyConstraints = "fillSandClay must be called first",
             postconditions = "returns weight of sand clay"
     )
     public float getWeight() throws NoProperitytSetException {

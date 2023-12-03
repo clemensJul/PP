@@ -15,5 +15,5 @@ public @interface SignatureAndAssertions {
 
     String invariants() default "";
 
-    String historyConstrains() default "";
+    String historyConstraints() default "";
 }

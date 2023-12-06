@@ -1,2 +1,3 @@
-public abstract class TropicalAnt implements Ant {
+public abstract class TropicalAnt extends Ant {
+
 }

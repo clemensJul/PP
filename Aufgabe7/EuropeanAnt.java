@@ -1,2 +1,2 @@
-public abstract class EuropeanAnt implements Ant {
+public abstract class EuropeanAnt extends Ant {
 }

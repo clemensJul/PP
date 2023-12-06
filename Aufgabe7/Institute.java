@@ -1,6 +1,5 @@
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.stream.IntStream;
 
 public class Institute {
     private final LinkedList<Formicarium> inventoryForms;
@@ -49,7 +48,9 @@ public class Institute {
             }
         }
 
-        if (bestFit == Fitable.TOO_SMALL) return null;
+        if (bestFit == Fitable.TOO_SMALL) {
+            return null;
+        }
         else {
             inventoryForms.remove(bestFitFormicarium);
             occupiedForms.put(bestFitFormicarium,ant);

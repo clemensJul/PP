@@ -1,11 +1,10 @@
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.stream.IntStream;
 
 public class Institute {
-
-
-    private LinkedList<Formicarium> inventoryForms;
-    private HashMap<Formicarium,Ant> occupiedForms;
+    private final LinkedList<Formicarium> inventoryForms;
+    private final HashMap<Formicarium,Ant> occupiedForms;
 
     public Institute(){
         this.inventoryForms = new LinkedList<>();
@@ -35,35 +34,70 @@ public class Institute {
      * @return returns a fitting Formicarium or null if nothing is found
      */
     public Formicarium assignForm(Ant ant){
-        Formicarium bestFit = 
-        inventoryForms.forEach(formicarium -> {
+        Fitable bestFit = Fitable.TOO_SMALL;
+        Formicarium bestFitFormicarium = null;
 
-        });
-        return null;
+        for (Formicarium formicarium : inventoryForms) {
+            Fitable currentFit = ant.fits(formicarium);
+            if (currentFit == Fitable.PERFECT) {
+                bestFitFormicarium = formicarium;
+                bestFit = Fitable.PERFECT;
+                break;
+            } else if (bestFit.ordinal() < currentFit.ordinal()) {
+                bestFit = currentFit;
+                bestFitFormicarium = formicarium;
+            }
+        }
+
+        if (bestFit == Fitable.TOO_SMALL) return null;
+        else {
+            inventoryForms.remove(bestFitFormicarium);
+            occupiedForms.put(bestFitFormicarium,ant);
+            return bestFitFormicarium;
+        }
+    }
+
+    /**
+     * removes the mapping of a formicarium to a ant and adds it back to the inventory
+     * @param formicarium
+     */
+    public void returnForm(Formicarium formicarium){
+        if(occupiedForms.remove(formicarium) != null){
+            inventoryForms.add(formicarium);
+        }
     }
 
     /**
      *
-     * @param formicarium
+     * @return sum of prices of the available formicariums
      */
-    public void returnForm(Formicarium formicarium){
-
+    public double priceFree(){
+        return inventoryForms.stream().mapToDouble(Formicarium::price).sum();
     }
 
-    public int priceFree(){
-        return 0;
+    /**
+     * @return sum of prices of occupied formicariums
+     */
+    public double priceOccupied(){
+        return occupiedForms.keySet().stream().mapToDouble(Formicarium::price).sum();
     }
 
-    public int priceOccupied(){
-        return 0;
-    }
-
+    /**
+     * @return every formicarium in a list with its corresponding information
+     */
     public String showFormicarium(){
-        return "";
+        StringBuilder result = new StringBuilder();
+        inventoryForms.forEach(form -> result.append(form).append("\n"));
+        return result.toString();
     }
 
+    /**
+     *
+     *@return every ant with its information and what formicarium it is associated with
+     */
     public String showAnts(){
-        return "";
+        StringBuilder result = new StringBuilder();
+        occupiedForms.forEach((key, value) -> result.append(value).append("\t").append(key));
+        return result.toString();
     }
-
 }

@@ -1,18 +1,6 @@
-public aspect AJTest {
+public aspect VisitorAspect {
 
-    private static int assignFormCount = 0;
     private static int visitorMethodsCount = 0;
-
-    pointcut returnFormExecution():
-            execution(* Institute.assignForm(..));
-
-    after() returning: assignFormExecution() {
-        assignFormCount++;
-    }
-
-    public static int getAssignFormCount() {
-        return assignFormCount;
-    }
 
     pointcut visitorCalls():
             (execution(* Ant.fits()) ||

@@ -205,8 +205,7 @@ public class Test {
                 System.out.println("Failed test");
             }
         }
-        System.out.println("assignForms executed :"+ AJTest.getAssignFormCount());
-        System.out.println("visitor calls executed :"+ AJTest.getVisitorMethodsCount());
-
+        System.out.println("assignForms executed :"+ AssignFormAspect.getAssignFormCount());
+        System.out.println("visitor calls executed :"+ VisitorAspect.getVisitorMethodsCount());
     }
 }

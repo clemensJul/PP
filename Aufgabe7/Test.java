@@ -2,7 +2,6 @@ public class Test {
     public static void main(String[] args) {
         // institute with only unregulated forms
 
-        System.out.println(AJTest.getReturnFormCount());
         {
 
             System.out.println("Test");
@@ -206,7 +205,8 @@ public class Test {
                 System.out.println("Failed test");
             }
         }
-        System.out.println("times executed :"+ AJTest.getReturnFormCount());
+        System.out.println("assignForms executed :"+ AJTest.getAssignFormCount());
+        System.out.println("visitor calls executed :"+ AJTest.getVisitorMethodsCount());
 
     }
 }

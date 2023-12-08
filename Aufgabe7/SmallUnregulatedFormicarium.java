@@ -17,8 +17,9 @@ public class SmallUnregulatedFormicarium extends UnregulatedFormicarium {
     Fitable fittedByLargeEuropean(LargeEuropeanAnt ant) {
         return Fitable.TOO_SMALL;
     }
+
     @Override
     public String toString() {
-        return "SmallUnregulatedFormicarium-"+price();
+        return "SmallUnregulatedFormicarium - " + price();
     }
 }

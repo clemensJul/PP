@@ -20,6 +20,6 @@ public class SmallRegulatedFormicarium extends RegulatedFormicarium {
 
     @Override
     public String toString() {
-        return "SmallRegulatedFormicarium-"+price();
+        return "SmallRegulatedFormicarium - " + price();
     }
 }

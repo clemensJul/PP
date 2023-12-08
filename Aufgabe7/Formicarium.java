@@ -53,7 +53,7 @@ public abstract class Formicarium {
      */
     abstract Fitable fittedByLargeTropical(LargeTropicalAnt ant);
 
-    public double price(){
+    public double price() {
         return this.price;
     }
 }

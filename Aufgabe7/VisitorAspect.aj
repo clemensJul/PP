@@ -13,5 +13,7 @@ public aspect VisitorAspect {
         visitorMethodsCount++;
     }
 
-    public static int getVisitorMethodsCount(){return visitorMethodsCount;}
+    public static int getVisitorMethodsCount() {
+        return visitorMethodsCount;
+    }
 }

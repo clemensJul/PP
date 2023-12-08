@@ -3,6 +3,7 @@ public class SmallTropicalAnt extends Ant {
     public Fitable fits(Formicarium formicarium) {
         return formicarium.fittedBySmallTropical(this);
     }
+
     @Override
     public String toString() {
         return "SmallTropicalAnt";

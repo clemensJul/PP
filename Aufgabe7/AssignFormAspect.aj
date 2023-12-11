@@ -1,3 +1,6 @@
+/**
+*History-invariant: counts the number of times Institute.assignForm() is called
+ */
 public aspect AssignFormAspect {
 
     private static int assignFormCount = 0;

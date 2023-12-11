@@ -1,3 +1,6 @@
+/**
+ *History-invariant: counts the number of times Formicarium.fittedBy or any of it's subclass methods are called is called
+ */
 public aspect VisitorAspect {
 
     private static int visitorMethodsCount = 0;

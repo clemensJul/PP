@@ -1,3 +1,4 @@
+
 public abstract class Formicarium {
     private final double price;
 

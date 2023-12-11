@@ -346,4 +346,10 @@ public class Test {
                     "value: " + given.toString());
         }
     }
+    /*
+    Arbeitsteilung:
+    Clemens: Institute
+    Raphael: Tests, Formicarium and all subtypes, Ants and all subtypes
+    Both: Aspectj
+     */
 }

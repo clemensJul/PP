@@ -46,4 +46,8 @@ public class Graph {
     public Set<Vertex> getVertices() {
         return graphMap.keySet();
     }
+
+    public Edge getEdge(Vertex vertex1, Vertex vertex2) {
+        return graphMap.get(vertex1).get(vertex2);
+    }
 }

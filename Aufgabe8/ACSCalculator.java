@@ -3,17 +3,14 @@ import java.util.*;
 
 public class ACSCalculator {
 
-    private static double INITIAL_PHEROMEN = 1.0;
+    private static final double INITIAL_PHEROMEN = 1.0;
 
     /**
      * @param graph        must not be null
-     * @param iterations   must not be a negative number
-     * @param numberOfAnts must not be a negative number
+     * @param options      must not be null
      * @return a list of edges that is the last solution of the ACS simulation
      */
-    public static List<Vertex> calculate(Graph graph, ASCCalculatorOptions options, CodeDraw cd) {
-        long timer = System.nanoTime();
-
+    public static List<Vertex> calculate(Graph graph, ACSCalculatorOptions options) {
         HashMap<Edge, Double> pheromones = new HashMap<>();
         ArrayList<Vertex> bestResult = null;
         double bestResultWeight = Double.MAX_VALUE;
@@ -22,9 +19,9 @@ public class ACSCalculator {
 
         Draw.initializeGraph(graph);
         //iterations of algorithm
-        for (int i = 0; i < options.getIterations(); i++) {
+        for (int i = 0; i < options.iterations(); i++) {
             // in every iteration we need to seed new ants
-            ArrayList<Ant> ants = seedAnts(graph, options.getAntAmount());
+            ArrayList<Ant> ants = seedAnts(graph, options.antAmount());
 
             //create a solution
             for (int k = 0; k < graph.getVertices().size(); k++) {
@@ -36,7 +33,7 @@ public class ACSCalculator {
                         // update pheromones
                         Edge edge = graph.getEdge(ant.getCurrentVertex(), nextVertex);
                         double currentPheromone = pheromones.getOrDefault(edge, INITIAL_PHEROMEN);
-                        double newPheromone = (1 - options.getPersistence()) * currentPheromone + options.getPersistence() * ((double) 1 / simpleSolutionForPheromen);
+                        double newPheromone = (1 - options.persistence()) * currentPheromone + options.persistence() * ((double) 1 / simpleSolutionForPheromen);
                         pheromones.put(edge, newPheromone);
 
                         ant.visitVertex(nextVertex);
@@ -61,14 +58,14 @@ public class ACSCalculator {
                 if (edgesInResult.contains(edge)) {
                     tau = 1 / bestResultWeight;
                 }
-                double newValue = (1 - options.getPersistence()) * currentValue + options.getPersistence() * tau;
+                double newValue = (1 - options.persistence()) * currentValue + options.persistence() * tau;
                 pheromones.put(edge, newValue);
             }
 
             // only for testing - draw codedraw
             //Draw.drawIteration(resultFromIteration);
         }
-        System.out.println("done");
+        Draw.drawResult(bestResult);
         return bestResult;
     }
 
@@ -93,7 +90,7 @@ public class ACSCalculator {
         Random rand = new Random();
         double randomNumber = rand.nextDouble();
 
-        if (randomNumber > (1 - options.getProbability())) {
+        if (randomNumber > (1 - options.probability())) {
             return calculateBestNextCity(ant, graph, pheromones);
         } else {
             return calculateRandomNextCity(ant, graph, options, pheromones);
@@ -152,14 +149,14 @@ public class ACSCalculator {
         double tij = pheromones.getOrDefault(graph.getEdge(currentCity, nextCity), INITIAL_PHEROMEN);
         double nij = 1.0 / graph.getDistance(currentCity, nextCity);
 
-        double numerator = Math.pow(tij, options.getAlpha()) * Math.pow(nij, options.getBeta());
+        double numerator = Math.pow(tij, options.alpha()) * Math.pow(nij, options.beta());
 
         double denominator = graph.getNeighbors(currentCity).stream()
                 .filter(city -> city != currentCity && !ant.getAlreadyVisitedCities().contains(city))
                 .mapToDouble(city -> {
                     double tik = pheromones.getOrDefault(graph.getEdge(currentCity, city), INITIAL_PHEROMEN);
                     double nik = 1.0 / graph.getDistance(currentCity, city);
-                    return Math.pow(tik, options.getAlpha()) * Math.pow(nik, options.getBeta());
+                    return Math.pow(tik, options.alpha()) * Math.pow(nik, options.beta());
                 })
                 .sum();
 

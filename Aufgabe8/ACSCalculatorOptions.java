@@ -1,11 +1,5 @@
-public class ACSCalculatorOptions {
-    private final int antAmount;
-    private final double probability;
-    private final double alpha;
-    private final double beta;
-    private final double persistence;
-    private final int iterations;
-
+public record ACSCalculatorOptions(int iterations, int antAmount, double probability, double alpha, double beta,
+                                   double persistence) {
     /**
      * @param iterations  number of iteration of the algorithm - must be > 0
      * @param antAmount   number of ants for the calculation - increases accuracy per iteration - must be > 0
@@ -21,30 +15,6 @@ public class ACSCalculatorOptions {
         this.alpha = alpha;
         this.beta = beta;
         this.persistence = Math.clamp(persistence, 0, 1);
-    }
-
-    public int getAntAmount() {
-        return antAmount;
-    }
-
-    public double getProbability() {
-        return probability;
-    }
-
-    public double getAlpha() {
-        return alpha;
-    }
-
-    public double getBeta() {
-        return beta;
-    }
-
-    public double getPersistence() {
-        return persistence;
-    }
-
-    public int getIterations() {
-        return iterations;
     }
 
     @Override

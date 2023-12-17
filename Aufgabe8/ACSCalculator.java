@@ -279,6 +279,7 @@ public class ACSCalculator {
         output.append("Best way is: \n");
 
         Vertex oldCity = result.get(0);
+
         double distance = 0;
         for (int i = 1; i < result.size(); i++) {
             Vertex currentCity = result.get(i);
@@ -287,7 +288,12 @@ public class ACSCalculator {
             oldCity = currentCity;
             distance += distanceIteration;
         }
+
+        double lastDistance = graph.getDistance(oldCity, result.getFirst());
+        distance += lastDistance;
+        output.append(oldCity).append("\t-\t").append(result.getFirst()).append(lastDistance).append("m\n");
         output.append("with an overall distance of: ").append(distance).append("m");
+
         System.out.println(output);
     }
 

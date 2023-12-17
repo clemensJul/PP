@@ -1,14 +1,10 @@
-import java.util.Timer;
-
 public class Test {
     public static void main(String[] args) {
-        //simulation parameters
-        int cellSize = 5;
-        int vertexCount = 60;
+        // simulation parameters
+        int vertexCount = 30;
         int maxX = 200;
         int maxY = 200;
         ACSCalculatorOptions options = new ACSCalculatorOptions(1000, 25, 0.9, 1, 2, 0.1);
-        //Draw.setOptions(cellSize,maxX,maxY);
 
         // generate new graph
         Graph graph = new Graph();
@@ -16,9 +12,13 @@ public class Test {
             Vertex v = new Vertex(Math.random() * maxX, Math.random() * maxY);
             graph.addVertex(v);
         }
-        long start = System.nanoTime();
-        ACSCalculator.calculate(graph, options);
-        long end = System.nanoTime();
-        System.out.println("calculation took " + ((end - start) / 1_000_000_000) + "seconds");
+        ACSCalculator.INITIAL_PHEROMEN = 1;
+        for (int i = 0; i < 10; i++) {
+            long start = System.nanoTime();
+            ACSCalculator.calculate(graph, options);
+            long end = System.nanoTime();
+            System.out.println("calculation took " + ((end - start) / 1_000_000_000) + "seconds");
+            if (i == 4) ACSCalculator.INITIAL_PHEROMEN = 0;
+        }
     }
 }

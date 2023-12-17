@@ -284,14 +284,14 @@ public class ACSCalculator {
         for (int i = 1; i < result.size(); i++) {
             Vertex currentCity = result.get(i);
             double distanceIteration = graph.getDistance(oldCity, currentCity);
-            output.append(oldCity).append("\t-\t").append(currentCity).append(distanceIteration).append("m\n");
+            output.append(oldCity).append("\t-\t").append(currentCity).append("\t\tDistance: ").append(distanceIteration).append("m\n");
             oldCity = currentCity;
             distance += distanceIteration;
         }
 
         double lastDistance = graph.getDistance(oldCity, result.getFirst());
         distance += lastDistance;
-        output.append(oldCity).append("\t-\t").append(result.getFirst()).append(lastDistance).append("m\n");
+        output.append(oldCity).append("\t-\t").append(result.getFirst()).append("\t\tDistance: ").append(lastDistance).append("m\n");
         output.append("with an overall distance of: ").append(distance).append("m");
 
         System.out.println(output);

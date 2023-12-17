@@ -25,6 +25,6 @@ class Vertex {
 
     @Override
     public String toString() {
-        return "index:"+index+ " position:(" + x + ", " + y + ")";
+        return "index:"+index+ " position:(" + Math.round(x) + ", " + Math.round(y) + ")";
     }
 }

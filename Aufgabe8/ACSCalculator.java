@@ -65,7 +65,7 @@ public class ACSCalculator {
             // only for testing - draw codedraw
             //Draw.drawIteration(resultFromIteration);
         }
-        Draw.drawResult(bestResult);
+        //Draw.drawResult(bestResult);
         return bestResult;
     }
 

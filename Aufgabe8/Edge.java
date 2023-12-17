@@ -8,6 +8,6 @@ public class Edge {
     }
 
     public double getDistance() {
-        return distance;
+        return Math.round(distance);
     }
 }

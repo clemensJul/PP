@@ -1,10 +1,10 @@
-public class ASCCalculatorOptions {
-    private int antAmount;
-    private double probability;
-    private double alpha;
-    private double beta;
-    double persistence;
-    int iterations;
+public class ACSCalculatorOptions {
+    private final int antAmount;
+    private final double probability;
+    private final double alpha;
+    private final double beta;
+    private final double persistence;
+    private final int iterations;
 
     /**
      * @param iterations  number of iteration of the algorithm - must be > 0
@@ -12,9 +12,9 @@ public class ASCCalculatorOptions {
      * @param probability probability of ants taking the best vertex - must be >= 0
      * @param alpha       impact of pheromones on ant decision-making - must be >= 0
      * @param beta        impact of distance on ant decision-making - must be >= 0
-     * @param persistence factor of pheromone retention - must be 0<=x<=1
+     * @param persistence factor of pheromone retention - should be 0<=x<=1. if the value is not within these bounds, it gets cut the nearest border
      */
-    public ASCCalculatorOptions(int iterations, int antAmount, double probability, double alpha, double beta, double persistence) {
+    public ACSCalculatorOptions(int iterations, int antAmount, double probability, double alpha, double beta, double persistence) {
         this.iterations = iterations;
         this.antAmount = antAmount;
         this.probability = probability;
@@ -27,47 +27,35 @@ public class ASCCalculatorOptions {
         return antAmount;
     }
 
-    public void setAntAmount(int antAmount) {
-        this.antAmount = antAmount;
-    }
-
     public double getProbability() {
         return probability;
-    }
-
-    public void setProbability(double probability) {
-        this.probability = probability;
     }
 
     public double getAlpha() {
         return alpha;
     }
 
-    public void setAlpha(double alpha) {
-        this.alpha = alpha;
-    }
-
     public double getBeta() {
         return beta;
-    }
-
-    public void setBeta(double beta) {
-        this.beta = beta;
     }
 
     public double getPersistence() {
         return persistence;
     }
 
-    public void setPersistence(double persistence) {
-        this.persistence = persistence;
-    }
-
     public int getIterations() {
         return iterations;
     }
 
-    public void setIterations(int iterations) {
-        this.iterations = iterations;
+    @Override
+    public String toString() {
+        return "ACSCalculatorOptions{" +
+                "antAmount=" + antAmount +
+                ", probability=" + probability +
+                ", alpha=" + alpha +
+                ", beta=" + beta +
+                ", persistence=" + persistence +
+                ", iterations=" + iterations +
+                '}';
     }
 }

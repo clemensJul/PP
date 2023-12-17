@@ -8,15 +8,15 @@ class Vertex {
     }
 
     public double getX() {
-        return x;
+        return this.x;
     }
 
     public double getY() {
-        return y;
+        return this.y;
     }
 
     @Override
     public String toString() {
-        return " (" + x + ", " + y + ")";
+        return "index:"+index+ " position:(" + x + ", " + y + ")";
     }
 }

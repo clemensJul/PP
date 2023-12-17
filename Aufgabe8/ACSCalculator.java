@@ -1,6 +1,3 @@
-import codedraw.CodeDraw;
-
-import java.awt.*;
 import java.util.List;
 import java.util.*;
 
@@ -23,6 +20,7 @@ public class ACSCalculator {
 
         double simpleSolutionForPheromen = calculateSimpleSolution(graph);
 
+        Draw.initializeGraph(graph);
         //iterations of algorithm
         for (int i = 0; i < options.getIterations(); i++) {
             // in every iteration we need to seed new ants
@@ -68,7 +66,7 @@ public class ACSCalculator {
             }
 
             // only for testing - draw codedraw
-            drawIteration(cd, bestResult);
+            //Draw.drawIteration(resultFromIteration);
         }
         System.out.println("done");
         return bestResult;
@@ -91,22 +89,7 @@ public class ACSCalculator {
                 .sum();
     }
 
-    private static void drawIteration(CodeDraw cd, List<Vertex> result) {
-//        cd.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random()));
-        cd.setColor(Color.BLACK);
-        int cellSize = 5;
-        Vertex prev = result.getFirst();
-        for (int i = 1; i < result.size(); i++) {
-            Vertex current = result.get(i);
-            cd.drawLine(prev.getX() * cellSize, prev.getY() * cellSize, current.getX() * cellSize, current.getY() * cellSize);
-            prev = current;
-        }
-        cd.drawLine(prev.getX() * cellSize, prev.getY() * cellSize, result.getFirst().getX() * cellSize, result.getFirst().getY() * cellSize);
-
-        cd.show();
-    }
-
-    private static Vertex nextCity(Ant ant, Graph graph, ASCCalculatorOptions options, HashMap<Edge, Double> pheromones) {
+    private static Vertex nextCity(Ant ant, Graph graph, ACSCalculatorOptions options, HashMap<Edge, Double> pheromones) {
         Random rand = new Random();
         double randomNumber = rand.nextDouble();
 
@@ -152,7 +135,7 @@ public class ACSCalculator {
                 .orElse(null);
     }
 
-    private static Vertex calculateRandomNextCity(Ant ant, Graph graph, ASCCalculatorOptions options, HashMap<Edge, Double> pheromones) {
+    private static Vertex calculateRandomNextCity(Ant ant, Graph graph, ACSCalculatorOptions options, HashMap<Edge, Double> pheromones) {
         Vertex currentCity = ant.getCurrentVertex();
 
         return graph.getNeighbors(currentCity).stream()
@@ -163,7 +146,7 @@ public class ACSCalculator {
 
 
     // Eine Methode, die die Wahrscheinlichkeit berechnet, dass eine Ameise von Stadt i nach Stadt j geht
-    private static double calculateProbability(Ant ant, Graph graph, Vertex nextCity, ASCCalculatorOptions options, HashMap<Edge, Double> pheromones) {
+    private static double calculateProbability(Ant ant, Graph graph, Vertex nextCity, ACSCalculatorOptions options, HashMap<Edge, Double> pheromones) {
         Vertex currentCity = ant.getCurrentVertex();
 
         double tij = pheromones.getOrDefault(graph.getEdge(currentCity, nextCity), INITIAL_PHEROMEN);

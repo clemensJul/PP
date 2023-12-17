@@ -1,6 +1,3 @@
-import codedraw.CodeDraw;
-
-import java.awt.*;
 import java.util.List;
 
 public class Test {
@@ -10,10 +7,10 @@ public class Test {
         int vertexCount = 60;
         int maxX = 200;
         int maxY = 200;
-        ASCCalculatorOptions options = new ASCCalculatorOptions(1000, 25, 0.9, 1, 2, 0.1);
-        CodeDraw cd = new CodeDraw(maxX * cellSize, maxY * cellSize);
+        ACSCalculatorOptions options = new ACSCalculatorOptions(1000, 25, 0.9, 1, 2, 0.1);
+        Draw.setOptions(cellSize,maxX,maxY);
 
-        // Beispiel für die Verwendung des Graphen mit eigenen Vertex-Objekten
+        // generate new graph
         Graph graph = new Graph();
 
         for (int i = 0; i < vertexCount; i++) {
@@ -21,45 +18,25 @@ public class Test {
             graph.addVertex(v);
         }
 
-        cd.setColor(Color.gray);
-        cd.fillRectangle(0, 0, cd.getWidth(), cd.getHeight());
+        List<Vertex> result = ACSCalculator.calculate(graph, options);
+        // print results
+        StringBuilder output = new StringBuilder();
+        output.append("Best way is: ");
 
-        graph.getVertices().forEach(vertex ->
-                graph.getNeighbors(vertex).forEach(neighbor -> {
-                    double dist = Math.floor(graph.getDistance(vertex, neighbor));
-                    cd.setColor(Color.GREEN);
-                    cd.drawLine(vertex.getX() * cellSize, vertex.getY() * cellSize, neighbor.getX() * cellSize, neighbor.getY() * cellSize);
-
-                    cd.setColor(Color.black);
-                    cd.drawText(vertex.getX() * cellSize + (neighbor.getX() - vertex.getX()) * cellSize / 2, vertex.getY() * cellSize + (neighbor.getY() - vertex.getY()) * cellSize / 2, String.valueOf(dist));
-                })
-        );
-
-        cd.setColor(Color.black);
-        graph.getVertices().forEach(vertex -> {
-            cd.fillRectangle(vertex.getX() * cellSize - cellSize / 2, vertex.getY() * cellSize - cellSize / 2, cellSize, cellSize);
-        });
-
-        List<Vertex> result = ACSCalculator.calculate(graph, options, cd);
-
-        cd.setColor(Color.gray);
-        cd.fillRectangle(0, 0, cd.getWidth(), cd.getHeight());
-
-        cd.setColor(Color.black);
-        graph.getVertices().forEach(vertex -> {
-            cd.fillRectangle(vertex.getX() * cellSize - cellSize / 2, vertex.getY() * cellSize - cellSize / 2, cellSize, cellSize);
-        });
-
-        cd.setColor(Color.RED);
-        Vertex prev = result.getFirst();
-        for (int i = 1; i < result.size(); i++) {
-            Vertex current = result.get(i);
-            cd.drawLine(prev.getX() * cellSize, prev.getY() * cellSize, current.getX() * cellSize, current.getY() * cellSize);
-            prev = current;
+        Vertex oldCity = result.getFirst();
+        double distance = 0;
+        for (int j = 1; j < result.size(); j++) {
+            Vertex currentCity = result.get(j);
+            double distanceIteration = graph.getDistance(oldCity, currentCity);
+            output.append("from ").append(oldCity).append("\tto ").append(currentCity).append(":").append(distanceIteration).append("m\n");
+            oldCity = currentCity;
+            distance += distanceIteration;
         }
-        cd.drawLine(prev.getX() * cellSize, prev.getY() * cellSize, result.get(0).getX() * cellSize, result.get(0).getY() * cellSize);
+        output.append("with a overall distance of: ").append(distance).append("m");
 
-        cd.show();
-        cd.setAlwaysOnTop(true);
+        System.out.println(output);
+
+        // print used params
+        System.out.println(options);
     }
 }

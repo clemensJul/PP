@@ -4,8 +4,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ACSCalculator {
-
-    public static double INITIAL_PHEROMEN = 0;
+    private static double INITIAL_PHEROMEN = 1;
 
     /**
      * @param graph        must not be null
@@ -58,7 +57,6 @@ public class ACSCalculator {
                 double tau = edgesInResult.contains(edge) ? 1.0 / finalBestResultWeight : 0;
                 return (1 - options.persistence()) * currentValue + options.persistence() * tau;
             });
-
             printIterationProgress(i, resultWeightFromIteration);
         }
         printResult(bestResult, graph);
@@ -92,7 +90,7 @@ public class ACSCalculator {
      */
     private static double getWeightOfEdges(List<Edge> edges) {
         return edges.stream()
-                .mapToDouble(Edge::getDistance)
+                .mapToDouble(Edge::distance)
                 .sum();
     }
 
@@ -227,7 +225,7 @@ public class ACSCalculator {
 
             // check if current result is better than global one
             double localeResultWeight = localeResult.stream()
-                    .mapToDouble(Edge::getDistance)
+                    .mapToDouble(Edge::distance)
                     .sum();
 
             // update if better result found

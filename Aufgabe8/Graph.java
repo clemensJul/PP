@@ -68,7 +68,7 @@ public class Graph {
      * @return The distance between the two vertices.
      */
     public double getDistance(Vertex vertex1, Vertex vertex2) {
-        return graphMap.get(vertex1).get(vertex2).getDistance();
+        return graphMap.get(vertex1).get(vertex2).distance();
     }
 
     /**

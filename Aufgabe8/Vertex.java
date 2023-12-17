@@ -1,7 +1,7 @@
 /**
  * Represents a vertex in a graph with a specific position in 2D space.
  */
-class Vertex {
+public class Vertex {
     private final double x;
     private final double y;
 

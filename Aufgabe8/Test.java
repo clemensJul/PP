@@ -12,13 +12,10 @@ public class Test {
             Vertex v = new Vertex(Math.random() * maxX, Math.random() * maxY);
             graph.addVertex(v);
         }
-        ACSCalculator.INITIAL_PHEROMEN = 1;
-        for (int i = 0; i < 10; i++) {
-            long start = System.nanoTime();
-            ACSCalculator.calculate(graph, options);
-            long end = System.nanoTime();
-            System.out.println("calculation took " + ((end - start) / 1_000_000_000) + "seconds");
-            if (i == 4) ACSCalculator.INITIAL_PHEROMEN = 0;
-        }
+
+        long start = System.nanoTime();
+        ACSCalculator.calculate(graph, options);
+        long end = System.nanoTime();
+        System.out.println("calculation took " + ((end - start) / 1_000_000_000) + " seconds");
     }
 }

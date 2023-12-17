@@ -1,16 +1,15 @@
 /**
  * Represents an edge between vertices in a graph.
+ *
+ * @param distance Distance value of the edge
  */
-public class Edge {
-    private final double distance; // Distance value of the edge
-
+public record Edge(double distance) {
     /**
      * Constructor to initialize an edge with a specified distance.
      *
      * @param distance The distance value of the edge.
      */
-    public Edge(double distance) {
-        this.distance = distance;
+    public Edge {
     }
 
     /**
@@ -18,7 +17,8 @@ public class Edge {
      *
      * @return The rounded distance value of the edge.
      */
-    public double getDistance() {
+    @Override
+    public double distance() {
         return Math.round(distance);
     }
 }

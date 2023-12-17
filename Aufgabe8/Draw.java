@@ -3,6 +3,10 @@ import codedraw.CodeDraw;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * only used for visual testing
+ */
+
 public class Draw {
     private static CodeDraw window;
     private static int cellSize;
@@ -14,10 +18,6 @@ public class Draw {
         }
         window = new CodeDraw(width*cellSize,height*cellSize);
         alreadySet = true;
-    }
-
-    public static CodeDraw getWindow() {
-        return window;
     }
 
     public static void initializeGraph(Graph graph){

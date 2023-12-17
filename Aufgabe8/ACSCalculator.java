@@ -47,7 +47,6 @@ public class ACSCalculator {
             if (resultWeightFromIteration < bestResultWeight) {
                 bestResult = resultFromIteration;
                 bestResultWeight = resultWeightFromIteration;
-                System.out.println(bestResultWeight);
             }
 
             ArrayList<Edge> edgesInResult = getEdgesFromVertices(graph, bestResult);
@@ -62,10 +61,13 @@ public class ACSCalculator {
                 pheromones.put(edge, newValue);
             }
 
+            printIterationProgress(i, resultWeightFromIteration);
             // only for testing - draw codedraw
             //Draw.drawIteration(resultFromIteration);
         }
         //Draw.drawResult(bestResult);
+        printResult(bestResult, graph);
+        printOptions(options);
         return bestResult;
     }
 
@@ -202,5 +204,32 @@ public class ACSCalculator {
         }
 
         return seedAnts;
+    }
+
+    private static void printIterationProgress(int i, double length){
+        System.out.println("Iteration " + i + ":\t" + Math.round(length) + "m");
+    }
+
+    private static void printResult(List<Vertex> result, Graph graph){
+        if(result == null) return;
+        StringBuilder output = new StringBuilder();
+        output.append("Best way is: \n");
+
+        Vertex oldCity = result.getFirst();
+        double distance = 0;
+        for (int i = 1; i < result.size(); i++) {
+            Vertex currentCity = result.get(i);
+            double distanceIteration = graph.getDistance(oldCity, currentCity);
+            output.append("from ").append(oldCity).append("\tto ").append(currentCity).append(":").append(distanceIteration).append("m\n");
+            oldCity = currentCity;
+            distance += distanceIteration;
+        }
+        output.append("with a overall distance of: ").append(distance).append("m");
+
+        System.out.println(output);
+    }
+
+    private static void printOptions(ACSCalculatorOptions options){
+        System.out.println(options);
     }
 }

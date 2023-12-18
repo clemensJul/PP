@@ -18,4 +18,9 @@ public class Test {
         long end = System.nanoTime();
         System.out.println("calculation took " + ((end - start) / 1_000_000_000) + " seconds");
     }
+
+    // Aufgabenaufteilung:
+    // Clemens: Graph
+    // Raphael: Vertex, Edges
+    // wir beide haben individuell probiert den Algorithmus für uns selbst zu implementieren und dann die für uns bessere Lösung der beiden ausgewählt.
 }

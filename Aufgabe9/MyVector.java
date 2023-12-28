@@ -1,4 +1,4 @@
-
+import java.util.Objects;
 
 public class MyVector {
     private final int x,y;
@@ -20,5 +20,18 @@ public class MyVector {
     public static MyVector orthogonalVector(MyVector vector, boolean clockwise){
         if(clockwise) return new MyVector(vector.y,-vector.x);
         return new MyVector(-vector.y,vector.x);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyVector myVector = (MyVector) o;
+        return x == myVector.x && y == myVector.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

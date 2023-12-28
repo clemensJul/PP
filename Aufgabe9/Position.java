@@ -1,21 +1,43 @@
+import java.util.Objects;
+
 public class Position {
-    private final MyVector firstVector;
-    private final MyVector secondVector;
+    private final MyVector pos1,pos2;
 
     public Position(MyVector firstPos, MyVector secPos) {
-        this.firstVector = firstPos;
-        this.secondVector = secPos;
+        // head position for ants
+        this.pos1 = firstPos;
+        // body position for ants
+        this.pos2 = secPos;
     }
 
-    public MyVector getFirstVector() {
-        return this.firstVector;
+    public MyVector getPos1() {
+        return pos1;
     }
 
-    public MyVector getSecondVector(){
-        return secondVector;
+    public MyVector getPos2() {
+        return pos2;
     }
 
-    public MyVector getDirection() {
-        return new MyVector(secondVector.getX() - firstVector.getX(), firstVector.getY() - secondVector.getY());
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position position = (Position) o;
+        return pos1.equals(position.pos1) && pos2.equals(position.pos2)
+                || pos2.equals(position.pos1) && pos1.equals(position.pos2);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pos1, pos2);
+    }
+    public Direction getDirection(){
+        int x = pos1.getX()- pos2.getX();
+        int y = pos2.getY()- pos2.getY();
+        if (y > 0) return Direction.UP;
+        if (x > 0) return Direction.RIGHT;
+        if (y < 0 )return Direction.DOWN;
+        return Direction.LEFT;
+    }
+
 }

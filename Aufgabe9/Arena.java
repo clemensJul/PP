@@ -1,9 +1,12 @@
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 public class Arena {
     private static Tile[][] grid;
+    private static Character[][] draw;
     private static int height;
     private static int width;
     private static int numberOfAnts;
@@ -14,13 +17,15 @@ public class Arena {
         width = Integer.parseInt(args[1]);
         numberOfAnts = Integer.parseInt(args[2]);
         grid = new Tile[width][height];
+        draw = new Character[width][height];
 
         Random random = new Random();
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[0].length; y++) {
                 // spawn leafs with a 30% chance
                 Position position = new Position(new MyVector(x, y), new MyVector(0, 0));
-                grid[x][y] = new Tile(position, random.nextDouble() < 0.3);
+                grid[x][y] = new Tile(position, random.nextDouble() < 0.2);
+                draw[x][y] = grid[x][y].draw();
             }
         }
 
@@ -28,28 +33,33 @@ public class Arena {
         for (int x = 0; x < 2; x++) {
             for (int y = 0; y < 2; y++) {
                 Position position = new Position(new MyVector(x, y), new MyVector(0, 0));
-                grid[x + width / 2 - 1][x + height / 2 - 1] = new Nest(position);
+                int xn = x + width / 2 - 1;
+                int yn = y + height / 2 - 1;
+                grid[xn][yn] = new Nest(position);
+                draw[xn][yn] = grid[xn][yn].draw();
             }
         }
-
-        // create ants
-        ants = spawnAntThreads();
+        //create ants
+        spawnAntThreads();
 
         // start thread for each ant
         ants.forEach(ant -> (new Thread(ant)).start());
     }
 
-    private static List<Ant> spawnAntThreads() {
-        List<Ant> ants = new LinkedList<>();
+    private static void spawnAntThreads() {
+         ants = new LinkedList<>();
         for (int i = 0; i < numberOfAnts; i++) {
-            int x = (int) (Math.random() * grid[0].length);
-            int y = (int) (Math.random() * grid.length);
+            int x = 2+(int) (Math.random() * grid[0].length-4);
+            int y = 2+(int) (Math.random() * grid.length-4);
+            if (x<1) x = 1;
+            if (y<1) y = 1;
 
+            System.out.println(x + " " + y);
             //create ant
             MyVector body = new MyVector(x, y);
             MyVector head = getRandomNeighbour(body);
 
-            Ant ant = new Ant(new Position(body, head));
+            Ant ant = new Ant(new Position(head, body));
 
             // TODO: code for checking if there is an ant already and then if not, spawning one there
             if(checkSelectedPosition(ant.getPosition())) {
@@ -58,22 +68,11 @@ public class Arena {
                 i--;
             }
         }
-
-        return ants;
     }
 
     private static boolean checkSelectedPosition(Position position) {
         // check if there is any ant on this position
-        return ants.stream().noneMatch(ant -> {
-            MyVector firstVector = ant.getPosition().getFirstVector();
-            MyVector secondVector = ant.getPosition().getSecondVector();
-
-            if(firstVector == position.getFirstVector() || firstVector == position.getSecondVector()) {
-                return false;
-            }
-
-            return secondVector != position.getFirstVector() && secondVector != position.getSecondVector();
-        });
+        return ants.stream().noneMatch(ant -> position.equals(ant.getPosition()));
     }
 
     private static Tile getTile(MyVector pos) {
@@ -95,25 +94,19 @@ public class Arena {
             }
             // right
             else if (rand > 0.5d && pos.getX() < width - 2) {
-                return new MyVector(1, 0);
+                newPos =  new MyVector(1, 0);
             }
             // down
             else if (rand > 0.25d && pos.getY() > 1) {
-                return new MyVector(0, -1);
+                newPos = new MyVector(0, -1);
             }
             //left
             else if (rand > 0d && pos.getX() > 1) {
-                return new MyVector(-1, 0);
+                newPos =  new MyVector(-1, 0);
             }
         }
-        return newPos;
-    }
 
-
-    public static List<Tile> getTiles(Ant ant) {
-        return getPositions(ant.getPosition()).stream().map(
-                position -> grid[position.getFirstVector().getX()][position.getFirstVector().getY()]
-        ).toList();
+        return MyVector.add(pos,newPos);
     }
 
     /**
@@ -122,48 +115,66 @@ public class Arena {
      */
     public static List<Tile> getTiles(Position position) {
         List<Tile> tiles = new LinkedList<>();
-        MyVector firstVec = position.getFirstVector();
-        MyVector secondVec = position.getSecondVector();
+        MyVector firstVec = position.getPos1();
+        MyVector secondVec = position.getPos2();
         tiles.add(grid[firstVec.getX()][firstVec.getY()]);
         tiles.add(grid[secondVec.getX()][secondVec.getY()]);
         return tiles;
     }
 
-    /**
-     * @param position of ant for whom possible positions are checked
-     * @return list of valid positions within cone
-     */
-    public static List<Position> getPositions(Position position) {
-        LinkedList<Position> positions = new LinkedList<>();
-
-        MyVector headPos = position.getSecondVector();
-        MyVector lookDirection = position.getDirection();
-        MyVector infrontHeadPos = MyVector.add(headPos, lookDirection);
-
-
-        MyVector orthogonalCounterClockwise = MyVector.orthogonalVector(lookDirection, false);
-        MyVector orthogonalClockwise = MyVector.orthogonalVector(lookDirection, true);
-
-
-        MyVector upLeft = MyVector.add(infrontHeadPos, orthogonalCounterClockwise);
-        positions.add(new Position(MyVector.add(headPos, orthogonalCounterClockwise), upLeft));
-        positions.add(new Position(upLeft, MyVector.add(MyVector.add(infrontHeadPos, orthogonalCounterClockwise), orthogonalCounterClockwise)));
-
-        positions.add(new Position(infrontHeadPos, MyVector.add(infrontHeadPos, lookDirection)));
-
-        MyVector upRight = MyVector.add(infrontHeadPos, orthogonalClockwise);
-        positions.add(new Position(MyVector.add(headPos, orthogonalClockwise), upRight));
-        positions.add(new Position(upRight, MyVector.add(MyVector.add(infrontHeadPos, orthogonalClockwise), orthogonalCounterClockwise)));
-
-        return positions.stream().filter(Arena::validPosition).toList();
+    public static List<Semaphore> getMutex(Position position){
+        List<Semaphore> mutex = new LinkedList<>();
+        MyVector firstVec = position.getPos1();
+        MyVector secondVec = position.getPos2();
+        mutex.add(grid[firstVec.getX()][firstVec.getY()].getMutex());
+        mutex.add(grid[secondVec.getX()][secondVec.getY()].getMutex());
+        return mutex;
     }
 
-    private static boolean validPosition(Position position) {
-        MyVector firstVec = position.getFirstVector();
-        MyVector secondVec = position.getSecondVector();
+
+    public static boolean validPosition(Position position) {
+        MyVector firstVec = position.getPos1();
+        MyVector secondVec = position.getPos2();
         return (firstVec.getX() >= 0 && firstVec.getX() < width &&
                 firstVec.getY() >= 0 && firstVec.getY() < height
                 && secondVec.getX() >= 0 && secondVec.getX() < width &&
                 secondVec.getY() >= 0 && secondVec.getY() < height);
+    }
+    public static void updateArena(Ant ant, Position newPos){
+        Position oldPos = ant.getPosition();
+        MyVector v1 = oldPos.getPos1();
+        MyVector v2 = oldPos.getPos2();
+
+        MyVector v3 = newPos.getPos1();
+        MyVector v4 = newPos.getPos2();
+        //old pos
+        synchronized (draw[v1.getX()][v1.getY()]){
+            synchronized (draw[v2.getX()][v2.getY()]){
+                draw[v1.getX()][v1.getY()] = getTile(v1).draw();
+                draw[v2.getX()][v2.getY()] = getTile(v2).draw();
+            }
+        }
+        // new pos
+        synchronized (draw[v3.getX()][v3.getY()]){
+            synchronized (draw[v4.getX()][v4.getY()]){
+                draw[v3.getX()][v3.getY()] = Ant.drawAntBody();
+                draw[v4.getX()][v4.getY()] = ant.drawAntHead();
+            }
+        }
+    }
+
+    public static void drawArena(){
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < width; i++) {
+            result.append('-');
+        }
+        result.append("\n");
+        for (Character[] row : draw) {
+            for (Character cell : row) {
+                result.append(cell);
+            }
+            result.append("\n");
+        }
+        System.out.println(result);
     }
 }

@@ -3,7 +3,8 @@ public class Nest extends Tile {
         super(position, false);
     }
 
-    public static void main(String[] args) {
-
+    @Override
+    public char draw(){
+        return '0';
     }
 }

@@ -49,8 +49,8 @@ public class Arena {
     private static void spawnAntThreads() {
          ants = new LinkedList<>();
         for (int i = 0; i < numberOfAnts; i++) {
-            int x = 2+(int) (Math.random() * grid[0].length-4);
-            int y = 2+(int) (Math.random() * grid.length-4);
+            int x = 2+(int) (Math.random() * grid.length-4);
+            int y = 2+(int) (Math.random() * grid[0].length-4);
             if (x<1) x = 1;
             if (y<1) y = 1;
 

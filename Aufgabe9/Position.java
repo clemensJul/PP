@@ -1,7 +1,7 @@
 import java.util.Objects;
 
 public class Position {
-    private final MyVector pos1,pos2;
+    private final MyVector pos1, pos2;
 
     public Position(MyVector firstPos, MyVector secPos) {
         // head position for ants
@@ -31,12 +31,23 @@ public class Position {
     public int hashCode() {
         return Objects.hash(pos1, pos2);
     }
-    public Direction getDirection(){
-        int x = pos1.getX()- pos2.getX();
-        int y = pos2.getY()- pos2.getY();
-        if (y > 0) return Direction.UP;
-        if (x > 0) return Direction.RIGHT;
-        if (y < 0 )return Direction.DOWN;
+
+    public Direction getDirection() {
+        int x = pos2.getX() - pos1.getX();
+        int y = pos2.getY() - pos1.getY();
+
+        if (y > 0) {
+            return Direction.UP;
+        }
+
+        if (x > 0) {
+            return Direction.RIGHT;
+        }
+
+        if (y < 0) {
+            return Direction.DOWN;
+        }
+
         return Direction.LEFT;
     }
 

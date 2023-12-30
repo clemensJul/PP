@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -22,9 +21,9 @@ public class Arena {
         Random random = new Random();
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[0].length; y++) {
-                // spawn leafs with a 30% chance
+                // spawn leafs with an x% chance
                 Position position = new Position(new MyVector(x, y), new MyVector(0, 0));
-                grid[x][y] = new Tile(position, random.nextDouble() < 0.2);
+                grid[x][y] = new Tile(position, random.nextDouble() < 0.05);
                 draw[x][y] = grid[x][y].draw();
             }
         }
@@ -47,12 +46,12 @@ public class Arena {
     }
 
     private static void spawnAntThreads() {
-         ants = new LinkedList<>();
+        ants = new LinkedList<>();
         for (int i = 0; i < numberOfAnts; i++) {
-            int x = 2+(int) (Math.random() * grid.length-4);
-            int y = 2+(int) (Math.random() * grid[0].length-4);
-            if (x<1) x = 1;
-            if (y<1) y = 1;
+            int x = 2 + (int) (Math.random() * grid.length - 4);
+            int y = 2 + (int) (Math.random() * grid[0].length - 4);
+            if (x < 1) x = 1;
+            if (y < 1) y = 1;
 
             System.out.println(x + " " + y);
             //create ant
@@ -62,7 +61,7 @@ public class Arena {
             Ant ant = new Ant(new Position(head, body));
 
             // TODO: code for checking if there is an ant already and then if not, spawning one there
-            if(checkSelectedPosition(ant.getPosition())) {
+            if (checkSelectedPosition(ant.getPosition())) {
                 ants.add(ant);
             } else {
                 i--;
@@ -94,7 +93,7 @@ public class Arena {
             }
             // right
             else if (rand > 0.5d && pos.getX() < width - 2) {
-                newPos =  new MyVector(1, 0);
+                newPos = new MyVector(1, 0);
             }
             // down
             else if (rand > 0.25d && pos.getY() > 1) {
@@ -102,11 +101,11 @@ public class Arena {
             }
             //left
             else if (rand > 0d && pos.getX() > 1) {
-                newPos =  new MyVector(-1, 0);
+                newPos = new MyVector(-1, 0);
             }
         }
 
-        return MyVector.add(pos,newPos);
+        return MyVector.add(pos, newPos);
     }
 
     /**
@@ -122,7 +121,7 @@ public class Arena {
         return tiles;
     }
 
-    public static List<Semaphore> getMutex(Position position){
+    public static List<Semaphore> getMutex(Position position) {
         List<Semaphore> mutex = new LinkedList<>();
         MyVector firstVec = position.getPos1();
         MyVector secondVec = position.getPos2();
@@ -140,34 +139,28 @@ public class Arena {
                 && secondVec.getX() >= 0 && secondVec.getX() < width &&
                 secondVec.getY() >= 0 && secondVec.getY() < height);
     }
-    public static void updateArena(Ant ant, Position newPos){
+
+    public static void updateArena(Ant ant, Position newPos) {
         Position oldPos = ant.getPosition();
         MyVector v1 = oldPos.getPos1();
         MyVector v2 = oldPos.getPos2();
 
         MyVector v3 = newPos.getPos1();
         MyVector v4 = newPos.getPos2();
+
         //old pos
-        synchronized (draw[v1.getX()][v1.getY()]){
-            synchronized (draw[v2.getX()][v2.getY()]){
-                draw[v1.getX()][v1.getY()] = getTile(v1).draw();
-                draw[v2.getX()][v2.getY()] = getTile(v2).draw();
-            }
-        }
+        draw[v1.getX()][v1.getY()] = getTile(v1).draw();
+        draw[v2.getX()][v2.getY()] = getTile(v2).draw();
+
         // new pos
-        synchronized (draw[v3.getX()][v3.getY()]){
-            synchronized (draw[v4.getX()][v4.getY()]){
-                draw[v3.getX()][v3.getY()] = Ant.drawAntBody();
-                draw[v4.getX()][v4.getY()] = ant.drawAntHead();
-            }
-        }
+        draw[v3.getX()][v3.getY()] = ant.drawAntHead();
+        draw[v4.getX()][v4.getY()] = Ant.drawAntBody();
     }
 
-    public static void drawArena(){
+    public static void drawArena() {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < width; i++) {
-            result.append('-');
-        }
+        result.append("\n".repeat(2));
+        result.append("-".repeat(Math.max(0, height)));
         result.append("\n");
         for (Character[] row : draw) {
             for (Character cell : row) {
@@ -175,6 +168,8 @@ public class Arena {
             }
             result.append("\n");
         }
+        result.append("-".repeat(Math.max(0, height)));
+        result.append("\n".repeat(2));
         System.out.println(result);
     }
 }

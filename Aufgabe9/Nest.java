@@ -5,6 +5,6 @@ public class Nest extends Tile {
 
     @Override
     public char draw(){
-        return '0';
+        return 'O';
     }
 }

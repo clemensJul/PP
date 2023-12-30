@@ -32,9 +32,16 @@ public class Tile {
     public Position getPosition() {
         return position;
     }
+
     public char draw(){
-        if (hasLeaf) return 'X';
-        if ( pheromoneLevel == 0) return ' ';
-        return (char) pheromoneLevel;
+        if (hasLeaf) {
+            return 'X';
+        }
+
+        if (pheromoneLevel == 0) {
+            return ' ';
+        }
+
+        return (char) (pheromoneLevel + '0');
     }
 }

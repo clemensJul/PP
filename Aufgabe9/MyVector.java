@@ -17,9 +17,18 @@ public class MyVector {
     public static MyVector add(MyVector one, MyVector two){
         return new MyVector(one.x+two.x,one.y+two.y);
     }
+
+    public static MyVector substract(MyVector one, MyVector two){
+        return new MyVector(one.x-two.x,one.y-two.y);
+    }
+
     public static MyVector orthogonalVector(MyVector vector, boolean clockwise){
         if(clockwise) return new MyVector(vector.y,-vector.x);
         return new MyVector(-vector.y,vector.x);
+    }
+
+    public static MyVector getLookingDirection(MyVector vector1, MyVector vector2){
+        return substract(vector1, vector2);
     }
 
     @Override

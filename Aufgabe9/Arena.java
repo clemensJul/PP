@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -11,7 +12,18 @@ public class Arena {
     private static int numberOfAnts;
     private static List<Ant> ants;
 
+    static Process nestProcess;
+    static Semaphore nestSemaphore = new Semaphore(1);
+
     public static void main(String[] args) {
+        // start Nest process
+        try {
+            nestProcess = Runtime.getRuntime().exec("java Nest");
+        } catch (IOException e) {
+            System.out.println();
+        }
+
+
         height = Integer.parseInt(args[0]);
         width = Integer.parseInt(args[1]);
         numberOfAnts = Integer.parseInt(args[2]);
@@ -42,7 +54,20 @@ public class Arena {
         spawnAntThreads();
 
         // start thread for each ant
-        ants.forEach(ant -> (new Thread(ant)).start());
+        List<Thread> threads = new LinkedList<>();
+        ants.forEach(ant -> threads.add(new Thread(ant)));
+        threads.forEach(Thread::start);
+
+        // Warte 10 Sekunden, bevor die Threads gestoppt werden
+        try {
+            Thread.sleep(5000); // 10 Sekunden in Millisekunden umgerechnet
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Stoppe die Threads nach 10 Sekunden
+        threads.forEach(Thread::interrupt);
+        nestProcess.destroy();
     }
 
     private static void spawnAntThreads() {

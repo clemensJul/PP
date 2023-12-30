@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,11 +14,12 @@ public class Ant implements Runnable {
     private Leaf leaf;
 
     public Ant(Position position) throws RuntimeException {
-        if (kingAnt == null) kingAnt = this;
+        if (kingAnt == null) {
+            kingAnt = this;
+        }
         this.position = position;
         // as this gets called only from one thread and arena will check against each position, this will always aquire the mutexes
         Arena.getMutex(position).forEach(m -> m.tryAcquire());
-
     }
 
     /**
@@ -23,6 +27,14 @@ public class Ant implements Runnable {
      */
     @Override
     public void run() {
+        // Erstelle den ObjectOutputStream außerhalb der Schleife
+        ObjectOutputStream outputStream = null;
+        try {
+            outputStream = new ObjectOutputStream(Arena.nestProcess.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         while (!Thread.currentThread().isInterrupted()) {
             // try acquiring mutex of all possible neighbors
             List<Position> availablePositions = getPositions();
@@ -68,14 +80,39 @@ public class Ant implements Runnable {
 
                 if (leaf != null && newTiles.stream().anyMatch(tile -> tile instanceof Nest)) {
                     System.out.println("take back leaf");
-                    leaf = null;
+
                     // send to nest process
                     // reverse ant direction to get somewhere else
+
+                    while(!Arena.nestSemaphore.tryAcquire()) {
+                        try {
+                            Thread.sleep(5 + (long) (Math.random() * 45));
+                        } catch (InterruptedException ignored) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                    // should be mutex to outputstream
+                    Process p = Arena.nestProcess;
+                    if (outputStream != null) {
+                        try {
+                            outputStream.writeObject(leaf);
+                            outputStream.flush();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // release mutex from writing
+                    if(Arena.nestSemaphore.availablePermits() == 0) {
+                        Arena.nestSemaphore.release();
+                    }
+
+                    leaf = null;
                 }
 
                 // if currently no leaf carrying but on tile with leaf -> take that leaf
                 if (leaf == null && newTiles.stream().anyMatch(Tile::isHasLeaf)) {
-                    leaf = new Leaf(0.04f);
+                    leaf = new Leaf((float)Math.random());
                 }
 
                 // increase pheromone levels
@@ -98,8 +135,17 @@ public class Ant implements Runnable {
 
             try {
                 Thread.sleep(5 + (long) (Math.random() * 45));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        // make sure stream gets closed only once
+        if (this == kingAnt && outputStream != null) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

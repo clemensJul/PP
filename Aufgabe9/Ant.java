@@ -84,13 +84,12 @@ public class Ant implements Runnable {
                     // send to nest process
                     // reverse ant direction to get somewhere else
 
-                    while(!Arena.nestSemaphore.tryAcquire()) {
-                        try {
-                            Thread.sleep(5 + (long) (Math.random() * 45));
-                        } catch (InterruptedException ignored) {
-                            Thread.currentThread().interrupt();
-                        }
+                    try {
+                        Arena.nestSemaphore.acquire();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
+
                     // should be mutex to outputstream
                     Process p = Arena.nestProcess;
                     if (outputStream != null) {

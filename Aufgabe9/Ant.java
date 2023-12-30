@@ -87,7 +87,7 @@ public class Ant implements Runnable {
                     try {
                         Arena.nestSemaphore.acquire();
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        Thread.currentThread().interrupt();
                     }
 
                     // should be mutex to outputstream

@@ -13,8 +13,6 @@ public class Nest extends Tile {
         return 'O';
     }
 
-    private static final List<Leaf> leafs = new LinkedList<>();
-
     private final static String outputFilePath = "output.txt";
     private final static String debugFilePath = "debug.txt";
 
@@ -34,7 +32,6 @@ public class Nest extends Tile {
                 try {
                     Object receivedObject = inputStream.readObject();
                     if (receivedObject instanceof Leaf receivedLeaf) {
-                        leafs.add(receivedLeaf);
                         writeToFile(outputFilePath, receivedLeaf.toString());
                     }
                 } catch (EOFException ignored) {

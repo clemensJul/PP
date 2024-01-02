@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 
 public class Ant implements Runnable {
     private static Ant kingAnt;
+    private static int antIdCounter;
+    private final int id;
+
     private Position position;
     private Leaf leaf;
 
@@ -17,6 +20,7 @@ public class Ant implements Runnable {
         if (kingAnt == null) {
             kingAnt = this;
         }
+        id = antIdCounter++;
         this.position = position;
         // as this gets called only from one thread and arena will check against each position, this will always aquire the mutexes
         Arena.getMutex(position).forEach(m -> m.tryAcquire());
@@ -103,7 +107,7 @@ public class Ant implements Runnable {
 
                 // if currently no leaf carrying but on tile with leaf -> take that leaf
                 if (leaf == null && newTiles.stream().anyMatch(Tile::isHasLeaf)) {
-                    leaf = new Leaf((float)Math.random());
+                    leaf = new Leaf((float)Math.random(), this);
                 }
 
                 // increase pheromone levels
@@ -166,6 +170,10 @@ public class Ant implements Runnable {
 
     public static Ant getKingAnt() {
         return kingAnt;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public static char drawAntBody() {

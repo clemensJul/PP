@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,10 +23,6 @@ public class Arena {
         try {
             nestProcess = Runtime.getRuntime().exec("java -cp bin Nest");
             objectOutputStream = new ObjectOutputStream(nestProcess.getOutputStream());
-
-            // Starte einen Thread, um den Output des Prozesses zu lesen
-            Thread outputReaderThread = new Thread(new ProcessOutputReader(nestProcess));
-            outputReaderThread.start();
         } catch (IOException e) {
             System.out.println();
         }
@@ -36,6 +30,15 @@ public class Arena {
         height = Integer.parseInt(args[0]);
         width = Integer.parseInt(args[1]);
         numberOfAnts = Integer.parseInt(args[2]);
+
+        // if there are to many ants for this grid, return
+        // each ant needs at least two tiles, so for a normal simulation at most one quarter
+        // should be occupied
+        if(numberOfAnts > (height * width) / 4) {
+            System.out.println("Too many ants for this size");
+            return;
+        }
+
         grid = new Tile[width][height];
         draw = new Character[width][height];
 
@@ -60,7 +63,7 @@ public class Arena {
             }
         }
         //create ants
-        spawnAntThreads();
+        spawnAnts();
 
         // start thread for each ant
         List<Thread> threads = new LinkedList<>();
@@ -77,7 +80,6 @@ public class Arena {
         // Stoppe die Threads nach 10 Sekunden
         threads.forEach(Thread::interrupt);
 
-        System.out.println(counter);
         try {
             objectOutputStream.close();
         } catch (IOException e) {
@@ -87,7 +89,7 @@ public class Arena {
         nestProcess.destroy();
     }
 
-    private static void spawnAntThreads() {
+    private static void spawnAnts() {
         ants = new LinkedList<>();
         for (int i = 0; i < numberOfAnts; i++) {
             int x = 2 + (int) (Math.random() * grid.length - 4);
@@ -95,11 +97,11 @@ public class Arena {
             if (x < 1) x = 1;
             if (y < 1) y = 1;
 
-            System.out.println(x + " " + y);
             //create ant
             MyVector body = new MyVector(x, y);
             MyVector head = getRandomNeighbour(body);
 
+            System.out.println("spawn ant" + i);
             Ant ant = new Ant(new Position(head, body));
 
             // TODO: code for checking if there is an ant already and then if not, spawning one there
@@ -213,26 +215,5 @@ public class Arena {
         result.append("-".repeat(Math.max(0, height)));
         result.append("\n".repeat(2));
         System.out.println(result);
-    }
-
-    private static class ProcessOutputReader implements Runnable {
-        private final Process process;
-
-        public ProcessOutputReader(Process process) {
-            this.process = process;
-        }
-
-        @Override
-        public void run() {
-            try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println("Output: " + line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

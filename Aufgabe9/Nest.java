@@ -18,11 +18,15 @@ public class Nest extends Tile {
     private final static String outputFilePath = "output.txt";
     private final static String debugFilePath = "debug.txt";
 
-    public static void main(String[] args) {
-        File file = new File(outputFilePath);
+    private static void deleteFileIfExists(File file) {
         if (file.exists()) {
             file.delete();
         }
+    }
+
+    public static void main(String[] args) {
+        deleteFileIfExists(new File(outputFilePath));
+        deleteFileIfExists(new File(debugFilePath));
 
         try (ObjectInputStream inputStream = new ObjectInputStream(System.in)) {
             // Empfange Daten von ProcessA

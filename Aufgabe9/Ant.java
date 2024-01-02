@@ -27,14 +27,6 @@ public class Ant implements Runnable {
      */
     @Override
     public void run() {
-        // Erstelle den ObjectOutputStream außerhalb der Schleife
-        ObjectOutputStream outputStream = null;
-        try {
-            outputStream = new ObjectOutputStream(Arena.nestProcess.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         while (!Thread.currentThread().isInterrupted()) {
             // try acquiring mutex of all possible neighbors
             List<Position> availablePositions = getPositions();
@@ -84,6 +76,7 @@ public class Ant implements Runnable {
                     // send to nest process
                     // reverse ant direction to get somewhere else
 
+
                     try {
                         Arena.nestSemaphore.acquire();
                     } catch (InterruptedException e) {
@@ -91,11 +84,12 @@ public class Ant implements Runnable {
                     }
 
                     // should be mutex to outputstream
-                    Process p = Arena.nestProcess;
-                    if (outputStream != null) {
+                    Arena.counter++;
+
+                    if (Arena.objectOutputStream != null) {
                         try {
-                            outputStream.writeObject(leaf);
-                            outputStream.flush();
+                            Arena.objectOutputStream.writeObject(leaf);
+                            Arena.objectOutputStream.flush();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -136,15 +130,6 @@ public class Ant implements Runnable {
                 Thread.sleep(5 + (long) (Math.random() * 45));
             } catch (InterruptedException ignored) {
                 Thread.currentThread().interrupt();
-            }
-        }
-
-        // make sure stream gets closed only once
-        if (this == kingAnt && outputStream != null) {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }

@@ -1,8 +1,12 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
+
 
 public class Arena {
     private static Tile[][] grid;
@@ -13,16 +17,34 @@ public class Arena {
     private static List<Ant> ants;
 
     static Process nestProcess;
+    static ObjectOutputStream objectOutputStream;
     static Semaphore nestSemaphore = new Semaphore(1);
+
+    static int counter = 0;
+    public static List<Nest> getNestTiles() {
+        List<Nest> nestTiles = new LinkedList<>();
+        for (int x = 0; x < 2; x++) {
+            for (int y = 0; y < 2; y++) {
+                int xn = x + width / 2 - 1;
+                int yn = y + height / 2 - 1;
+                nestTiles.add((Nest)grid[xn][yn]);
+            }
+        }
+        return nestTiles;
+    }
 
     public static void main(String[] args) {
         // start Nest process
         try {
-            nestProcess = Runtime.getRuntime().exec("java Nest");
+            nestProcess = Runtime.getRuntime().exec("java -cp bin Nest");
+            objectOutputStream = new ObjectOutputStream(nestProcess.getOutputStream());
+
+            // Starte einen Thread, um den Output des Prozesses zu lesen
+            Thread outputReaderThread = new Thread(new ProcessOutputReader(nestProcess));
+            outputReaderThread.start();
         } catch (IOException e) {
             System.out.println();
         }
-
 
         height = Integer.parseInt(args[0]);
         width = Integer.parseInt(args[1]);
@@ -60,13 +82,21 @@ public class Arena {
 
         // Warte 10 Sekunden, bevor die Threads gestoppt werden
         try {
-            Thread.sleep(5000); // 10 Sekunden in Millisekunden umgerechnet
+            Thread.sleep(20000); // 10 Sekunden in Millisekunden umgerechnet
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         // Stoppe die Threads nach 10 Sekunden
         threads.forEach(Thread::interrupt);
+
+        System.out.println(counter);
+        try {
+            objectOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         nestProcess.destroy();
     }
 
@@ -196,5 +226,26 @@ public class Arena {
         result.append("-".repeat(Math.max(0, height)));
         result.append("\n".repeat(2));
         System.out.println(result);
+    }
+
+    private static class ProcessOutputReader implements Runnable {
+        private final Process process;
+
+        public ProcessOutputReader(Process process) {
+            this.process = process;
+        }
+
+        @Override
+        public void run() {
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println("Output: " + line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -10,4 +10,11 @@ public class Leaf implements Serializable  {
     public float getSize() {
         return size;
     }
+
+    @Override
+    public String toString() {
+        return "Leaf{" +
+                "size=" + size +
+                '}';
+    }
 }

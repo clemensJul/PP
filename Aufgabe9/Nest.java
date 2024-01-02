@@ -1,7 +1,5 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,34 +15,49 @@ public class Nest extends Tile {
 
     private static final List<Leaf> leafs = new LinkedList<>();
 
+    private final static String outputFilePath = "output.txt";
+    private final static String debugFilePath = "debug.txt";
+
     public static void main(String[] args) {
-        // Füge einen Shutdown-Hook hinzu, um auf SIGINT (Ctrl+C) zu reagieren
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            // Code, der beim Empfangen des SIGINT-Signals ausgeführt wird
-            StringBuilder output = new StringBuilder();
-            leafs.forEach(leaf -> output.append("Leaf: ").append(leaf.getSize()).append("\n"));
-            writeToOutputFile(output.toString());
-        }));
+        File file = new File(outputFilePath);
+        if (file.exists()) {
+            file.delete();
+        }
 
         try (ObjectInputStream inputStream = new ObjectInputStream(System.in)) {
             // Empfange Daten von ProcessA
             while (true) {
-                Object receivedObject = inputStream.readObject();
-                if (receivedObject instanceof Leaf receivedLeaf) {
-                    leafs.add(receivedLeaf);
+                try {
+                    Object receivedObject = inputStream.readObject();
+                    if (receivedObject instanceof Leaf receivedLeaf) {
+                        leafs.add(receivedLeaf);
+                        writeToFile(outputFilePath, receivedLeaf.toString());
+                    }
+                } catch (EOFException ignored) {
+                } catch (Exception e) {
+                    writeToFile(debugFilePath, exceptionToString(e));
                 }
             }
-        } catch (IOException | ClassNotFoundException | RuntimeException e) {
-            e.printStackTrace();
+        } catch (IOException | RuntimeException e) {
+            writeToFile(debugFilePath, exceptionToString(e));
         }
     }
 
-    private static void writeToOutputFile(String string) {
+    private static String exceptionToString(Exception exception) {
+        StringBuilder s = new StringBuilder();
+        Arrays.stream(exception.getStackTrace()).toList().forEach(el -> s.append(el.toString()).append("\n"));
+        s.append(exception).append("\n");
+        return s.toString();
+    }
+
+    private static void writeToFile(String outputFilePath, String string) {
         try {
-            FileWriter fileWriter = new FileWriter("output.txt");
+            FileWriter fileWriter = new FileWriter(outputFilePath, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
             bufferedWriter.write(string);
+            bufferedWriter.newLine();
+
             bufferedWriter.close();
         } catch (IOException e) {
             e.printStackTrace();

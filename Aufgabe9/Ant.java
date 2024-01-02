@@ -84,8 +84,6 @@ public class Ant implements Runnable {
                     }
 
                     // should be mutex to outputstream
-                    Arena.counter++;
-
                     if (Arena.objectOutputStream != null) {
                         try {
                             Arena.objectOutputStream.writeObject(leaf);

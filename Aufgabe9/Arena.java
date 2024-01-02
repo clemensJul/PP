@@ -20,19 +20,6 @@ public class Arena {
     static ObjectOutputStream objectOutputStream;
     static Semaphore nestSemaphore = new Semaphore(1);
 
-    static int counter = 0;
-    public static List<Nest> getNestTiles() {
-        List<Nest> nestTiles = new LinkedList<>();
-        for (int x = 0; x < 2; x++) {
-            for (int y = 0; y < 2; y++) {
-                int xn = x + width / 2 - 1;
-                int yn = y + height / 2 - 1;
-                nestTiles.add((Nest)grid[xn][yn]);
-            }
-        }
-        return nestTiles;
-    }
-
     public static void main(String[] args) {
         // start Nest process
         try {

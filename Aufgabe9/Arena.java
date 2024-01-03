@@ -184,21 +184,21 @@ public class Arena {
                 secondVec.getY() >= 0 && secondVec.getY() < height);
     }
 
-    public static void updateArena(Ant ant, Position newPos) {
-        Position oldPos = ant.getPosition();
-        MyVector v1 = oldPos.getPos1();
-        MyVector v2 = oldPos.getPos2();
+    public static void updateArena(Ant ant, Position oldPos) {
+        Position newPos = ant.getPosition();
+        MyVector ohead = oldPos.getPos1();
+        MyVector obody = oldPos.getPos2();
 
-        MyVector v3 = newPos.getPos1();
-        MyVector v4 = newPos.getPos2();
+        MyVector nhead = newPos.getPos1();
+        MyVector nbody = newPos.getPos2();
 
         //old pos
-        draw[v1.getX()][v1.getY()] = getTile(v1).draw();
-        draw[v2.getX()][v2.getY()] = getTile(v2).draw();
+        draw[ohead.getX()][ohead.getY()] = getTile(ohead).draw();
+        draw[obody.getX()][obody.getY()] = getTile(obody).draw();
 
         // new pos
-        draw[v3.getX()][v3.getY()] = ant.drawAntHead();
-        draw[v4.getX()][v4.getY()] = Ant.drawAntBody();
+        draw[nhead.getX()][nhead.getY()] = ant.drawAntHead();
+        draw[nbody.getX()][nbody.getY()] = ant.drawAntBody();
     }
 
     public static void drawArena() {

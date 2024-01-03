@@ -116,8 +116,10 @@ public class Ant implements Runnable {
                 }
 
                 // update arena
-                Arena.updateArena(this, chosenNewPos);
+                Position oldPos = this.position;
                 this.position = chosenNewPos;
+                Arena.updateArena(this, oldPos);
+
 
                 // also release the ants last positions semaphore
                 Arena.getMutex(this.position).stream().filter(semaphore -> semaphore.availablePermits() == 0).forEach(Semaphore::release);
@@ -176,7 +178,9 @@ public class Ant implements Runnable {
         return id;
     }
 
-    public static char drawAntBody() {
+    public char drawAntBody() {
+        // for testing
+        if (this == kingAnt) return 'Q';
         return '+';
     }
 

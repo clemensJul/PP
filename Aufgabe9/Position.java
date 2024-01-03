@@ -33,19 +33,19 @@ public class Position {
     }
 
     public Direction getDirection() {
-        int x = pos2.getX() - pos1.getX();
-        int y = pos2.getY() - pos1.getY();
-
-        if (y > 0) {
-            return Direction.UP;
-        }
+        int x = pos1.getX() - pos2.getX();
+        int y = pos1.getY() - pos2.getY();
 
         if (x > 0) {
+            return Direction.DOWN;
+        }
+
+        if (y > 0) {
             return Direction.RIGHT;
         }
 
-        if (y < 0) {
-            return Direction.DOWN;
+        if (x < 0) {
+            return Direction.UP;
         }
 
         return Direction.LEFT;

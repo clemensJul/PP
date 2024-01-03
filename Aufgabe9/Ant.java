@@ -144,29 +144,34 @@ public class Ant implements Runnable {
     private List<Position> getPositions() {
         LinkedList<Position> positions = new LinkedList<>();
 
-        MyVector headPos = this.position.getPos1();
-        MyVector lookDirection = MyVector.substract(headPos, this.position.getPos2());
-        MyVector inFrontHeadPos = MyVector.add(headPos, lookDirection);
+        MyVector headPosition = this.position.getPos1();
+        MyVector upDirection = MyVector.substract(headPosition, this.position.getPos2());
+        MyVector up = MyVector.add(headPosition, upDirection);
 
 
-        MyVector orthogonalCounterClockwise = MyVector.orthogonalVector(lookDirection, false);
-        MyVector orthogonalClockwise = MyVector.orthogonalVector(lookDirection, true);
+        MyVector leftDirection = MyVector.orthogonalVector(upDirection, false);
+        MyVector rightDirection = MyVector.orthogonalVector(upDirection, true);
 
 
-        MyVector upLeft = MyVector.add(inFrontHeadPos, orthogonalCounterClockwise);
+        //90
+        MyVector left = MyVector.add(headPosition,leftDirection);
+        MyVector hardLeft = MyVector.add(left,leftDirection);
+        positions.add(new Position(hardLeft,left));
+        //45
+        MyVector upLeft = MyVector.add(up, leftDirection);
+        positions.add(new Position(upLeft,MyVector.add(headPosition,leftDirection)));
 
-        positions.add(new Position(upLeft,MyVector.add(headPos, orthogonalCounterClockwise)));
+        //0
+        positions.add(new Position(MyVector.add(up, upDirection),up));
 
-        MyVector hardLeft = MyVector.add(MyVector.add(inFrontHeadPos, orthogonalCounterClockwise), orthogonalCounterClockwise);
-        positions.add(new Position(hardLeft,upLeft));
+        //-45
+        MyVector right = MyVector.add(headPosition,rightDirection);
+        MyVector upRight = MyVector.add(up, rightDirection);
+        positions.add(new Position(upRight,right));
 
-        positions.add(new Position(MyVector.add(inFrontHeadPos, lookDirection),inFrontHeadPos));
-
-        MyVector upRight = MyVector.add(inFrontHeadPos, orthogonalClockwise);
-        positions.add(new Position(upRight,MyVector.add(headPos, orthogonalClockwise)));
-
-        MyVector hardRight = MyVector.add(MyVector.add(inFrontHeadPos, orthogonalClockwise), orthogonalCounterClockwise);
-        positions.add(new Position(hardRight,upRight));
+        //-90
+        MyVector hardRight = MyVector.add(right,rightDirection);
+        positions.add(new Position(hardRight,right));
 
         if (this == kingAnt) System.out.println(positions.toString());
         return positions.stream().filter(Arena::validPosition).toList();

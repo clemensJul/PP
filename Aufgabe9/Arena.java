@@ -206,9 +206,9 @@ public class Arena {
         result.append("\n".repeat(2));
         result.append("-".repeat(Math.max(0, height)));
         result.append("\n");
-        for (Character[] row : draw) {
-            for (Character cell : row) {
-                result.append(cell);
+        for (int y = 0; y < draw[0].length;y++) {
+            for (int x = 0; x < draw.length; x++) {
+                result.append(draw[x][y]);
             }
             result.append("\n");
         }

@@ -154,15 +154,21 @@ public class Ant implements Runnable {
 
 
         MyVector upLeft = MyVector.add(inFrontHeadPos, orthogonalCounterClockwise);
-        positions.add(new Position(MyVector.add(headPos, orthogonalCounterClockwise), upLeft));
-        positions.add(new Position(upLeft, MyVector.add(MyVector.add(inFrontHeadPos, orthogonalCounterClockwise), orthogonalCounterClockwise)));
 
-        positions.add(new Position(inFrontHeadPos, MyVector.add(inFrontHeadPos, lookDirection)));
+        positions.add(new Position(upLeft,MyVector.add(headPos, orthogonalCounterClockwise)));
+
+        MyVector hardLeft = MyVector.add(MyVector.add(inFrontHeadPos, orthogonalCounterClockwise), orthogonalCounterClockwise);
+        positions.add(new Position(hardLeft,upLeft));
+
+        positions.add(new Position(MyVector.add(inFrontHeadPos, lookDirection),inFrontHeadPos));
 
         MyVector upRight = MyVector.add(inFrontHeadPos, orthogonalClockwise);
-        positions.add(new Position(MyVector.add(headPos, orthogonalClockwise), upRight));
-        positions.add(new Position(upRight, MyVector.add(MyVector.add(inFrontHeadPos, orthogonalClockwise), orthogonalCounterClockwise)));
+        positions.add(new Position(upRight,MyVector.add(headPos, orthogonalClockwise)));
 
+        MyVector hardRight = MyVector.add(MyVector.add(inFrontHeadPos, orthogonalClockwise), orthogonalCounterClockwise);
+        positions.add(new Position(hardRight,upRight));
+
+        if (this == kingAnt) System.out.println(positions.toString());
         return positions.stream().filter(Arena::validPosition).toList();
     }
 

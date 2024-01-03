@@ -36,19 +36,26 @@ public class Position {
         int x = pos1.getX() - pos2.getX();
         int y = pos1.getY() - pos2.getY();
 
-        if (x > 0) {
+        if (y > 0) {
             return Direction.DOWN;
         }
 
-        if (y > 0) {
+        if (x > 0) {
             return Direction.RIGHT;
         }
 
-        if (x < 0) {
+        if (y < 0) {
             return Direction.UP;
         }
 
         return Direction.LEFT;
     }
 
+    @Override
+    public String toString() {
+        return "Position{" +
+                "pos1=" + pos1 +
+                ", pos2=" + pos2 +
+                '}';
+    }
 }

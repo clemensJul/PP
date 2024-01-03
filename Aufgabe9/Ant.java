@@ -16,6 +16,9 @@ public class Ant implements Runnable {
     private Position position;
     private Leaf leaf;
 
+    private int noMoveCounter;
+    private int moveCounter;
+
     public Ant(Position position) throws RuntimeException {
         if (kingAnt == null) {
             kingAnt = this;
@@ -24,6 +27,10 @@ public class Ant implements Runnable {
         this.position = position;
         // as this gets called only from one thread and arena will check against each position, this will always aquire the mutexes
         Arena.getMutex(position).forEach(m -> m.tryAcquire());
+
+        // counts how often an ant moved and how often it was stuck
+        noMoveCounter = 0;
+        moveCounter = 0;
     }
 
     /**
@@ -55,15 +62,6 @@ public class Ant implements Runnable {
 
             // chose a position of the locked position
             Position chosenNewPos = lockedPositions.isEmpty() ? null : lockedPositions.get((int) (Math.random() * lockedPositions.size()));
-
-            // irgendwas passt beim auswahl kriterium von den possible neighbors nicht.. die sind hin und wieder komplett leer und deswegen steht alles
-            // man sollt vielleicht wenn sie am rand stehen sie irgendwie umdrehen oder so. also am besten kopf mit körper vertauschen??
-            if(chosenNewPos == null) {
-                if(availablePositions.isEmpty()) {
-                    this.position = new Position(this.position.getPos2(), this.position.getPos1());
-                }
-                System.out.println();
-            }
 
             if (chosenNewPos != null) {
                 // release every other position for other ants
@@ -120,9 +118,13 @@ public class Ant implements Runnable {
                 this.position = chosenNewPos;
                 Arena.updateArena(this, oldPos);
 
+                //update move counter
+                moveCounter++;
 
                 // also release the ants last positions semaphore
                 Arena.getMutex(this.position).stream().filter(semaphore -> semaphore.availablePermits() == 0).forEach(Semaphore::release);
+            }else {
+                noMoveCounter++;
             }
 
             // kingAnt time

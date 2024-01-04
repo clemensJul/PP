@@ -1,14 +1,12 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 public class Ant implements Runnable {
+
     private static Ant kingAnt;
     private static int antIdCounter;
     private final int id;
@@ -61,7 +59,15 @@ public class Ant implements Runnable {
             ).toList();
 
             // chose a position of the locked position
-            Position chosenNewPos = lockedPositions.isEmpty() ? null : lockedPositions.get((int) (Math.random() * lockedPositions.size()));
+            Position chosenNewPos = null;
+            // if ant has a leaf try to go home
+            if (leaf != null){
+                chosenNewPos = lockedPositions.stream().min(Comparator.comparingInt(Arena::distanceToNest)).get();
+            }
+            // pathfinding to a leaf
+            else {
+                chosenNewPos = lockedPositions.stream().min(Comparator.comparingInt(Arena::smellOfTiles)).get();
+            }
 
             if (chosenNewPos != null) {
                 // release every other position for other ants
@@ -70,14 +76,12 @@ public class Ant implements Runnable {
                 acquiredVectors.remove(chosenNewPos.getPos2());
                 acquiredVectors.forEach((key, value) -> value.release());
 
-                List<Tile> newTiles = Arena.getTiles(chosenNewPos);
 
-                if (leaf != null && newTiles.stream().anyMatch(tile -> tile instanceof Nest)) {
+                if (leaf != null && Arena.positionHasNest(chosenNewPos)) {
                     System.out.println("take back leaf");
 
                     // send to nest process
                     // reverse ant direction to get somewhere else
-
 
                     try {
                         Arena.nestSemaphore.acquire();
@@ -104,13 +108,13 @@ public class Ant implements Runnable {
                 }
 
                 // if currently no leaf carrying but on tile with leaf -> take that leaf
-                if (leaf == null && newTiles.stream().anyMatch(Tile::isHasLeaf)) {
+                if (leaf == null && Arena.getTiles(chosenNewPos).stream().anyMatch(Tile::isHasLeaf)) {
                     leaf = new Leaf((float)Math.random(), this);
                 }
 
                 // increase pheromone levels
                 if (leaf != null) {
-                    newTiles.forEach(Tile::increasePheromoneLevel);
+                    Arena.getTiles(position).forEach(Tile::increasePheromoneLevel);
                 }
 
                 // update arena
@@ -130,6 +134,8 @@ public class Ant implements Runnable {
             // kingAnt time
             if (this == kingAnt) {
                 Arena.drawArena();
+                System.out.println("times not moved: "+ noMoveCounter);
+                System.out.println("times moved"+ moveCounter);
             }
 
             try {
@@ -175,7 +181,6 @@ public class Ant implements Runnable {
         MyVector hardRight = MyVector.add(right,rightDirection);
         positions.add(new Position(hardRight,right));
 
-        if (this == kingAnt) System.out.println(positions.toString());
         return positions.stream().filter(Arena::validPosition).toList();
     }
 

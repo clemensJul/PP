@@ -1,4 +1,7 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class Position {
     private final MyVector pos1, pos2;
@@ -58,4 +61,5 @@ public class Position {
                 ", pos2=" + pos2 +
                 '}';
     }
+
 }

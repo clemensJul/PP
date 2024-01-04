@@ -216,4 +216,14 @@ public class Arena {
         result.append("\n".repeat(2));
         System.out.println(result);
     }
+    public static Boolean positionHasNest(Position position){
+     return getTile(position.getPos1()) instanceof Nest || getTile(position.getPos2()) instanceof Nest;
+    }
+    public static int distanceToNest (Position position){
+        MyVector headPos = position.getPos1();
+        return Math.abs(headPos.getX()-width/2)+Math.abs(headPos.getY()-height/2);
+    }
+    public static int smellOfTiles(Position position){
+        return getTile(position.getPos1()).getPheromoneLevel() + getTile(position.getPos2()).getPheromoneLevel();
+    }
 }

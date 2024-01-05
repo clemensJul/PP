@@ -13,6 +13,7 @@ public class Arena {
     private static int width;
     private static int numberOfAnts;
     private static List<Ant> ants;
+    private static List<Thread> threads;
 
     static Process nestProcess;
     static ObjectOutputStream objectOutputStream;
@@ -66,27 +67,19 @@ public class Arena {
         spawnAnts();
 
         // start thread for each ant
-        List<Thread> threads = new LinkedList<>();
+        threads = new LinkedList<>();
         ants.forEach(ant -> threads.add(new Thread(ant)));
         threads.forEach(Thread::start);
 
         // Warte 10 Sekunden, bevor die Threads gestoppt werden
         try {
-            Thread.sleep(20000); // 10 Sekunden in Millisekunden umgerechnet
+            Thread.sleep(10000); // 10 Sekunden in Millisekunden umgerechnet
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("Ants stopped because simulation ran for 10 sec");
+        stopAnts();
 
-        // Stoppe die Threads nach 10 Sekunden
-        threads.forEach(Thread::interrupt);
-
-        try {
-            objectOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        nestProcess.destroy();
     }
 
     private static void spawnAnts() {
@@ -226,4 +219,27 @@ public class Arena {
     public static int smellOfTiles(Position position){
         return getTile(position.getPos1()).getPheromoneLevel() + getTile(position.getPos2()).getPheromoneLevel();
     }
+    public static synchronized void sendLeaf(Leaf leaf) throws IOException {
+        Arena.objectOutputStream.writeObject(leaf);
+        //Arena.objectOutputStream.flush();
+    }
+    public static synchronized void stopAnts(){
+        // Stoppe die Threads nach 10 Sekunden
+        threads.forEach(Thread::interrupt);
+
+
+        try {
+            // wait until pipes are written
+
+            //TODO: DAS FUNKTIONIERT NOCH NICHT ABER ICH WEISS NICHT WAS MA DA MACHEN KOENNT
+            Thread.sleep(50);
+            objectOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }catch (InterruptedException e ){
+            e.printStackTrace();
+        }
+        nestProcess.destroy();
+    }
+
 }

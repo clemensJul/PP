@@ -62,11 +62,11 @@ public class Ant implements Runnable {
             Position chosenNewPos = null;
             // if ant has a leaf try to go home
             if (leaf != null){
-                chosenNewPos = lockedPositions.stream().min(Comparator.comparingInt(Arena::distanceToNest)).get();
+                chosenNewPos = lockedPositions.stream().min(Comparator.comparingInt(Arena::distanceToNest)).orElse(null);
             }
             // pathfinding to a leaf
             else {
-                chosenNewPos = lockedPositions.stream().min(Comparator.comparingInt(Arena::smellOfTiles)).get();
+                chosenNewPos = lockedPositions.stream().min(Comparator.comparingInt(Arena::smellOfTiles)).orElse(null);
             }
 
             if (chosenNewPos != null) {
@@ -92,8 +92,7 @@ public class Ant implements Runnable {
                     // should be mutex to outputstream
                     if (Arena.objectOutputStream != null) {
                         try {
-                            Arena.objectOutputStream.writeObject(leaf);
-                            Arena.objectOutputStream.flush();
+                            Arena.sendLeaf(leaf);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -138,12 +137,19 @@ public class Ant implements Runnable {
                 System.out.println("times moved"+ moveCounter);
             }
 
+            //stop simulation if any ant hits 250 no moves
+            if (noMoveCounter > 250) {
+                System.out.println("Ants stopped because one ant reached 250 no moves");
+                Arena.stopAnts();
+            }
+
             try {
                 Thread.sleep(5 + (long) (Math.random() * 45));
             } catch (InterruptedException ignored) {
                 Thread.currentThread().interrupt();
             }
         }
+
     }
 
     /**

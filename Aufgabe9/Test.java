@@ -1,7 +1,15 @@
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Class to test and run multiple simulations of the Arena with different parameters.
+ */
 public class Test {
+    /**
+     * Main method to initiate multiple simulations with varying parameters.
+     *
+     * @param args Command-line arguments (not used in this context).
+     */
     public static void main(String[] args) {
         // width - height - numberOfAnts
         int[][] params = {
@@ -10,7 +18,7 @@ public class Test {
                 { 40, 40, 30},
         };
 
-        // delete test.out before starting animation
+        // Delete test.out before starting animation
         FileWriter.deleteFileIfExists(new File("test.out"));
         for (int i = 0; i < params.length; i++) {
             FileWriter.writeToFile(FileWriter.OUTPUT_FILEPATH, "Starting " + (i+1) + ". simulation:");
@@ -18,7 +26,7 @@ public class Test {
                 Process process = Runtime.getRuntime().exec(String.format("java -cp bin Arena %d %d %d", params[i][0], params[i][1], params[i][2]));
                 process.waitFor();
                 System.out.println((i+1) + ". Process finished");
-                for (int j = 0; j < 20; j++) {
+                for (int j = 0; j < 5; j++) {
                     if(j % 2 == 0) {
                         FileWriter.writeToFile(FileWriter.OUTPUT_FILEPATH, "|".repeat(40));
                     } else {
@@ -27,9 +35,14 @@ public class Test {
                 }
 
             } catch (IOException ignored) {
+                // Handle IOException if needed
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
     }
+    // Arbeitsteilung:
+    // Ants logic and Visualisierung Clemens
+    // Interprozesskommunikation Raphael
+    // Parallelisierung beide
 }

@@ -1,31 +1,32 @@
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
 public class Ant implements Runnable {
+    private static Ant kingAnt; // Represents the king ant instance within the simulation.
+    private static int antIdCounter; // Tracks the count of created ants for assigning unique identifiers.
+    private static final int maxWait = 64; // Defines the maximum count of iterations an ant can remain stationary before the simulation stops.
+    private final int id; // Unique identifier for the ant.
+    private Position position; // Represents the current position of the ant within the simulation arena.
+    private Leaf leaf; // Represents a leaf being carried by the ant (if any).
+    private int noMoveCounter; // Counts the number of consecutive iterations the ant remains stationary.
+    private int moveCounter; // Counts the number of movements made by the ant.
 
-    private static Ant kingAnt;
-    private static int antIdCounter;
-    private static  int maxWait = 64;
-    private final int id;
-
-    private Position position;
-    private Leaf leaf;
-
-    private int noMoveCounter;
-    private int moveCounter;
-
+    /**
+     * Constructs an Ant object with a specified position.
+     *
+     * @param position The position where the Ant will be placed.
+     * @throws RuntimeException If unable to initialize the Ant.
+     */
     public Ant(Position position) throws RuntimeException {
         if (kingAnt == null) {
             kingAnt = this;
         }
         id = antIdCounter++;
         this.position = position;
-        // as this gets called only from one thread and arena will check against each position, this will always aquire the mutexes
-        Arena.getMutex(position).forEach(m -> m.tryAcquire());
+        // as this gets called only from one thread and arena will check against each position, this will always acquire the mutexes
+        Arena.getMutex(position).forEach(Semaphore::tryAcquire);
 
         // counts how often an ant moved and how often it was stuck
         noMoveCounter = 0;
@@ -35,7 +36,8 @@ public class Ant implements Runnable {
     }
 
     /**
-     * Runs this operation.
+     * Runs the ant thread, controlling the movement and behavior of the ant within the simulation environment.
+     * The ant continuously explores, moves, carries leaves, and interacts with the arena based on predefined rules.
      */
     @Override
     public void run() {
@@ -64,9 +66,9 @@ public class Ant implements Runnable {
             // chose a position of the locked position
             Position chosenNewPos = null;
             // if ant has a leaf try to go home
-            if (leaf != null){
+            if (leaf != null) {
                 // nest is occupied
-                if (Arena.getNestSemaphore().availablePermits() == 0){
+                if (Arena.getNestSemaphore().availablePermits() == 0) {
                     chosenNewPos = lockedPositions.stream().filter(Arena::positionHasNest).min(Comparator.comparingInt(Arena::distanceToNest)).orElse(null);
                 }
                 chosenNewPos = lockedPositions.stream().min(Comparator.comparingInt(Arena::distanceToNest)).orElse(null);
@@ -106,7 +108,7 @@ public class Ant implements Runnable {
                     }
 
                     // release mutex from writing
-                    if(Arena.getNestSemaphore().availablePermits() == 0) {
+                    if (Arena.getNestSemaphore().availablePermits() == 0) {
                         Arena.getNestSemaphore().release();
                     }
 
@@ -115,7 +117,7 @@ public class Ant implements Runnable {
 
                 // if currently no leaf carrying but on tile with leaf -> take that leaf
                 if (leaf == null && Arena.getTiles(chosenNewPos).stream().anyMatch(Tile::isHasLeaf)) {
-                    leaf = new Leaf((float)Math.random(), this);
+                    leaf = new Leaf((float) Math.random(), this);
                 }
 
                 // increase pheromone levels
@@ -133,14 +135,14 @@ public class Ant implements Runnable {
 
                 // also release the ants last positions semaphore
                 Arena.getMutex(this.position).stream().filter(semaphore -> semaphore.availablePermits() == 0).forEach(Semaphore::release);
-            }else {
+            } else {
                 noMoveCounter++;
             }
 
             // kingAnt time
             if (this == kingAnt) {
                 Arena.drawArena();
-                System.out.println("times not moved: "+ noMoveCounter);
+                System.out.println("times not moved: " + noMoveCounter);
                 System.out.println("times moved: " + moveCounter);
             }
 
@@ -155,11 +157,12 @@ public class Ant implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
-
     }
 
     /**
-     * @return list of valid positions within cone in front of an ant. all returned positions are valid positions the grid
+     * Generates a list of possible positions for the ant to explore based on its current position.
+     *
+     * @return A list of positions surrounding the ant's current location, considering directional vectors.
      */
     private List<Position> getPositions() {
         LinkedList<Position> positions = new LinkedList<>();
@@ -174,48 +177,73 @@ public class Ant implements Runnable {
 
 
         //90
-        MyVector left = MyVector.add(headPosition,leftDirection);
-        MyVector hardLeft = MyVector.add(left,leftDirection);
-        positions.add(new Position(hardLeft,left));
+        MyVector left = MyVector.add(headPosition, leftDirection);
+        MyVector hardLeft = MyVector.add(left, leftDirection);
+        positions.add(new Position(hardLeft, left));
         //45
         MyVector upLeft = MyVector.add(up, leftDirection);
-        positions.add(new Position(upLeft,MyVector.add(headPosition,leftDirection)));
+        positions.add(new Position(upLeft, MyVector.add(headPosition, leftDirection)));
 
         //0
-        positions.add(new Position(MyVector.add(up, upDirection),up));
+        positions.add(new Position(MyVector.add(up, upDirection), up));
 
         //-45
-        MyVector right = MyVector.add(headPosition,rightDirection);
+        MyVector right = MyVector.add(headPosition, rightDirection);
         MyVector upRight = MyVector.add(up, rightDirection);
-        positions.add(new Position(upRight,right));
+        positions.add(new Position(upRight, right));
 
         //-90
-        MyVector hardRight = MyVector.add(right,rightDirection);
-        positions.add(new Position(hardRight,right));
+        MyVector hardRight = MyVector.add(right, rightDirection);
+        positions.add(new Position(hardRight, right));
 
         return positions.stream().filter(Arena::validPosition).toList();
     }
 
+    /**
+     * Retrieves the current position of the ant.
+     *
+     * @return The position of the ant.
+     */
     public Position getPosition() {
         return position;
     }
 
+    /**
+     * Retrieves the king ant in the simulation (if available).
+     *
+     * @return The king ant instance.
+     */
     public static Ant getKingAnt() {
         return kingAnt;
     }
 
+    /**
+     * Retrieves the ID of the ant.
+     *
+     * @return The ID of the ant.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Draws the representation of the ant's body.
+     *
+     * @return '+' for a regular ant body and 'Q' for the body of the leader/king ant.
+     */
     public char drawAntBody() {
-        // for testing
+        // Implementation details for testing purposes
         if (this == kingAnt) {
             return 'Q';
         }
         return '+';
     }
 
+    /**
+     * Draws the representation of the ant's head based on its direction.
+     *
+     * @return A char representing the head of an ant ('A', '>', 'V', or '<') based on its direction.
+     */
     public char drawAntHead() {
         return switch (position.getDirection()) {
             case UP -> 'A';
@@ -225,19 +253,40 @@ public class Ant implements Runnable {
         };
     }
 
+    /**
+     * Retrieves the counter for the number of times the ant remained stationary.
+     *
+     * @return The counter for the number of times the ant didn't move.
+     */
     public int getNoMoveCounter() {
         return noMoveCounter;
     }
 
+    /**
+     * Sets the counter for the number of times the ant remained stationary.
+     *
+     * @param noMoveCounter The value to set for the counter of no moves.
+     */
     public void setNoMoveCounter(int noMoveCounter) {
         this.noMoveCounter = noMoveCounter;
     }
 
+    /**
+     * Retrieves the counter for the number of times the ant moved.
+     *
+     * @return The counter for the number of times the ant moved.
+     */
     public int getMoveCounter() {
         return moveCounter;
     }
 
+    /**
+     * Sets the counter for the number of times the ant moved.
+     *
+     * @param moveCounter The value to set for the counter of moves.
+     */
     public void setMoveCounter(int moveCounter) {
         this.moveCounter = moveCounter;
     }
+
 }

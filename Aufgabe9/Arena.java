@@ -84,6 +84,8 @@ public class Arena {
 
     private static void spawnAnts() {
         ants = new LinkedList<>();
+        int tries = 0;
+
         for (int i = 0; i < numberOfAnts; i++) {
             int x = 2 + (int) (Math.random() * grid.length - 4);
             int y = 2 + (int) (Math.random() * grid[0].length - 4);
@@ -95,20 +97,25 @@ public class Arena {
             MyVector head = getRandomNeighbour(body);
 
             System.out.println("spawn ant" + i);
-            Ant ant = new Ant(new Position(head, body));
-
+            Position pos = new Position(head, body);
             // TODO: code for checking if there is an ant already and then if not, spawning one there
-            if (checkSelectedPosition(ant.getPosition())) {
+            if (checkSelectedPosition(pos)) {
+                Ant ant = new Ant(pos);
                 ants.add(ant);
+                tries = 0;
             } else {
                 i--;
+                tries++;
+                System.out.println(tries + " tries tried");
             }
         }
     }
 
     private static boolean checkSelectedPosition(Position position) {
         // check if there is any ant on this position
-        return ants.stream().noneMatch(ant -> position.equals(ant.getPosition()));
+        return getTiles(position).stream().noneMatch(t ->
+             t.getMutex().availablePermits() == 0
+        );
     }
 
     private static Tile getTile(MyVector pos) {
@@ -120,10 +127,10 @@ public class Arena {
     }
 
     private static MyVector getRandomNeighbour(MyVector pos) {
-        double rand = Math.random();
         MyVector newPos = null;
 
         while (newPos == null) {
+            double rand = Math.random();
             // up
             if (rand > 0.75d && pos.getY() < height - 2) {
                 newPos = new MyVector(0, 1);

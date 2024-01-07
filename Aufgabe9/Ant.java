@@ -9,6 +9,7 @@ public class Ant implements Runnable {
 
     private static Ant kingAnt;
     private static int antIdCounter;
+    private static  int maxWait = 64;
     private final int id;
 
     private Position position;
@@ -29,6 +30,8 @@ public class Ant implements Runnable {
         // counts how often an ant moved and how often it was stuck
         noMoveCounter = 0;
         moveCounter = 0;
+
+        Arena.updateArena(this, position);
     }
 
     /**
@@ -62,6 +65,10 @@ public class Ant implements Runnable {
             Position chosenNewPos = null;
             // if ant has a leaf try to go home
             if (leaf != null){
+                // nest is occupied
+                if (Arena.getNestSemaphore().availablePermits() == 0){
+                    chosenNewPos = lockedPositions.stream().filter(Arena::positionHasNest).min(Comparator.comparingInt(Arena::distanceToNest)).orElse(null);
+                }
                 chosenNewPos = lockedPositions.stream().min(Comparator.comparingInt(Arena::distanceToNest)).orElse(null);
             }
             // pathfinding to a leaf
@@ -84,13 +91,13 @@ public class Ant implements Runnable {
                     // reverse ant direction to get somewhere else
 
                     try {
-                        Arena.nestSemaphore.acquire();
+                        Arena.getNestSemaphore().acquire();
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
 
                     // should be mutex to outputstream
-                    if (Arena.objectOutputStream != null) {
+                    if (Arena.getNestProcess().getOutputStream() != null) {
                         try {
                             Arena.sendLeaf(leaf);
                         } catch (IOException e) {
@@ -99,8 +106,8 @@ public class Ant implements Runnable {
                     }
 
                     // release mutex from writing
-                    if(Arena.nestSemaphore.availablePermits() == 0) {
-                        Arena.nestSemaphore.release();
+                    if(Arena.getNestSemaphore().availablePermits() == 0) {
+                        Arena.getNestSemaphore().release();
                     }
 
                     leaf = null;
@@ -138,8 +145,7 @@ public class Ant implements Runnable {
             }
 
             //stop simulation if any ant hits 250 no moves
-            if (noMoveCounter > 250) {
-                System.out.println("Ants stopped because one ant reached 250 no moves");
+            if (noMoveCounter >= maxWait) {
                 Arena.stopAnts();
             }
 

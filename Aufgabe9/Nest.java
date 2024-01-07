@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class Nest extends Tile {
         return 'O';
     }
 
-    private final static String outputFilePath = "output.txt";
+    private final static String outputFilePath = "test.out";
     private final static String debugFilePath = "debug.txt";
 
     private static void deleteFileIfExists(File file) {
@@ -23,8 +24,11 @@ public class Nest extends Tile {
     }
 
     public static void main(String[] args) {
+        List<Leaf> leafs = new ArrayList<>();
         deleteFileIfExists(new File(outputFilePath));
         deleteFileIfExists(new File(debugFilePath));
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> leafs.forEach(leaf -> writeToFile(outputFilePath, leaf.toString()))));
 
         try (ObjectInputStream inputStream = new ObjectInputStream(System.in)) {
             // Empfange Daten von ProcessA
@@ -32,7 +36,7 @@ public class Nest extends Tile {
                 try {
                     Object receivedObject = inputStream.readObject();
                     if (receivedObject instanceof Leaf receivedLeaf) {
-                        writeToFile(outputFilePath, receivedLeaf.toString());
+                        leafs.add(receivedLeaf);
                     }
                 } catch (EOFException ignored) {
                 } catch (Exception e) {

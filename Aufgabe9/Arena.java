@@ -3,8 +3,10 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Semaphore;
-
+import java.util.concurrent.TimeUnit;
 
 public class Arena {
     private static Tile[][] grid;
@@ -14,12 +16,27 @@ public class Arena {
     private static int numberOfAnts;
     private static List<Ant> ants;
     private static List<Thread> threads;
+    private static boolean finishedFlag = false;
+    private static Process nestProcess;
+    private static ObjectOutputStream objectOutputStream;
+    private static final Semaphore nestSemaphore = new Semaphore(1);
 
-    static Process nestProcess;
-    static ObjectOutputStream objectOutputStream;
-    static Semaphore nestSemaphore = new Semaphore(1);
+    private static Thread mainThread;
 
     public static void main(String[] args) {
+        mainThread = Thread.currentThread();
+//        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+//        // Schedule a task to kill the current process after 10 seconds
+//        executor.schedule(() -> {
+//            System.out.println("Process will be killed after 10 seconds");
+//            System.exit(0); // Terminate the current process
+//        }, 30, TimeUnit.SECONDS);
+//
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // do cleanup things
+            nestProcess.destroy();
+        }));
+
         // start Nest process
         try {
             nestProcess = Runtime.getRuntime().exec("java -cp bin Nest");
@@ -35,7 +52,7 @@ public class Arena {
         // if there are to many ants for this grid, return
         // each ant needs at least two tiles, so for a normal simulation at most one quarter
         // should be occupied
-        if(numberOfAnts > (height * width) / 4) {
+        if(numberOfAnts > (height * width) / 8) {
             System.out.println("Too many ants for this size");
             return;
         }
@@ -74,12 +91,9 @@ public class Arena {
         // Warte 10 Sekunden, bevor die Threads gestoppt werden
         try {
             Thread.sleep(10000); // 10 Sekunden in Millisekunden umgerechnet
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Ants stopped because simulation ran for 10 sec");
-        stopAnts();
+        } catch (InterruptedException ignored) {}
 
+        stopAnts();
     }
 
     private static void spawnAnts() {
@@ -184,6 +198,8 @@ public class Arena {
                 secondVec.getY() >= 0 && secondVec.getY() < height);
     }
 
+
+    //does not need a lock because two ants can never be on the same position
     public static void updateArena(Ant ant, Position oldPos) {
         Position newPos = ant.getPosition();
         MyVector ohead = oldPos.getPos1();
@@ -216,37 +232,47 @@ public class Arena {
         result.append("\n".repeat(2));
         System.out.println(result);
     }
+
     public static Boolean positionHasNest(Position position){
      return getTile(position.getPos1()) instanceof Nest || getTile(position.getPos2()) instanceof Nest;
     }
+
     public static int distanceToNest (Position position){
         MyVector headPos = position.getPos1();
         return Math.abs(headPos.getX()-width/2)+Math.abs(headPos.getY()-height/2);
     }
+
     public static int smellOfTiles(Position position){
         return getTile(position.getPos1()).getPheromoneLevel() + getTile(position.getPos2()).getPheromoneLevel();
     }
-    public static synchronized void sendLeaf(Leaf leaf) throws IOException {
+
+    public static void sendLeaf(Leaf leaf) throws IOException {
         Arena.objectOutputStream.writeObject(leaf);
-        //Arena.objectOutputStream.flush();
+        Arena.objectOutputStream.flush();
     }
+
     public static synchronized void stopAnts(){
-        // Stoppe die Threads nach 10 Sekunden
+        if (finishedFlag) {
+            return;
+        }
+
         threads.forEach(Thread::interrupt);
 
-
         try {
-            // wait until pipes are written
-
-            //TODO: DAS FUNKTIONIERT NOCH NICHT ABER ICH WEISS NICHT WAS MA DA MACHEN KOENNT
-            Thread.sleep(50);
             objectOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }catch (InterruptedException e ){
-            e.printStackTrace();
         }
-        nestProcess.destroy();
+
+        finishedFlag = true;
+        mainThread.interrupt();
     }
 
+    public static Semaphore getNestSemaphore() {
+        return nestSemaphore;
+    }
+
+    public static Process getNestProcess() {
+        return nestProcess;
+    }
 }

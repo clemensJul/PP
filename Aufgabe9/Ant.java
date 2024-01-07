@@ -141,7 +141,7 @@ public class Ant implements Runnable {
             if (this == kingAnt) {
                 Arena.drawArena();
                 System.out.println("times not moved: "+ noMoveCounter);
-                System.out.println("times moved"+ moveCounter);
+                System.out.println("times moved: " + moveCounter);
             }
 
             //stop simulation if any ant hits 250 no moves
@@ -210,7 +210,9 @@ public class Ant implements Runnable {
 
     public char drawAntBody() {
         // for testing
-        if (this == kingAnt) return 'Q';
+        if (this == kingAnt) {
+            return 'Q';
+        }
         return '+';
     }
 
@@ -221,5 +223,21 @@ public class Ant implements Runnable {
             case DOWN -> 'V';
             default -> '<';
         };
+    }
+
+    public int getNoMoveCounter() {
+        return noMoveCounter;
+    }
+
+    public void setNoMoveCounter(int noMoveCounter) {
+        this.noMoveCounter = noMoveCounter;
+    }
+
+    public int getMoveCounter() {
+        return moveCounter;
+    }
+
+    public void setMoveCounter(int moveCounter) {
+        this.moveCounter = moveCounter;
     }
 }

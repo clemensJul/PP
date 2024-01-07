@@ -33,6 +33,9 @@ public class Arena {
 //        }, 30, TimeUnit.SECONDS);
 //
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // write ants to file
+            ants.forEach(ant -> FileWriter.writeToFile(FileWriter.OUTPUT_FILEPATH, ant.getPosition().toString() + " - Moves: " + ant.getMoveCounter() + " - NonMoves: " + ant.getNoMoveCounter()));
+
             // do cleanup things
             nestProcess.destroy();
         }));
@@ -88,9 +91,9 @@ public class Arena {
         ants.forEach(ant -> threads.add(new Thread(ant)));
         threads.forEach(Thread::start);
 
-        // Warte 10 Sekunden, bevor die Threads gestoppt werden
+        // Warte 3 Sekunden, bevor die Threads gestoppt werden
         try {
-            Thread.sleep(10000); // 10 Sekunden in Millisekunden umgerechnet
+            Thread.sleep(3000); // 3 Sekunden in Millisekunden umgerechnet
         } catch (InterruptedException ignored) {}
 
         stopAnts();
@@ -230,7 +233,8 @@ public class Arena {
         }
         result.append("-".repeat(Math.max(0, height)));
         result.append("\n".repeat(2));
-        System.out.println(result);
+
+        FileWriter.writeToFile(FileWriter.OUTPUT_FILEPATH,result.toString());
     }
 
     public static Boolean positionHasNest(Position position){

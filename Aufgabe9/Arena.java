@@ -333,7 +333,8 @@ public class Arena {
         try {
             // Close the object output stream
             objectOutputStream.close();
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
 
         // Set flags to indicate completion
         finishedFlag = true;

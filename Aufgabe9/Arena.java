@@ -3,10 +3,7 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 
 public class Arena {
@@ -23,16 +20,6 @@ public class Arena {
     static Semaphore nestSemaphore = new Semaphore(1);
 
     public static void main(String[] args) {
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        // Schedule a task to kill the current process after 10 seconds
-        executor.schedule(() -> {
-            System.out.println("Process will be killed after 10 seconds");
-            System.exit(0); // Terminate the current process
-        }, 3, TimeUnit.SECONDS);
-
-
-
-
         // start Nest process
         try {
             nestProcess = Runtime.getRuntime().exec("java -cp bin Nest");
